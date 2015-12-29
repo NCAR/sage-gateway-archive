@@ -1,0 +1,129 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   logicalFilePath="/Liquibase/update-v2/changesets/20120726-GTWY-3409.xml">
+
+    <changeSet id="20120726-GTWY-3409" author="sgf">
+
+        <dropForeignKeyConstraint baseTableSchemaName="metrics" baseTableName="file_download" constraintName="fkey_file_download_1" />
+        <dropForeignKeyConstraint baseTableSchemaName="metrics" baseTableName="file_download" constraintName="fkey_file_download_2" />
+        <dropForeignKeyConstraint baseTableSchemaName="metrics" baseTableName="file_download" constraintName="fkey_file_download_3" />
+
+        <addColumn schemaName="metrics" tableName="file_download">
+            <column name="logical_file_id" type="uuid" />
+        </addColumn>
+
+        <addColumn schemaName="metrics" tableName="file_download">
+            <column name="logical_file_name" type="text" />
+        </addColumn>
+
+        <addColumn schemaName="metrics" tableName="file_download">
+            <column name="logical_file_lineage_id" type="text" />
+        </addColumn>
+
+        <addColumn schemaName="metrics" tableName="file_download">
+            <column name="logical_file_version_id" type="text" />
+        </addColumn>
+
+        <addColumn schemaName="metrics" tableName="file_download">
+            <column name="file_access_point_uri" type="text" />
+        </addColumn>
+
+        <addColumn schemaName="metrics" tableName="file_download">
+            <column name="user_username" type="text" />
+        </addColumn>
+
+        <addColumn schemaName="metrics" tableName="file_download">
+            <column name="user_openid" type="text" />
+        </addColumn>
+
+        <addColumn schemaName="metrics" tableName="file_download">
+            <column name="user_email" type="text" />
+        </addColumn>
+
+        <addColumn schemaName="metrics" tableName="file_download">
+            <column name="user_firstname" type="text" />
+        </addColumn>
+
+        <addColumn schemaName="metrics" tableName="file_download">
+            <column name="user_lastname" type="text" />
+        </addColumn>
+
+        <addColumn schemaName="metrics" tableName="file_download">
+            <column name="user_agent_name" type="text" />
+        </addColumn>
+
+        <renameColumn schemaName="metrics" tableName="file_download" oldColumnName="file_size" newColumnName="logical_file_size"/>
+
+        <renameColumn schemaName="metrics" tableName="file_download" oldColumnName="users_id" newColumnName="user_id"/>
+
+        <sql>
+            UPDATE
+
+            metrics.file_download
+
+            SET
+
+            logical_file_id = logical_file.id,
+            logical_file_name = logical_file.name,
+            logical_file_lineage_id = logical_file.lineage_id,
+            logical_file_version_id = logical_file.version_id,
+            file_access_point_uri = file_access_point.full_access_url
+
+
+            FROM
+
+            metadata.file_access_point AS file_access_point
+
+            JOIN
+
+            metadata.logical_file AS logical_file ON file_access_point.logical_file_id = logical_file.id
+
+            WHERE
+
+            file_access_point_id = file_access_point.id;
+        </sql>
+
+        <sql>
+            UPDATE
+
+            metrics.file_download
+
+            SET
+
+            user_username = "user".username,
+            user_openid = "user".openid,
+            user_email = "user".email,
+            user_firstname = "user".firstname,
+            user_lastname = "user".lastname
+
+            FROM
+
+            security.user AS "user"
+
+            WHERE
+
+            user_id = "user".id;
+        </sql>
+
+        <sql>
+            UPDATE
+
+            metrics.file_download
+
+            SET
+
+            user_agent_name = user_agent.name
+
+            FROM
+
+            metrics.user_agent AS user_agent
+
+            WHERE
+
+            user_agent_id = user_agent.id;
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

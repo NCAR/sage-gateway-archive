@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <query name="userCount" cacheable="true">
+        <![CDATA[
+      select count(*) from User as user
+    ]]>
+    </query>
+
+    <query name="recentUserCount" cacheable="true">
+        <![CDATA[
+            select count(distinct userLogin.user) from UserLogin as userLogin where userLogin.loginDate >= :loginDate
+        ]]>
+    </query>
+
+    <query name="newUserCount" cacheable="true">
+        <![CDATA[
+            select count(distinct user) from User as user where user.dateCreated >= :dateCreated
+        ]]>
+    </query>
+
+    <query name="fileDownloadCount" cacheable="true">
+        <![CDATA[
+            select count(*) from FileDownload as fileDownload
+        ]]>
+    </query>
+
+</hibernate-mapping>

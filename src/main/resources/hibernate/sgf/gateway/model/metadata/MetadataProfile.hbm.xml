@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.metadata.MetadataProfileImpl" table="metadata_profile" schema="metadata"
+           lazy="false">
+
+        <id name="identifier" column="id" access="field" type="sgf.gateway.utils.hibernate.UUIDUserType"/>
+        <version name="version" column="version" unsaved-value="null" access="field"/>
+
+        <property name="profileName" column="profile_name" type="string" length="255"/>
+
+    </class>
+
+    <query name="findMetadataProfileByName" cacheable="false">
+        <![CDATA[
+            from MetadataProfileImpl metadataProfileImpl where metadataProfileImpl.profileName = :name
+        ]]>
+    </query>
+
+</hibernate-mapping>

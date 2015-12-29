@@ -1,0 +1,84 @@
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20131031-GTWY-3767.xml">
+
+	<changeSet id="20131031-3767-1" author="sgf">
+
+		<createView schemaName="metrics" viewName="search_query_string">
+			<![CDATA[
+				SELECT clickstream.date_created,
+					regexp_replace(clickstream.query_string, '%..', '', 'g') AS query_string
+				FROM metrics.clickstream
+				WHERE lower(clickstream.request_uri) ~~ '%search.html%'::text AND clickstream.query_string IS NOT NULL
+			]]>
+		</createView>
+
+	</changeSet>
+	
+	<changeSet id="20131031-3767-2" author="sgf">
+
+		<createView schemaName="metrics" viewName="search_freetext">
+			<![CDATA[
+				SELECT date_created, split_part (SPLIT_PART(query_string, 'freeText=', 2), '&', 1) AS query_string
+				FROM metrics.search_query_string 
+				WHERE query_string LIKE '%freeText%';
+			]]>
+		</createView>
+
+	</changeSet>
+	
+	<changeSet id="20131031-3767-3" author="sgf">
+
+		<createView schemaName="metrics" viewName="search_freetext_term">
+			<![CDATA[
+				SELECT date_created, regexp_split_to_table(query_string, '\+') AS query_string
+				FROM metrics.search_freetext
+				WHERE query_string IS NOT NULL AND TRIM(query_string) != '';
+			]]>
+		</createView>
+
+	</changeSet>
+	
+	<changeSet id="20131031-3767-4" author="sgf">
+
+		<createView schemaName="metrics" viewName="search_facet_strings">
+			<![CDATA[
+				SELECT date_created, regexp_split_to_table(query_string, '\&') AS query_string
+				FROM metrics.search_query_string
+				WHERE query_string IS NOT NULL AND TRIM(query_string) != ''; 
+			]]>
+		</createView>
+
+	</changeSet>
+	
+	<changeSet id="20131031-3767-5" author="sgf">
+
+		<createView schemaName="metrics" viewName="search_facet">
+			<![CDATA[
+				SELECT date_created,
+				split_part(query_string, '=', 1) AS query_param,
+				split_part(query_string, '=', 2) AS param_value
+				FROM metrics.search_facet_strings; 
+			]]>
+		</createView>
+
+	</changeSet>
+	
+	<changeSet id="20131031-3767-6" author="sgf">
+		<sql splitStatements="false">
+			CREATE OR REPLACE FUNCTION metrics.unencode(text) RETURNS text AS 
+			$$ 
+			with q as 
+			( 
+			  select (regexp_matches($1, '(%..|.)', 'g'))[1] as v 
+			) 
+			select string_agg(case when length(v) = 3 then chr(replace(v, '%', 'x')::bit(8)::int) else v end, '') from q; 
+			$$ language sql; 
+			
+		</sql>
+
+	</changeSet>
+
+</databaseChangeLog>

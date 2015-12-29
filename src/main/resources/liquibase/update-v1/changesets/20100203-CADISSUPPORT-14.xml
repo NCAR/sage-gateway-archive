@@ -1,0 +1,21 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100203-CADISSUPPORT-14.xml">
+
+    <changeSet id="20100203-CADISSUPPORT-14" author="hannah" context="cadis">
+        <comment>Addition of new data formats (distribution formats) to support social science data.</comment>
+        <insert tableName="data_format" schemaName="metadata">
+            <column name="id" value="9633c144-c304-4609-a38c-5aca05ba9b80"/>
+            <column name="version" value="0"/>
+            <column name="name" value="SPSS"/>
+        </insert>
+        <insert tableName="data_format" schemaName="metadata">
+            <column name="id" value="6448ff1e-37fb-49dd-8dab-e18a196d347b"/>
+            <column name="version" value="0"/>
+            <column name="name" value="Stata"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,44 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   logicalFilePath="/Liquibase/update-v3/changesets/20140701-GTWY-3958.xml">
+
+	<changeSet id="20140701-GTWY-3958.0" author="sgf">
+
+		<sql>
+			update metadata.dataset d
+			set short_name = p.persistent_identifier
+			from metadata.project p
+			where p.dataset_id = d.id
+			and p.persistent_identifier != d.short_name
+		</sql>
+
+	</changeSet>
+
+	<changeSet id="20140701-GTWY-3958.1" author="sgf">
+
+		<sql>
+			update metadata.dataset d
+			set title = a.name
+			from metadata.project p
+			join metadata.activity a on p.id = a.id
+			where p.dataset_id = d.id
+			and a.name != d.title
+		</sql>
+
+	</changeSet>
+
+	<changeSet id="20140701-GTWY-3958.2" author="sgf">
+
+		<sql>
+			update metadata.dataset d
+			set description = a.description
+			from metadata.project p
+			join metadata.activity a on p.id = a.id
+			where p.dataset_id = d.id
+			and a.description != d.description
+		</sql>
+
+	</changeSet>
+
+</databaseChangeLog>

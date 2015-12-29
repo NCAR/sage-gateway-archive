@@ -1,0 +1,11 @@
+# NARCCAP THREDDS catalogs referencing NOMADS data at GFDL
+-perm NARCCAP READ narccap.time_slices.output.gfdl http://datagrid.ucar.edu/metadata/narccap/TimeSlices/gfdl/narccap.TimeSlices.gfdl.hist.table1.thredds
+-perm NARCCAP READ narccap.time_slices.output.gfdl http://datagrid.ucar.edu/metadata/narccap/TimeSlices/gfdl/narccap.TimeSlices.gfdl.hist.table2.thredds
+-perm NARCCAP READ narccap.time_slices.output.gfdl http://datagrid.ucar.edu/metadata/narccap/TimeSlices/gfdl/narccap.TimeSlices.gfdl.hist.table3.thredds
+-perm NARCCAP READ narccap.time_slices.output.gfdl http://datagrid.ucar.edu/metadata/narccap/TimeSlices/gfdl/narccap.TimeSlices.gfdl.hist.table4.thredds
+-perm NARCCAP READ narccap.time_slices.output.gfdl http://datagrid.ucar.edu/metadata/narccap/TimeSlices/gfdl/narccap.TimeSlices.gfdl.hist.table5.thredds
+-perm NARCCAP READ narccap.time_slices.output.gfdl http://datagrid.ucar.edu/metadata/narccap/TimeSlices/gfdl/narccap.TimeSlices.gfdl.sres.table1.thredds
+-perm NARCCAP READ narccap.time_slices.output.gfdl http://datagrid.ucar.edu/metadata/narccap/TimeSlices/gfdl/narccap.TimeSlices.gfdl.sres.table2.thredds
+-perm NARCCAP READ narccap.time_slices.output.gfdl http://datagrid.ucar.edu/metadata/narccap/TimeSlices/gfdl/narccap.TimeSlices.gfdl.sres.table3.thredds
+-perm NARCCAP READ narccap.time_slices.output.gfdl http://datagrid.ucar.edu/metadata/narccap/TimeSlices/gfdl/narccap.TimeSlices.gfdl.sres.table4.thredds
+-perm NARCCAP READ narccap.time_slices.output.gfdl http://datagrid.ucar.edu/metadata/narccap/TimeSlices/gfdl/narccap.TimeSlices.gfdl.sres.table5.thredds

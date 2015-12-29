@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.metrics.UserAgent" table="user_agent" schema="metrics">
+
+        <id name="identifier" column="id" access="field">
+            <type name="sgf.gateway.utils.hibernate.UUIDUserType"/>
+        </id>
+        <version name="version" column="version" unsaved-value="null" access="field"/>
+
+        <property name="name" column="name" type="java.lang.String" not-null="true" access="field"/>
+        <property name="ignore" column="ignore" type="java.lang.Boolean" not-null="true" access="field"/>
+
+        <many-to-one name="userAgentType" column="user_agent_type_id" class="sgf.gateway.model.metrics.UserAgentType"
+                     access="field"/>
+
+    </class>
+
+    <query name="findUserAgentByName" cacheable="true">
+        <![CDATA[
+            from UserAgent userAgent where userAgent.name = :name
+        ]]>
+    </query>
+
+</hibernate-mapping>

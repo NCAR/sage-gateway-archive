@@ -1,0 +1,18 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="/Liquibase/update-v2/changesets/20111026-GTWY-2854.xml">
+
+    <changeSet id="20111026-GTWY-2854" author="sgf">
+
+        <addNotNullConstraint schemaName="metadata" tableName="file_access_point" columnName="data_access_capability_id"/>
+
+        <addForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="file_access_point"
+                                 referencedTableSchemaName="metadata" referencedTableName="data_access_capability"
+                                 baseColumnNames="data_access_capability_id" referencedColumnNames="id"
+                                 constraintName="fkey_file_access_point_data_access_capability" deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE"/>
+
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.metadata.dataaccess.FileAccessPointImpl" table="file_access_point" schema="metadata">
+
+        <id name="identifier" column="id" access="field" type="sgf.gateway.utils.hibernate.FastUUIDUserType"/>
+        <version name="version" column="version" unsaved-value="null" access="field"/>
+
+        <property name="endpoint" column="endpoint" type="sgf.gateway.utils.hibernate.URIUserType" access="field"/>
+
+        <many-to-one name="logicalFile" column="logical_file_id"
+                     class="sgf.gateway.model.metadata.inventory.LogicalFileImpl" lazy="no-proxy" not-null="true"
+                     access="field"/>
+
+    </class>
+
+    <query name="findFileAccessPointById" cacheable="false">
+        <![CDATA[
+            from FileAccessPointImpl fileAccessPoint
+            where fileAccessPoint.id in (:idList)
+        ]]>
+    </query>
+
+</hibernate-mapping>

@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.metrics.FileDownload" table="file_download" schema="metrics">
+
+        <id name="identifier" column="id" access="field">
+            <type name="sgf.gateway.utils.hibernate.UUIDUserType"/>
+        </id>
+
+        <property name="logicalFileIdentifier" column="logical_file_id" access="field">
+            <type name="sgf.gateway.utils.hibernate.UUIDUserType"/>
+        </property>
+
+        <property name="logicalFileName" column="logical_file_name" type="string" access="field"/>
+
+        <property name="logicalFileSize" column="logical_file_size" type="long" not-null="true" access="field"/>
+
+        <property name="logicalFileLineageIdentifier" column="logical_file_lineage_id" type="string" access="field"/>
+
+        <property name="logicalFileVersionIdentifier" column="logical_file_version_id" type="string" access="field"/>
+
+        <property name="fileAccessPointUri" column="file_access_point_uri" type="string" access="field"/>
+
+        <property name="userIdentifier" column="user_id" access="field">
+            <type name="sgf.gateway.utils.hibernate.UUIDUserType"/>
+        </property>
+
+        <property name="userUsername" column="user_username" type="string" access="field"/>
+
+        <property name="userOpenId" column="user_openid" type="string" access="field"/>
+
+        <property name="userEmail" column="user_email" type="string" access="field"/>
+
+        <property name="userFirstName" column="user_firstname" type="string" access="field"/>
+
+        <property name="userLastName" column="user_lastname" type="string" access="field"/>
+
+        <property name="userAgentIdentifier" column="user_agent_id" access="field">
+            <type name="sgf.gateway.utils.hibernate.UUIDUserType"/>
+        </property>
+
+        <property name="userAgentName" column="user_agent_name" type="string" access="field"/>
+
+        <property name="dateStarted" column="date_started" type="java.util.Date" not-null="true" access="field"/>
+
+        <property name="dateCompleted" column="date_completed" type="java.util.Date" not-null="false" access="field"/>
+
+        <property name="duration" column="duration" type="long" not-null="false" access="field"/>
+
+        <property name="completed" column="completed" type="boolean" not-null="true" access="field"/>
+
+        <property name="remoteAddress" column="remote_address" type="string" not-null="false" access="field"/>
+
+        <property name="bytesSent" column="bytes_sent" type="long" not-null="true" access="field"/>
+
+        <property name="geocodeLatitude" column="geocode_latitude" type="double" not-null="false" access="field"/>
+
+        <property name="geocodeLongitude" column="geocode_longitude" type="double" not-null="false" access="field"/>
+
+        <property name="geocodeCountry" column="geocode_country" type="string" not-null="false" access="field"/>
+
+        <property name="geocodeCountryCode" column="geocode_country_code" type="string" not-null="false"
+                  access="field"/>
+
+        <property name="geocodeDateUpdated" column="geocode_date_updated" type="java.util.Date" not-null="false"
+                  access="field"/>
+
+        <property name="geocodeCity" column="geocode_city" type="string" not-null="false" access="field"/>
+
+        <property name="geocodeState" column="geocode_state" type="string" not-null="false" access="field"/>
+
+        <property name="whoisOrganization" column="whois_organization" type="string" not-null="false" access="field"/>
+
+        <property name="whoisDateUpdated" column="whois_date_updated" type="java.util.Date" not-null="false"
+                  access="field"/>
+
+    </class>
+
+</hibernate-mapping>

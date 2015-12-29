@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="acUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="order" value="1"/>
+        <property name="mappings">
+            <props>
+
+                <prop key="/openid/provider.htm">openidProviderController</prop>
+                <prop key="/openid/provider.html">openidProviderController</prop>
+
+                <prop key="/ac/guest/secure/registrationSubmitted.htm">registrationSubmittedController</prop>
+
+                <!-- User lists groups available for subscription -->
+                <prop key="/ac/user/listAvailableGroups.htm">listAvailableGroupsController</prop>
+
+                <!-- Bulk group user registration -->
+                <prop key="/ac/admin/manageGroupUsersBulk.htm">manageGroupUsersBulkController</prop>
+
+                <!-- Access Denied controller -->
+                <prop key="/ac/accessDenied.htm">accessDeniedController</prop>
+                <prop key="/ac/accessDenied.html">accessDeniedController</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="defaultCommonController" class="sgf.gateway.web.controllers.common.DefaultCommonController">
+        <constructor-arg index="0" ref="runtimeUserService"/>
+        <constructor-arg index="1" ref="gateway"/>
+        <property name="view" value="${views.ac.user.index}"/>
+    </bean>
+
+    <!-- Access Denied controller -->
+    <bean id="accessDeniedController" class="sgf.gateway.web.controllers.security.AccessDeniedController">
+        <constructor-arg index="0" ref="datasetRepository"/>
+        <property name="view" value="/common/error/access-denied-error"/>
+    </bean>
+
+    <!-- Standard Login controller -->
+    <bean id="loginController" class="sgf.gateway.web.controllers.security.LoginController">
+        <constructor-arg index="0" value="${views.ac.guest.secure.login}"/>
+    </bean>
+
+    <!-- SSO controller - OpenID + Local Authentication -->
+    <bean id="ssoController" class="sgf.gateway.web.controllers.security.openid.OpenidConsumerController">
+        <constructor-arg ref="openIdConfiguration"/>
+        <constructor-arg ref="runtimeUserService"/>
+    </bean>
+
+    <bean id="registrationController" class="sgf.gateway.web.controllers.security.RegistrationController">
+        <constructor-arg index="0" ref="accountService"/>
+        <constructor-arg index="1" ref="registrationValidator"/>
+        <constructor-arg index="2" value="${views.ac.guest.registration}"/>
+    </bean>
+
+    <bean id="registrationValidator" class="sgf.gateway.validation.spring.DefaultValidator">
+        <constructor-arg index="0">
+            <value>sgf.gateway.web.controllers.security.command.RegistrationCommand</value>
+        </constructor-arg>
+        <property name="requiredValidators">
+            <list>
+                <bean class="sgf.gateway.validation.spring.required.RequiredFieldValidator">
+                    <constructor-arg index="0" value="username"/>
+                    <constructor-arg index="1" value=""/>
+                    <constructor-arg index="2" value="Username is required"/>
+                </bean>
+                <bean class="sgf.gateway.validation.spring.required.RequiredFieldValidator">
+                    <constructor-arg index="0" value="password"/>
+                    <constructor-arg index="1" value=""/>
+                    <constructor-arg index="2" value="Password is required"/>
+                </bean>
+                <bean class="sgf.gateway.validation.spring.required.RequiredFieldValidator">
+                    <constructor-arg index="0" value="confirmationPassword"/>
+                    <constructor-arg index="1" value=""/>
+                    <constructor-arg index="2" value="Confirm Password is required"/>
+                </bean>
+                <bean class="sgf.gateway.validation.spring.required.RequiredFieldValidator">
+                    <constructor-arg index="0" value="firstName"/>
+                    <constructor-arg index="1" value=""/>
+                    <constructor-arg index="2" value="First Name is required"/>
+                </bean>
+                <bean class="sgf.gateway.validation.spring.required.RequiredFieldValidator">
+                    <constructor-arg index="0" value="lastName"/>
+                    <constructor-arg index="1" value=""/>
+                    <constructor-arg index="2" value="Last Name is required"/>
+                </bean>
+                <bean class="sgf.gateway.validation.spring.required.RequiredFieldValidator">
+                    <constructor-arg index="0" value="email"/>
+                    <constructor-arg index="1" value=""/>
+                    <constructor-arg index="2" value="Email Address is required"/>
+                </bean>
+            </list>
+        </property>
+        <property name="typeValidators">
+            <list>
+                <bean class="sgf.gateway.validation.spring.type.EmailTypeValidator">
+                    <constructor-arg index="0" value="email"/>
+                    <constructor-arg index="1" value=""/>
+                    <constructor-arg index="2" value="Email Address is not a valid email address"/>
+                </bean>
+            </list>
+        </property>
+        <property name="dataValidators">
+            <list>
+                <bean class="sgf.gateway.validation.spring.data.MinimumLengthValidator">
+                    <constructor-arg index="0" value="username"/>
+                    <constructor-arg index="1" value=""/>
+                    <constructor-arg index="2" value="Username must be at least 3 characters in length"/>
+                    <constructor-arg index="3" value="3"/>
+                </bean>
+                <bean class="sgf.gateway.validation.spring.data.MinimumLengthValidator">
+                    <constructor-arg index="0" value="Password"/>
+                    <constructor-arg index="1" value=""/>
+                    <constructor-arg index="2" value="Password must be at least 6 characters in length"/>
+                    <constructor-arg index="3" value="6"/>
+                </bean>
+                <bean class="sgf.gateway.validation.spring.data.ConfirmationFieldValidator">
+                    <constructor-arg index="0" value="password"/>
+                    <constructor-arg index="1" value="confirmationPassword"/>
+                    <constructor-arg index="2" value=""/>
+                    <constructor-arg index="3" value="Password and Confirm Password must be equal"/>
+                </bean>
+                <bean class="sgf.gateway.validation.spring.data.SafeInputValidator">
+                    <constructor-arg index="0" value="username"/>
+                    <constructor-arg index="1" value=""/>
+                    <constructor-arg index="2" value="Username contains invalid characters"/>
+                </bean>
+                <bean class="sgf.gateway.validation.spring.data.NoWhiteSpaceValidator">
+                    <constructor-arg index="0" value="username"/>
+                    <constructor-arg index="1" value=""/>
+                    <constructor-arg index="2" value="Username may not contain spaces"/>
+                </bean>
+                <bean class="sgf.gateway.validation.spring.data.SafeInputValidator">
+                    <constructor-arg index="0" value="firstName"/>
+                    <constructor-arg index="1" value=""/>
+                    <constructor-arg index="2" value="First Name contains invalid characters"/>
+                </bean>
+                <bean class="sgf.gateway.validation.spring.data.SafeInputValidator">
+                    <constructor-arg index="0" value="lastName"/>
+                    <constructor-arg index="1" value=""/>
+                    <constructor-arg index="2" value="Last Name contains invalid characters"/>
+                </bean>
+            </list>
+        </property>
+        <property name="persistentDataValidators">
+            <list>
+                <bean class="sgf.gateway.validation.spring.persistence.UsernameUniqueValidator">
+                    <constructor-arg index="0" value="username"/>
+                    <constructor-arg index="1" value=""/>
+                    <constructor-arg index="2" value="Username is already taken"/>
+                    <constructor-arg index="3" ref="userRepository"/>
+                </bean>
+                <bean class="sgf.gateway.validation.spring.persistence.LocalEmailUniqueValidator">
+                    <constructor-arg index="0" value="email"/>
+                    <constructor-arg index="1" value=""/>
+                    <constructor-arg index="2" value="Email Address is already taken"/>
+                    <constructor-arg index="3" ref="userRepository"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="registrationSubmittedController"
+          class="sgf.gateway.web.controllers.security.RegistrationSubmittedController">
+    </bean>
+
+    <!-- OpenID provider controllers -->
+    <bean id="openidProviderController" class="sgf.gateway.web.controllers.security.openid.OpenidProviderController">
+        <constructor-arg index="0" ref="openidServerManager"/>
+        <constructor-arg index="1" ref="userRepository"/>
+        <constructor-arg index="2" ref="runtimeUserService"/>
+    </bean>
+
+    <bean id="openidRegistrationController"
+          class="sgf.gateway.web.controllers.security.openid.OpenidRegistrationController">
+        <constructor-arg index="0" ref="accountService"/>
+    </bean>
+
+    <bean id="openidProviderLoginController"
+          class="sgf.gateway.web.controllers.security.openid.OpenidProviderLoginController">
+        <constructor-arg index="0" ref="openidServerManager"/>
+        <constructor-arg index="1" ref="userRepository"/>
+    </bean>
+
+    <bean id="confirmAccountController" class="sgf.gateway.web.controllers.security.ConfirmAccountController">
+        <constructor-arg name="accountService" ref="accountService"/>
+        <property name="loginForm">
+            <value>${web.filter.login.form}</value>
+        </property>
+    </bean>
+
+    <bean id="adminConfirmAccountController" class="sgf.gateway.web.controllers.security.AdminConfirmAccountController">
+        <constructor-arg name="accountService" ref="accountService"/>
+    </bean>
+
+    <bean id="emailOpenidController" class="sgf.gateway.web.controllers.security.EmailOpenidController">
+        <constructor-arg index="0" ref="userRepository"/>
+        <constructor-arg index="1" ref="mailService"/>
+        <constructor-arg index="2" ref="emailOpenidValidator"/>
+    </bean>
+
+    <bean id="emailOpenidValidator" class="sgf.gateway.validation.spring.DefaultValidator">
+        <constructor-arg index="0">
+            <value>sgf.gateway.model.security.User</value>
+        </constructor-arg>
+        <property name="requiredValidators">
+            <list>
+                <bean class="sgf.gateway.validation.spring.required.RequiredFieldValidator">
+                    <constructor-arg index="0" value="email"/>
+                    <constructor-arg index="1" value="email.password.email"/>
+                    <constructor-arg index="2" value="Email Address is required"/>
+                </bean>
+            </list>
+        </property>
+        <property name="typeValidators">
+            <list>
+                <bean class="sgf.gateway.validation.spring.type.EmailTypeValidator">
+                    <constructor-arg index="0" value="email"/>
+                    <constructor-arg index="1" value=""/>
+                    <constructor-arg index="2" value="Email Address is not a valid email address"/>
+                </bean>
+            </list>
+        </property>
+        <property name="persistentDataValidators">
+            <list>
+                <bean class="sgf.gateway.validation.spring.persistence.EmailExistsValidator">
+                    <constructor-arg index="0" value="email"/>
+                    <constructor-arg index="1" value=""/>
+                    <constructor-arg index="2" value="Email Address not found"/>
+                    <constructor-arg index="3" ref="accountService"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="emailPasswordController" class="sgf.gateway.web.controllers.security.EmailPasswordController">
+        <constructor-arg index="0" ref="${controllers.email.password.strategy}"/>
+    </bean>
+
+    <bean id="emailPasswordControllerStrategyForUsername"
+          class="sgf.gateway.web.controllers.security.EmailPasswordControllerStrategyForUsername">
+        <constructor-arg index="0" ref="accountService"/>
+        <constructor-arg index="1" ref="userRepository"/>
+        <constructor-arg index="2" ref="mailService"/>
+        <constructor-arg index="3" ref="emailPasswordValidator"/>
+    </bean>
+
+    <bean id="emailPasswordValidator" class="sgf.gateway.web.controllers.security.EmailPasswordValidator">
+        <constructor-arg index="0" ref="userRepository"/>
+    </bean>
+
+    <bean id="emailPasswordControllerStrategyForOpenid"
+          class="sgf.gateway.web.controllers.security.EmailPasswordControllerStrategyForOpenid">
+        <constructor-arg index="0" ref="accountService"/>
+        <constructor-arg index="1" ref="userRepository"/>
+        <constructor-arg index="2" ref="mailService"/>
+        <constructor-arg index="3" ref="emailPasswordFromOpenidAndEmailValidator"/>
+    </bean>
+
+    <bean id="emailPasswordFromOpenidAndEmailValidator" class="sgf.gateway.validation.spring.DefaultValidator">
+        <constructor-arg index="0">
+            <value>sgf.gateway.model.security.User</value>
+        </constructor-arg>
+        <property name="requiredValidators">
+            <list>
+                <bean class="sgf.gateway.validation.spring.required.RequiredFieldValidator">
+                    <constructor-arg index="0" value="openid"/>
+                    <constructor-arg index="1" value="email.password.openid"/>
+                    <constructor-arg index="2" value="OpenID is required"/>
+                </bean>
+                <bean class="sgf.gateway.validation.spring.required.RequiredFieldValidator">
+                    <constructor-arg index="0" value="email"/>
+                    <constructor-arg index="1" value="email.password.email"/>
+                    <constructor-arg index="2" value="Email Address is required"/>
+                </bean>
+            </list>
+        </property>
+        <property name="typeValidators">
+            <list>
+                <bean class="sgf.gateway.validation.spring.type.EmailTypeValidator">
+                    <constructor-arg index="0" value="email"/>
+                    <constructor-arg index="1" value=""/>
+                    <constructor-arg index="2" value="Email Address is not a valid email address"/>
+                </bean>
+            </list>
+        </property>
+        <property name="dataValidators">
+            <list>
+                <bean class="sgf.gateway.validation.spring.data.ValidOpenidValidator">
+                    <constructor-arg index="0" value="openid"/>
+                    <constructor-arg index="1" value=""/>
+                    <constructor-arg index="2" value="Invalid OpenID"/>
+                </bean>
+            </list>
+        </property>
+        <property name="persistentDataValidators">
+            <list>
+                <bean class="sgf.gateway.validation.spring.persistence.EmailPasswordFromOpenidAndEmailValidator">
+                    <constructor-arg index="0" value="openid"/>
+                    <constructor-arg index="1" value="email"/>
+                    <constructor-arg index="2" value=""/>
+                    <constructor-arg index="3" value="Account not found"/>
+                    <constructor-arg index="4" ref="userRepository"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="deleteUserFromGroupController" class="sgf.gateway.web.controllers.security.DeleteUserFromGroupController">
+        <constructor-arg index="0" ref="groupRepository"/>
+        <constructor-arg index="1" ref="accountService"/>
+        <constructor-arg index="2" ref="runtimeUserService"/>
+        <property name="view" value="${views.ac.user.delete.user.from.group}"/>
+    </bean>
+
+    <bean id="changePasswordController" class="sgf.gateway.web.controllers.security.ChangePasswordController">
+        <constructor-arg index="0" ref="accountService"/>
+        <constructor-arg index="1" ref="runtimeUserService"/>
+        <constructor-arg index="2" value="${views.ac.user.change.password.form}"/>
+        <constructor-arg index="3" value="${views.ac.user.change.password.submitted}"/>
+    </bean>
+
+    <bean id="changeEmailController" class="sgf.gateway.web.controllers.security.ChangeEmailController">
+        <constructor-arg index="0" ref="accountService"/>
+        <constructor-arg index="1" ref="runtimeUserService"/>
+        <constructor-arg index="2" value="${views.ac.user.change.email.form}"/>
+        <constructor-arg index="3" value="${views.ac.user.change.email.submitted}"/>
+    </bean>
+
+    <bean id="listUserGroupsController" class="sgf.gateway.web.controllers.security.ListUserGroupsController">
+        <constructor-arg index="0" ref="userRepository"/>
+        <constructor-arg index="1" ref="runtimeUserService"/>
+        <property name="view" value="${views.ac.user.list.user.groups}"/>
+    </bean>
+
+    <bean id="listAvailableGroupsController" class="sgf.gateway.web.controllers.security.ListAvailableGroupsController">
+        <constructor-arg index="0" ref="accountService"/>
+        <constructor-arg index="1" ref="runtimeUserService"/>
+        <constructor-arg index="2" ref="userRepository"/>
+        <property name="view">
+            <value>/ac/user/listAvailableGroups</value>
+        </property>
+    </bean>
+
+    <bean id="groupRegistrationController" class="sgf.gateway.web.controllers.security.GroupRegistrationController">
+        <constructor-arg index="0" ref="runtimeUserService"/>
+        <constructor-arg index="1" ref="accountService"/>
+    </bean>
+
+    <!-- Controllers for Group Administrator operations -->
+    <bean id="listGroupUsersController" class="sgf.gateway.web.controllers.security.ListGroupUsersController">
+        <constructor-arg index="0" ref="userRepository"/>
+        <constructor-arg index="1" ref="accountService"/>
+        <constructor-arg index="2" ref="runtimeUserService"/>
+        <property name="view" value="${views.ac.listGroupUsers}"/>
+    </bean>
+
+    <bean id="manageGroupUserController" class="sgf.gateway.web.controllers.security.ManageGroupUserController">
+        <constructor-arg index="0">
+            <ref bean="accountService"/>
+        </constructor-arg>
+        <constructor-arg index="1">
+            <ref bean="userRepository"/>
+        </constructor-arg>
+        <constructor-arg index="2">
+            <ref bean="runtimeUserService"/>
+        </constructor-arg>
+        <constructor-arg index="3">
+            <ref bean="mailService"/>
+        </constructor-arg>
+        <constructor-arg index="4">
+            <ref bean="gateway"/>
+        </constructor-arg>
+        <property name="formView" value="${views.ac.manageGroupUserForm}"/>
+        <property name="successView" value="${views.ac.manageGroupUserSubmitted}"/>
+        <property name="sendUserGroupUpdateEmail" value="${email.user.group.update}"/>
+    </bean>
+
+    <bean id="manageGroupUsersBulkController"
+          class="sgf.gateway.web.controllers.security.ManageGroupUsersBulkController">
+        <constructor-arg index="0" ref="accountService"/>
+        <constructor-arg index="1" ref="runtimeUserService"/>
+        <constructor-arg index="2" ref="mailService"/>
+        <constructor-arg index="3" ref="userRepository"/>
+        <constructor-arg index="4" ref="gateway"/>
+        <property name="view" value="/ac/admin/manageGroupUsersBulk"/>
+        <property name="sendUserGroupUpdateEmail" value="${email.user.group.update}"/>
+    </bean>
+
+    <bean id="addGroupController" class="sgf.gateway.web.controllers.security.AddGroupController">
+        <constructor-arg index="0" ref="groupRepository"/>
+        <constructor-arg index="1" ref="accountService"/>
+        <constructor-arg index="2" ref="runtimeUserService"/>
+    </bean>
+
+    <!-- Controllers for Root Administrator operations -->
+    <bean id="lookupUserController" class="sgf.gateway.web.controllers.security.LookupUserController">
+        <constructor-arg index="0">
+            <ref bean="userRepository"/>
+        </constructor-arg>
+        <constructor-arg index="1">
+            <ref bean="groupRepository"/>
+        </constructor-arg>
+        <constructor-arg index="2">
+            <ref bean="runtimeUserService"/>
+        </constructor-arg>
+    </bean>
+    <bean id="listAllUsersController" class="sgf.gateway.web.controllers.security.ListAllUsersController">
+        <constructor-arg index="0" ref="userRepository"/>
+        <constructor-arg index="1" ref="groupRepository"/>
+        <constructor-arg index="2" ref="runtimeUserService"/>
+    </bean>
+    <bean id="disableUserAccountController" class="sgf.gateway.web.controllers.security.DisableUserAccountController">
+        <constructor-arg index="0" ref="accountService"/>
+        <constructor-arg index="1" ref="userRepository"/>
+    </bean>
+
+    <bean id="editAccountSummaryInfoController"
+          class="sgf.gateway.web.controllers.security.EditAccountSummaryInfoController">
+        <constructor-arg index="0" ref="accountService"/>
+        <constructor-arg index="1" ref="userRepository"/>
+        <constructor-arg index="2" ref="accountSummaryValidator"/>
+    </bean>
+
+    <bean id="accountSummaryValidator" class="sgf.gateway.web.controllers.security.AccountSummaryValidator"></bean>
+
+    <bean id="openidServerManagerFactory"
+          class="sgf.gateway.web.controllers.security.openid.factory.impl.OpenidServerManagerFactoryImpl">
+        <constructor-arg index="0" ref="gateway"/>
+    </bean>
+
+    <bean id="openidServerManager" factory-method="createServerManager" factory-bean="openidServerManagerFactory"/>
+
+    <import resource="classpath:sgf/gateway/saml/saml-controllers.xml"/>
+
+</beans>

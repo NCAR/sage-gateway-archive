@@ -1,0 +1,99 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20130709-SGGTD-79.xml">
+
+	<changeSet id="20130709-SGGTD-79.0" author="sgf">
+		<sql>
+			ALTER TABLE metadata.dataset ADD COLUMN description text;
+			ALTER TABLE metadata.dataset ADD COLUMN date_created timestamp with time zone DEFAULT default_timestamp();
+			ALTER TABLE metadata.dataset ADD COLUMN date_updated timestamp with time zone DEFAULT default_timestamp();
+		</sql>
+	</changeSet>
+	
+	<changeSet id="20130709-SGGTD-79.1" author="sgf">
+		<sql>
+			UPDATE metadata.dataset AS dataset
+			SET description = resource.description,
+			    date_created = resource.date_created,
+				date_updated = resource.date_updated
+			FROM metadata.resource AS resource
+			WHERE dataset.id = resource.id;
+		</sql>
+	</changeSet>
+
+	<changeSet id="20130709-SGGTD-79.2" author="sgf">
+		<sql>
+			CREATE TRIGGER dataset_update_timestamps
+			BEFORE UPDATE
+			ON metadata.dataset
+			FOR EACH ROW
+			EXECUTE PROCEDURE metadata.persistent_object_update_timestamps();
+
+			ALTER TABLE metadata.dataset DROP constraint fkey_dataset_id;
+		</sql>
+	</changeSet>
+
+	<changeSet id="20130709-SGGTD-79.3" author="sgf">
+		<sql>
+			DELETE from security.permission where resource_id in (
+				SELECT DISTINCT r.id
+				FROM metadata.resource r
+				JOIN security.permission p ON r.id = p.resource_id
+				LEFT JOIN metadata.dataset d ON r.id = d.id
+				WHERE d.id IS NULL
+			);
+		</sql>
+	</changeSet>
+
+	<changeSet id="20130709-SGGTD-79.4" author="sgf">
+		<sql>
+			ALTER TABLE security.permission DROP constraint fkey_permission_resource_id;
+
+			ALTER TABLE security.permission RENAME COLUMN resource_id to dataset_id;
+
+			ALTER TABLE security.permission ADD CONSTRAINT fkey_permission_dataset_id FOREIGN KEY (dataset_id)
+			REFERENCES metadata.dataset (id) MATCH SIMPLE
+			ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
+		</sql>
+	</changeSet>
+
+	<changeSet id="20130709-SGGTD-79.5" author="sgf">
+		<sql>
+			DROP TABLE metadata.note;
+			DROP TABLE metadata.persistent_identifier;
+			DROP TABLE metadata.persistent_indentifier_type;
+			DROP TABLE metadata.resource_tag_xref;
+			DROP TABLE metadata.tag;
+			DROP TABLE metadata.resource;
+			DROP TABLE metadata.resource_type;
+		</sql>
+	</changeSet>
+
+	<changeSet id="20130709-SGGTD-79.6" author="sgf">
+		<sql>
+			DROP TRIGGER dataset_version_after_update ON metadata.dataset_version;
+			DROP FUNCTION metadata.dataset_version_update_resource_timestamp();
+
+			CREATE FUNCTION metadata.dataset_version_update_timestamp() RETURNS TRIGGER AS
+			'BEGIN UPDATE metadata.dataset set date_updated = public.default_timestamp() where id = NEW.dataset_id; return NULL; END;'
+			LANGUAGE plpgsql;
+
+			ALTER FUNCTION metadata.dataset_version_update_timestamp() OWNER TO ${database.role.admin};
+			REVOKE ALL ON FUNCTION metadata.dataset_version_update_timestamp() FROM public;
+
+			CREATE TRIGGER dataset_version_after_update
+			AFTER UPDATE
+			ON metadata.dataset_version
+			FOR EACH ROW
+			EXECUTE PROCEDURE metadata.dataset_version_update_timestamp();
+		</sql>
+	</changeSet>
+
+	<changeSet id="20130709-SGGTD-79.7" author="sgf">
+		<sql>
+			DROP FUNCTION metadata.logical_file_delete_handler();
+		</sql>
+	</changeSet>
+
+</databaseChangeLog>

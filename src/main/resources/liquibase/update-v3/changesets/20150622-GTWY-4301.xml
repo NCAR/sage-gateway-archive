@@ -1,0 +1,34 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   logicalFilePath="/Liquibase/update-v3/changesets/20150622-GTWY-4301.xml">
+
+    <changeSet id="20150622-GTWY-4301.0" author="sgf">
+        <sql>
+            CREATE TABLE metrics.summary_statistics
+            (
+            id bigint NOT NULL,
+            total_datasets bigint,
+            total_files bigint,
+            total_bytes double precision,
+            CONSTRAINT pkey_acadis_summary_statistics PRIMARY KEY (id)
+            )
+            WITH (
+            OIDS=FALSE
+            );
+
+            ALTER TABLE metrics.summary_statistics
+            OWNER TO esgcet_admin;
+            GRANT ALL ON TABLE metrics.summary_statistics TO esgcet_admin;
+            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE metrics.summary_statistics TO esgcet_user;
+            GRANT SELECT ON TABLE metrics.summary_statistics TO esgcet_reader;
+        </sql>
+
+    </changeSet>
+
+    <changeSet id="20150622-GTWY-4301.1" author="sgf">
+        <modifyDataType schemaName="metrics" tableName="summary_statistics" columnName="total_bytes" newDataType="bigint" />
+    </changeSet>
+
+
+</databaseChangeLog>

@@ -1,0 +1,14 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100505-SGF-1479.xml">
+
+    <changeSet author="nch" id="20100505-SGF-1479">
+
+        <addColumn schemaName="metadata" tableName="dataset_version">
+            <column name="source_catalog_uri" type="text" />
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

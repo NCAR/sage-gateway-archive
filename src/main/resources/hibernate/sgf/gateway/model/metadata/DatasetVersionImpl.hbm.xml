@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <typedef name="PublishedState" class="sgf.gateway.utils.hibernate.EnumUserType">
+        <param name="enumClassName">sgf.gateway.model.metadata.PublishedState</param>
+        <param name="columnType">INTEGER</param>
+    </typedef>
+
+    <class name="sgf.gateway.model.metadata.DatasetVersionImpl" table="dataset_version" schema="metadata">
+
+        <id name="identifier" column="id" type="sgf.gateway.utils.hibernate.UUIDUserType" access="field"/>
+
+        <version name="version" column="version" unsaved-value="null" access="field"/>
+
+        <property name="versionIdentifier" column="version_id" type="string" access="field"/>
+
+        <many-to-one name="dataset" column="dataset_id" class="sgf.gateway.model.metadata.DatasetImpl" access="field"
+                     not-null="true" insert="false" update="false"/>
+
+        <property name="dateCreated" column="date_created" type="timestamp" insert="false" update="false"
+                  access="field"/>
+
+        <many-to-one name="publisher" column="publisher" class="sgf.gateway.model.security.User" access="field"/>
+
+        <property name="comment" column="comment" type="string" access="field"/>
+
+        <property name="label" column="label" type="string" access="field"/>
+
+        <!-- access is set to property because we require logic in the setPublsihedState() method in DatasetVersionImpl. -->
+        <property name="publishedState" column="published_state_id" type="PublishedState" access="property"/>
+
+        <!-- Verified that this uses an index on dataset_id 09/03/12 NCW -->
+        <property name="logicalFileCount" access="field"
+                  formula="(SELECT count(metadata.logical_file_dataset_version_xref.logical_file_id) from metadata.logical_file_dataset_version_xref where metadata.logical_file_dataset_version_xref.dataset_version_id = id)"
+                  lazy="false"/>
+
+        <property name="authoritativeSourceURI" column="authoritative_source_uri"
+                  type="sgf.gateway.utils.hibernate.URIUserType" access="field"/>
+
+        <property name="authoritativeSourceDateCreated" column="authoritative_source_date_created" type="timestamp"
+                  access="field"/>
+
+        <property name="authoritativeSourceDateModified" column="authoritative_source_date_modified" type="timestamp"
+                  access="field"/>
+
+        <!--  Put the name sorting back in. -->
+        <set name="logicalFilesReference" table="logical_file_dataset_version_xref" schema="metadata" inverse="true"
+             cascade="all,delete-orphan" access="field">
+            <key column="dataset_version_id"/>
+            <many-to-many class="sgf.gateway.model.metadata.inventory.LogicalFileImpl" column="logical_file_id"/>
+        </set>
+
+        <set name="variablesReference" access="field" table="dataset_version_variable_xref" schema="metadata"
+             inverse="false" cascade="persist,merge,save-update">
+            <cache usage="read-write"/>
+            <key column="dataset_version_id"/>
+            <many-to-many class="sgf.gateway.model.metadata.inventory.VariableImpl" column="variable_id"/>
+        </set>
+
+    </class>
+
+</hibernate-mapping>

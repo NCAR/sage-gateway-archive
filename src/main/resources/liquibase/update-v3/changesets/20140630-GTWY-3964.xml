@@ -1,0 +1,29 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   logicalFilePath="/Liquibase/update-v3/changesets/20140630-GTWY-3964.xml">
+
+    <changeSet id="20140630-GTWY-3964.0" author="sgf">
+
+	<sql>
+		ALTER TABLE metadata.dataset ADD COLUMN project_group text;
+	</sql>
+	
+	<sql>	
+		UPDATE metadata.dataset as ds
+		SET project_group = p.project_group
+		FROM metadata.project p
+		WHERE p.dataset_id = ds.id;	
+	</sql>
+	
+	</changeSet>
+	
+	<changeSet id="20140630-GTWY-3964.1" author="sgf">
+	
+	<sql>
+		ALTER TABLE metadata.project DROP COLUMN project_group;
+	</sql>
+
+    </changeSet>
+
+</databaseChangeLog>

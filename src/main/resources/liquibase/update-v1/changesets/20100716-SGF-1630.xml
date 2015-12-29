@@ -1,0 +1,14 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100716-SGF-1630.xml">
+
+    <changeSet id="20100716-SGF-1630" author="hannah" context="cadis">
+        <comment>Creating persistent IDs for placeholder files created as the advanced search workaround.</comment>
+
+        <customChange class="eske.liquibase.persistentids.AddPersistentIdsToEmptyFiles" />
+
+    </changeSet>
+
+</databaseChangeLog>

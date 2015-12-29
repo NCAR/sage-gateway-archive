@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+
+    <bean id="activityRepository" class="sgf.gateway.dao.metadata.impl.hibernate.ActivityRepositoryImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    </bean>
+
+    <bean id="metadataRepository" class="sgf.gateway.dao.metadata.impl.hibernate.MetadataRepositoryImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    </bean>
+
+    <bean id="projectRepository" class="sgf.gateway.dao.metadata.impl.hibernate.ProjectRepositoryImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    </bean>
+
+    <bean id="datasetRepository" class="sgf.gateway.dao.metadata.impl.hibernate.DatasetRepositoryImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    </bean>
+
+    <bean id="logicalFileRepository" class="sgf.gateway.dao.metadata.impl.hibernate.LogicalFileRepositoryImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    </bean>
+
+    <bean id="platformTypeRepository" class="sgf.gateway.dao.metadata.impl.hibernate.PlatformTypeRepositoryImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    </bean>
+
+    <bean id="instrumentKeywordRepository"
+          class="sgf.gateway.dao.metadata.impl.hibernate.InstrumentKeywordRepositoryImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    </bean>
+
+    <bean id="topicRepository" class="sgf.gateway.dao.metadata.impl.hibernate.TopicRepositoryImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    </bean>
+
+    <bean id="dataCenterRepository" class="sgf.gateway.dao.metadata.impl.hibernate.DataCenterRepositoryImpl">
+        <constructor-arg index="0" value="${default.datacenter.name}"/>
+        <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    </bean>
+
+    <bean id="broadcastMessageRepository"
+          class="sgf.gateway.dao.metadata.impl.hibernate.BroadcastMessageRepositoryImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    </bean>
+
+    <bean id="responsiblePartyRepository"
+          class="sgf.gateway.dao.metadata.impl.hibernate.ResponsiblePartyRepositoryImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    </bean>
+
+    <bean id="auditRepository" class="sgf.gateway.dao.audit.AuditRepository">
+        <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    </bean>
+
+</beans>

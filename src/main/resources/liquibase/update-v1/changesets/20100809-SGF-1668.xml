@@ -1,0 +1,29 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100809-SGF-1668.xml">
+
+    <changeSet id="20100809-SGF-1668" author="ncw" >
+
+        <dropForeignKeyConstraint baseTableSchemaName="oai" baseTableName="harvesting_log" constraintName="fkey_harvesting_log_harvester_gateway_id"/>
+        <sql>
+            ALTER TABLE oai.harvesting_log  ALTER COLUMN harvester_gateway_id DROP NOT NULL;
+        </sql>
+
+        <dropColumn schemaName="oai" tableName="harvesting_log" columnName="harvester_gateway_id"/>
+
+        <dropForeignKeyConstraint baseTableSchemaName="oai" baseTableName="harvesting_log" constraintName="fkey_harvesting_log_repository_gateway_id"/>
+        <sql>
+            ALTER TABLE oai.harvesting_log  ALTER COLUMN repository_gateway_id DROP NOT NULL;
+        </sql>
+        <dropColumn schemaName="oai" tableName="harvesting_log" columnName="repository_gateway_id"/>
+
+        <sql>
+            ALTER TABLE oai.harvesting_log ADD COLUMN repository_url text;
+        </sql>
+
+
+    </changeSet>
+
+</databaseChangeLog>

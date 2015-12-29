@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <typedef class="sgf.gateway.utils.hibernate.EnumUserType" name="OperationType">
+        <param name="enumClassName">sgf.gateway.model.security.Operation</param>
+        <param name="columnType">INTEGER</param>
+    </typedef>
+
+    <class name="sgf.gateway.model.security.Role" table="role" schema="security">
+
+        <id name="id" column="id" type="integer" unsaved-value="null">
+            <generator class="sequence">
+                <param name="sequence">security.role_id_seq</param>
+            </generator>
+        </id>
+
+        <property name="name" column="name" type="string" not-null="true" length="100" unique="true"/>
+        <property name="description" column="description" type="text"/>
+
+        <set name="operations" table="role_operation_xref" schema="security" lazy="false" cascade="all">
+            <cache usage="read-write"/>
+            <key column="role_id"/>
+            <element type="OperationType" column="operation_id"/>
+        </set>
+
+    </class>
+
+</hibernate-mapping>

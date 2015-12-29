@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <typedef name="DataTransferRequestStatus" class="sgf.gateway.utils.hibernate.EnumUserType">
+        <param name="enumClassName">sgf.gateway.model.workspace.DataTransferRequestStatus</param>
+        <param name="columnType">INTEGER</param>
+    </typedef>
+
+    <class name="sgf.gateway.model.workspace.DataTransferItem" table="data_transfer_item" schema="workspace">
+
+        <id name="identifier" column="id" type="sgf.gateway.utils.hibernate.UUIDUserType" access="field"/>
+
+        <version name="version" column="version" unsaved-value="null" access="field"/>
+
+        <property name="status" column="status_id" type="DataTransferRequestStatus" access="field"/>
+        <property name="lastUpdate" column="date_updated" type="timestamp" access="field"/>
+        <property name="message" column="message" type="string" access="field"/>
+        <property name="diskLocation" column="disk_location" type="string" access="field"/>
+
+        <many-to-one name="request" column="request_id" class="sgf.gateway.model.workspace.DataTransferRequest"
+                     not-found="exception" access="field"/>
+        <many-to-one name="source" column="source_id" class="sgf.gateway.model.metadata.dataaccess.FileAccessPointImpl"
+                     not-found="exception" access="field"/>
+    </class>
+
+</hibernate-mapping>

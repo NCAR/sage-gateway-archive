@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <typedef name="ResolutionType" class="sgf.gateway.utils.hibernate.EnumUserType">
+        <param name="enumClassName">sgf.gateway.model.metadata.ResolutionType</param>
+        <param name="columnType">INTEGER</param>
+    </typedef>
+
+    <typedef name="CadisResolutionType" class="sgf.gateway.utils.hibernate.EnumUserType">
+        <param name="enumClassName">sgf.gateway.model.metadata.CadisResolutionType</param>
+        <param name="columnType">INTEGER</param>
+    </typedef>
+
+    <typedef name="DatasetProgress" class="sgf.gateway.utils.hibernate.EnumUserType">
+        <param name="enumClassName">sgf.gateway.model.metadata.DatasetProgress</param>
+        <param name="columnType">INTEGER</param>
+    </typedef>
+
+    <typedef name="DataType" class="sgf.gateway.utils.hibernate.EnumUserType">
+        <param name="enumClassName">sgf.gateway.model.metadata.DataType</param>
+        <param name="columnType">INTEGER</param>
+    </typedef>
+
+    <class name="sgf.gateway.model.metadata.descriptive.DescriptiveMetadataImpl" table="descriptive_metadata"
+           schema="metadata">
+
+        <id name="identifier" column="id" access="field" type="sgf.gateway.utils.hibernate.UUIDUserType">
+            <generator class="foreign">
+                <param name="property">parent</param>
+            </generator>
+        </id>
+
+        <one-to-one name="parent" class="sgf.gateway.model.metadata.DatasetImpl" constrained="true" access="field"/>
+
+        <property name="language" column="language" type="string" access="field"/>
+        <property name="credit" column="credit" type="string" access="field"/>
+        <property name="distributionURI" column="distribution_uri" type="sgf.gateway.utils.hibernate.URIUserType"
+                  access="field"/>
+        <property name="distributionURIText" column="distribution_uri_text" type="string" access="field"/>
+        <property name="resolutionType" column="resolution_type_id" type="ResolutionType"/>
+        <property name="datasetProgress" column="dataset_progress_id" type="DatasetProgress"/>
+        <property name="modelName" column="model_name" type="string" access="field"/>
+
+        <set name="platformTypesReference" table="descriptive_metadata_platform_type_xref" schema="metadata"
+             cascade="persist,merge,save-update" access="field">
+            <key column="descriptive_metadata_id"/>
+            <many-to-many column="platform_type_id"
+                          class="sgf.gateway.model.metadata.activities.observing.PlatformTypeImpl"/>
+        </set>
+
+        <set name="instrumentKeywordsReference" table="descriptive_metadata_instrument_keyword_xref" schema="metadata"
+             cascade="persist,merge,save-update" access="field">
+            <key column="descriptive_metadata_id"/>
+            <many-to-many column="instrument_keyword_id"
+                          class="sgf.gateway.model.metadata.activities.observing.InstrumentKeywordImpl"/>
+        </set>
+
+        <many-to-one name="dataProductType" column="data_product_type_id"
+                     class="sgf.gateway.model.metadata.DataProductTypeImpl" cascade="persist,merge,save-update"
+                     lazy="false" access="field"/>
+
+        <set name="dataTypesReference" table="descriptive_metadata_data_type_xref" schema="metadata"
+             cascade="persist,merge,save-update" access="field">
+            <key column="descriptive_metadata_id"/>
+            <element column="data_type_id" type="DataType"/>
+        </set>
+
+        <set name="locationsReference" table="descriptive_metadata_location_xref" schema="metadata"
+             cascade="persist,merge,save-update" access="field">
+            <key column="descriptive_metadata_id"/>
+            <many-to-many column="location_id" class="sgf.gateway.model.metadata.LocationImpl"/>
+        </set>
+
+        <many-to-one name="physicalDomain" column="physical_domain_id" class="sgf.gateway.model.metadata.PhysicalDomain"
+                     cascade="persist,merge,save-update" access="field"/>
+
+        <set name="timeFrequenciesReference" table="descriptive_metadata_time_frequency_xref" schema="metadata"
+             cascade="persist,merge,save-update" access="field">
+            <key column="descriptive_metadata_id"/>
+            <many-to-many column="time_frequency_id" class="sgf.gateway.model.metadata.TimeFrequency"/>
+        </set>
+
+        <set name="scienceKeywordsReference" table="descriptive_metadata_science_keyword_xref" schema="metadata"
+             cascade="persist,merge,save-update" access="field">
+            <key column="descriptive_metadata_id"/>
+            <many-to-many class="sgf.gateway.model.metadata.ScienceKeywordImpl" column="science_keyword_id"/>
+        </set>
+
+        <one-to-one name="geographicBoundingBox"
+                    class="sgf.gateway.model.metadata.descriptive.GeographicBoundingBoxImpl" cascade="all"
+                    access="field"/>
+
+        <one-to-one name="timePeriod" class="sgf.gateway.model.metadata.descriptive.TimePeriodImpl" cascade="all"
+                    access="field"/>
+
+        <list name="responsibleParties" cascade="all-delete-orphan" access="field">
+            <key column="descriptive_metadata_id" not-null="true"/>
+            <list-index column="idx_order"/>
+            <one-to-many class="sgf.gateway.model.metadata.citation.ResponsiblePartyImpl"/>
+        </list>
+
+        <list name="relatedLinksReference" cascade="all-delete-orphan" access="field">
+            <key column="descriptive_metadata_id" not-null="true"/>
+            <list-index column="idx_order"/>
+            <one-to-many class="sgf.gateway.model.metadata.RelatedLinkImpl"/>
+        </list>
+
+        <list name="resolutionTypesReference" table="descriptive_metadata_resolution_type_xref" schema="metadata"
+              cascade="all" access="field">
+            <key column="descriptive_metadata_id"/>
+            <list-index column="idx_order"/>
+            <element column="resolution_type_id" type="CadisResolutionType"/>
+        </list>
+
+    </class>
+
+</hibernate-mapping>

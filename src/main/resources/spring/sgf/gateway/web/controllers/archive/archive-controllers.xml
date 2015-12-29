@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="archiveRequestController" class="sgf.gateway.web.controllers.archive.ArchiveRequestController">
+        <constructor-arg index="0" ref="runtimeUserService"/>
+        <constructor-arg index="1" ref="authorizationService"/>
+        <constructor-arg index="2" ref="authorizationTokenService"/>
+        <constructor-arg index="3" ref="dataTransferRepository"/>
+        <constructor-arg index="4" ref="gateway"/>
+    </bean>
+
+    <bean id="archiveFileController" class="sgf.gateway.web.controllers.archive.file.ArchiveFileController">
+        <constructor-arg index="0" ref="runtimeUserService"/>
+        <constructor-arg index="1" ref="authorizationService"/>
+        <constructor-arg index="2" ref="dataTransferRepository"/>
+        <constructor-arg index="3" ref="fileDownloadHandler"/>
+        <constructor-arg index="4" ref="downloadEventPublisher"/>
+        <constructor-arg index="5" ref="dateStrategy"/>
+        <constructor-arg index="6" ref="exceptionHandlingService"/>
+        <constructor-arg index="7" ref="authorizationTokenService"/>
+    </bean>
+
+</beans>

@@ -1,0 +1,18 @@
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+				   logicalFilePath="/Liquibase/update-v3/changesets/20150127-GTWY-4192">
+
+	<changeSet id="20150127-GTWY-4192" author="sgf">
+
+		<modifyDataType schemaName="audit" tableName="logical_file_aud" columnName="version" newDataType="integer"/>
+		<modifyDataType schemaName="metrics" tableName="file_download" columnName="duration" newDataType="bigint"/>
+		<modifyDataType schemaName="metrics" tableName="user_agent" columnName="version" newDataType="integer"/>
+		<createSequence schemaName="security" sequenceName="role_id_seq" startValue="6" />
+		<modifyDataType schemaName="audit" tableName="dataset_version_aud" columnName="version" newDataType="integer"/>
+		<modifyDataType schemaName="metadata" tableName="data_center" columnName="version" newDataType="integer"/>
+		<modifyDataType schemaName="metadata" tableName="dataset_version" columnName="version" newDataType="integer"/>
+	</changeSet>
+
+</databaseChangeLog>

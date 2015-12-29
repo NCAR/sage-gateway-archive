@@ -1,0 +1,29 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100309-SGF-1309.xml">
+
+    <changeSet id="20100309-SGF-1309" author="luca" context="core">
+        <comment>Changes to NCL, PyNGL, PyNIO, ESMF groups configuration</comment>
+        <sql>
+            update security.group_data set uri='ncl-talk-join@ucar.edu' where id='f598b3d3-0192-4e37-aa11-78649cb346da';
+            update security.group_group_data_xref set required='false' where group_id='aafa7ec2-64f1-496f-b377-4b0ea68cdc82' and group_data_id='f598b3d3-0192-4e37-aa11-78649cb346da';
+            update security.group set visible='false' where id='bd37f993-4ca6-4fa0-8930-20e68ff5219d';
+
+            insert into security.group_data (id, name, description, group_data_type_id) VALUES ('a91eaae6-4af1-43e2-b820-d0c9dc7beff1', 'PyNGL Statement of Work', 'Please describe your intended use of PyNGL', 1);
+            insert into security.group_data (id, name, description, uri, group_data_type_id) VALUES ('b6e3de9f-9d13-49f6-9396-d83a3b5e6351', 'PyNGL Users Mailing List', 'Low-traffic list used for exchange of information among PyNGL users', 'pyngl-talk-join@ucar.edu', 2);
+            insert into security.group_group_data_xref (group_id, required, group_data_id) VALUES ('e030f908-c78e-4ca7-9ceb-4d9bc1bc0284', true, 'a91eaae6-4af1-43e2-b820-d0c9dc7beff1');
+            insert into security.group_group_data_xref (group_id, required, group_data_id) VALUES ('e030f908-c78e-4ca7-9ceb-4d9bc1bc0284', false, 'b6e3de9f-9d13-49f6-9396-d83a3b5e6351');
+
+            insert into security.principal (id, gateway_id) VALUES ('123cd146-c68e-41c2-85ff-78c975b5d3ed','40b6d014-5c2b-4118-8cee-f34d10ec1d53');
+            insert into security.group (id, name, description, visible, automatic_approval) VALUES ('123cd146-c68e-41c2-85ff-78c975b5d3ed', 'PyNIO', 'PyNIO users', true, true);
+            insert into security.group_default_role (group_id, role_id) VALUES ('123cd146-c68e-41c2-85ff-78c975b5d3ed', 1);
+            insert into security.group_data (id, name, description, group_data_type_id) VALUES ('1d6d4d2b-69e7-4a51-8853-9cd1fd1a1773', 'PyNIO Statement of Work', 'Please describe your intended use of PyNIO', 1);
+            insert into security.group_group_data_xref (group_id, required, group_data_id) VALUES ('123cd146-c68e-41c2-85ff-78c975b5d3ed', true, '1d6d4d2b-69e7-4a51-8853-9cd1fd1a1773');
+
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
+

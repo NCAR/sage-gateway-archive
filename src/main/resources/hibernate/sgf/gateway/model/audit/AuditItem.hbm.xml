@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.AuditItem" table="change_log" schema="audit">
+
+        <id name="identifier" column="id" access="field" type="java.lang.Long">
+            <generator class="sequence">
+                <param name="sequence">audit.change_log_id_seq</param>
+            </generator>
+        </id>
+
+        <property name="transactionId" column="transaction_id" access="field"
+                  type="sgf.gateway.utils.hibernate.UUIDUserType"/>
+
+        <property name="changedBy" column="app_user" type="string" access="field"/>
+
+        <property name="changedOn" column="date_updated" type="timestamp" insert="false" update="false" access="field"/>
+
+        <property name="datasetId" column="dataset_id" access="field" type="sgf.gateway.utils.hibernate.UUIDUserType"/>
+
+        <property name="entityId" column="entity_id" access="field" type="sgf.gateway.utils.hibernate.UUIDUserType"/>
+
+        <property name="entityName" column="entity_name" type="string" access="field"/>
+
+        <property name="propertyName" column="property_name" type="string" access="field"/>
+
+        <property name="oldValue" column="old_value" type="string" access="field"/>
+
+        <property name="newValue" column="new_value" type="string" access="field"/>
+
+    </class>
+
+</hibernate-mapping>

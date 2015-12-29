@@ -1,0 +1,18 @@
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20131018-GTWY-3550.xml">
+
+	<changeSet id="20131018-GTWY-3550" author="sgf">
+
+		<renameColumn schemaName="metadata" tableName="dataset_version" oldColumnName="source_catalog_uri" newColumnName="authoritative_source_uri"/>
+		
+		<addColumn schemaName="metadata" tableName="dataset_version">
+			<column name="authoritative_source_date_created" type="timestamp with time zone"/>
+			<column name="authoritative_source_date_modified" type="timestamp with time zone"/>
+		</addColumn>
+		
+	</changeSet>
+	
+</databaseChangeLog>

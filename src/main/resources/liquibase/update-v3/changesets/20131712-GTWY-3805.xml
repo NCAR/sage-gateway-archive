@@ -1,0 +1,97 @@
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20131712-GTWY-3805.xml">
+
+	<changeSet id="20131712-GTWY-3805.0" author="sgf">
+		<sql>
+		CREATE TABLE metadata.role
+		(
+		  role_code text NOT NULL,
+		  name text,
+		  description text,
+		  
+		  CONSTRAINT pkey_role PRIMARY KEY (role_code)
+		)
+		WITH (
+		  OIDS=FALSE
+		);
+		
+		ALTER TABLE metadata.role OWNER TO "${database.role.admin}";
+		REVOKE ALL ON TABLE metadata.role FROM public;
+		GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE metadata.role TO "${database.role.user}";
+		GRANT SELECT ON TABLE metadata.role TO "${database.role.read_only}";
+		</sql>
+		
+	</changeSet>
+	
+	<changeSet id="20131712-GTWY-3805.1" author="sgf">
+		<sql>
+		
+			insert into metadata.role values ('resourceProvider', 'Resource Provider', 'party that supplies the resource');
+			insert into metadata.role values ('custodian', 'Custodian', 'party that accepts accountability and responsibility for the data and ensures appropriate care and maintenance of the resource');
+			insert into metadata.role values ('owner', 'Owner', 'party that owns the resource');
+			insert into metadata.role values ('user', 'User', 'party who uses the resource');
+			insert into metadata.role values ('distributor', 'Distributor', 'party who distributes the resource');
+			insert into metadata.role values ('originator', 'Originator', 'party who created the resource');
+			insert into metadata.role values ('pointOfContact', 'Point of Contact', 'party who can be contacted for acquiring knowledge about or acquisition of the resource');
+			insert into metadata.role values ('principalInvestigator', 'Principal Investigator', 'key party responsible for gathering information and conducting research');
+			insert into metadata.role values ('processor', 'Processor', 'party who has processed the data in a manner such that the resource has been modified');
+			insert into metadata.role values ('publisher', 'Publisher', 'party who published the resource');
+			insert into metadata.role values ('author', 'Author', 'party who authored the resource');
+			insert into metadata.role values ('coPrincipalInvestigator', 'Co-Principal Investigator', 'key party involved with the PI to gather information and conduct research');
+			insert into metadata.role values ('collaboratingPrincipalInvestigator', 'Collaborating Principal Investigator', 'party involved with development or execution of a project');
+		
+		</sql>
+		
+	</changeSet>
+	
+	
+	<changeSet id="20131712-GTWY-3805.2" author="sgf">
+		<sql>
+		CREATE TABLE metadata.responsible_party
+		(
+		  id uuid NOT NULL,
+		  date_created timestamp with time zone DEFAULT default_timestamp(),
+		  date_updated timestamp with time zone DEFAULT default_timestamp(),
+		  version integer DEFAULT 1,
+		  descriptive_metadata_id uuid NOT NULL,
+		  individual_name text,
+		  organization_name text,
+		  position_name text,
+		  role text,
+		  email text,
+		  idx_order integer NOT NULL,
+		
+		CONSTRAINT pkey_responsible_party PRIMARY KEY (id),
+		CONSTRAINT fkey_responsible_party_descriptive_metadata_id FOREIGN KEY (descriptive_metadata_id)
+			REFERENCES metadata.descriptive_metadata (id) MATCH SIMPLE
+			ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
+		CONSTRAINT fkey_responsible_party_role FOREIGN KEY (role)
+			REFERENCES metadata."role" (role_code) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION DEFERRABLE INITIALLY DEFERRED
+		)
+		WITH (
+		  OIDS=FALSE
+		);
+		
+		ALTER TABLE metadata.responsible_party OWNER TO "${database.role.admin}";
+		REVOKE ALL ON TABLE metadata.responsible_party FROM public;
+		GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE metadata.responsible_party TO "${database.role.user}";
+		GRANT SELECT ON TABLE metadata.responsible_party TO "${database.role.read_only}";
+		</sql>
+
+	</changeSet>
+	
+	<changeSet id="20131712-GTWY-3805.3" author="sgf">
+		<sql>
+		CREATE TRIGGER responsible_party_update_timestamps
+		  BEFORE UPDATE
+		  ON metadata.responsible_party
+		  FOR EACH ROW
+		  EXECUTE PROCEDURE metadata.persistent_object_update_timestamps();
+		</sql>
+	</changeSet>
+</databaseChangeLog>
+

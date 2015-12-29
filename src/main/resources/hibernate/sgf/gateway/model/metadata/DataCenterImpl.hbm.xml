@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.metadata.DataCenterImpl" table="data_center" schema="metadata">
+
+        <id name="identifier" column="id" type="sgf.gateway.utils.hibernate.UUIDUserType" access="field"/>
+
+        <version name="version" column="version" unsaved-value="null" access="field"/>
+
+        <property name="shortName" column="short_name" type="string" access="field"/>
+        <property name="longName" column="long_name" type="string" access="field"/>
+        <property name="url" column="url" type="string" access="field"/>
+        <property name="firstName" column="first_name" type="string" access="field"/>
+        <property name="lastName" column="last_name" type="string" access="field"/>
+        <property name="address1" column="address1" type="string" access="field"/>
+        <property name="address2" column="address2" type="string" access="field"/>
+        <property name="address3" column="address3" type="string" access="field"/>
+        <property name="city" column="city" type="string" access="field"/>
+        <property name="state" column="state" type="string" access="field"/>
+        <property name="postalCode" column="postal_code" type="string" access="field"/>
+        <property name="country" column="country" type="string" access="field"/>
+
+    </class>
+
+</hibernate-mapping>

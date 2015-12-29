@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <import resource="classpath:sgf/gateway/j2ee-application-base.xml"/>
+    <import resource="classpath:sgf/gateway/infrastructure-context.xml"/>
+
+    <bean id="propertyConfigurer" class="sgf.spring.extensions.LoggingPropertyPlaceholderConfigurer">
+        <constructor-arg index="0">
+            <set>
+                <value>database.password</value>
+                <value>database.admin.password</value>
+            </set>
+        </constructor-arg>
+
+        <!--  Don't really like this but a temporary workaround until we can better resolve how to handle the messages files. -->
+        <property name="ignoreUnresolvablePlaceholders" value="false"/>
+
+        <!-- Default Gateway configuration properties -->
+        <property name="locations">
+            <list>
+                <value>classpath:gateway.properties</value>
+                <value>classpath:conf/${spring.profiles.active}/conf/gateway.properties</value>
+                <value>file:${gateway.home}/conf/instance.properties</value>
+            </list>
+        </property>
+
+    </bean>
+
+</beans>

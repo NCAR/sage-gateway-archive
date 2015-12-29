@@ -1,0 +1,26 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+				   logicalFilePath="/Liquibase/update-v3/changesets/20150324-GTWY-4250">
+
+	<changeSet id="20150324-GTWY-4250" author="sgf">
+
+		<sql>
+
+			DELETE FROM metadata.file_access_point WHERE lower(endpoint) LIKE ('file:');
+
+		</sql>
+
+	</changeSet>
+
+	<changeSet id="20150324-GTWY-4250.1" author="sgf">
+
+		<sql>
+
+			DELETE FROM metadata.topic WHERE taxonomy_id = '2';
+
+		</sql>
+
+	</changeSet>
+
+</databaseChangeLog>

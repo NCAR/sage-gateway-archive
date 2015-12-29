@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="tdsMetricsErrorLogService" class="sgf.gateway.integration.service.ErrorLogService">
+        <constructor-arg name="logName" value="tdsMetricsErrorLog"/>
+    </bean>
+
+    <bean id="tdsMetricsErrorHandler" class="sgf.gateway.integration.message.JMSChannelMessagingErrorHandler">
+        <constructor-arg name="exceptionService">
+            <bean class="sgf.gateway.integration.service.impl.ChainIntegrationExceptionServiceImpl">
+
+                <constructor-arg name="supportedClass" value="java.io.File"/>
+                <constructor-arg name="service" ref="emailIntegrationExceptionService"/>
+
+                <constructor-arg name="nextService">
+                    <bean class="sgf.gateway.integration.service.impl.ChainIntegrationExceptionServiceImpl">
+
+                        <constructor-arg name="supportedClass"
+                                         value="sgf.gateway.integration.metrics.FileDownloadPayload"/>
+                        <constructor-arg name="service">
+                            <bean class="sgf.gateway.integration.service.impl.AggregateIntegrationExceptionServiceImpl">
+                                <constructor-arg name="exceptionServices">
+                                    <list>
+                                        <bean class="sgf.gateway.integration.metrics.service.impl.LogEntryIntegrationExceptionServiceImpl">
+                                            <constructor-arg name="errorLogService" ref="tdsMetricsErrorLogService"/>
+                                        </bean>
+                                        <ref bean="emailIntegrationExceptionService"/>
+                                    </list>
+                                </constructor-arg>
+                            </bean>
+                        </constructor-arg>
+
+                        <constructor-arg name="nextService">
+                            <bean class="sgf.gateway.integration.service.impl.AggregateIntegrationExceptionServiceImpl">
+                                <constructor-arg name="exceptionServices">
+                                    <list>
+                                        <bean class="sgf.gateway.integration.service.impl.PayloadIntegrationExceptionServiceImpl">
+                                            <constructor-arg name="errorLogService" ref="tdsMetricsErrorLogService"/>
+                                        </bean>
+                                        <ref bean="emailIntegrationExceptionService"/>
+                                    </list>
+                                </constructor-arg>
+                            </bean>
+                        </constructor-arg>
+
+                    </bean>
+                </constructor-arg>
+
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <bean id="tdsMetricsFilter" class="sgf.gateway.integration.metrics.tds.filter.LogEntryFilter"/>
+
+    <bean id="tdsMetricsStatusFilter" class="sgf.gateway.integration.metrics.filter.FileDownloadStatusFilter"/>
+
+    <bean id="tdsMetricsFileFilter" class="sgf.gateway.integration.metrics.filter.FileDownloadFilter">
+        <constructor-arg name="extensions">
+            <set>
+                <value>nc</value>
+                <value>nc4</value>
+            </set>
+        </constructor-arg>
+    </bean>
+
+    <bean id="tdsMetricsTokenizer" class="sgf.gateway.integration.metrics.tds.transformer.impl.LogEntryTokenizerImpl">
+        <constructor-arg name="keys">
+            <list>
+                <value>date</value>
+                <value>time</value>
+                <value>duration</value>
+                <value>status</value>
+                <value>scheme</value>
+                <value>host</value>
+                <value>stem</value>
+                <value>length</value>
+                <value>bytes</value>
+                <value>ip</value>
+                <value>openid</value>
+                <value>agent</value>
+                <value>referrer</value>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="tdsMetricsFieldSpecifiedStrategy"
+          class="sgf.gateway.integration.metrics.tds.transformer.impl.FieldSpecifiedStrategyImpl"/>
+
+    <bean id="tdsMetricsStartDateStrategy"
+          class="sgf.gateway.integration.metrics.tds.transformer.impl.StartDateStrategyImpl"/>
+
+    <bean id="tdsMetricsCompletedFieldTransformer"
+          class="sgf.gateway.integration.metrics.tds.transformer.impl.CompletedFieldTransformer">
+        <constructor-arg name="contentLengthKey" value="length"/>
+        <constructor-arg name="bytesSentKey" value="bytes"/>
+    </bean>
+
+    <bean id="tdsMetricsStartDateFieldTransformer"
+          class="sgf.gateway.integration.metrics.tds.transformer.impl.StartDateFieldTransformer">
+        <constructor-arg name="startDateKey" value="date"/>
+        <constructor-arg name="startTimeKey" value="time"/>
+        <constructor-arg name="startDateStrategy" ref="tdsMetricsStartDateStrategy"/>
+    </bean>
+
+    <bean id="tdsMetricsEndDateFieldTransformer"
+          class="sgf.gateway.integration.metrics.tds.transformer.impl.EndDateFieldTransformer">
+        <constructor-arg name="durationKey" value="duration"/>
+        <constructor-arg name="startDateKey" value="date"/>
+        <constructor-arg name="startTimeKey" value="time"/>
+        <constructor-arg name="startDateStrategy" ref="tdsMetricsStartDateStrategy"/>
+    </bean>
+
+    <bean id="tdsMetricsOpenIdFieldTransformer"
+          class="sgf.gateway.integration.metrics.tds.transformer.impl.OpenIdFieldTransformer">
+        <constructor-arg name="openIdKey" value="openid"/>
+    </bean>
+
+    <bean id="tdsMetricsUserAgentFieldTransformer"
+          class="sgf.gateway.integration.metrics.tds.transformer.impl.UserAgentFieldTransformer">
+        <constructor-arg name="userAgentKey" value="agent"/>
+    </bean>
+
+    <bean id="tdsMetricsFileURIFieldTransformer"
+          class="sgf.gateway.integration.metrics.tds.transformer.impl.FileURIFieldTransformer">
+        <constructor-arg name="schemeKey" value="scheme"/>
+        <constructor-arg name="hostKey" value="host"/>
+        <constructor-arg name="stemKey" value="stem"/>
+    </bean>
+
+    <bean id="tdsMetricsRemoteAddressFieldTransformer"
+          class="sgf.gateway.integration.metrics.tds.transformer.impl.RemoteAddressFieldTransformer">
+        <constructor-arg name="remoteAddressKey" value="ip"/>
+    </bean>
+
+    <bean id="tdsMetricsBytesSentFieldTransformer"
+          class="sgf.gateway.integration.metrics.tds.transformer.impl.BytesSentFieldTransformer">
+        <constructor-arg name="bytesSentKey" value="bytes"/>
+    </bean>
+
+    <bean id="tdsMetricsStatusCodeFieldTransformer"
+          class="sgf.gateway.integration.metrics.tds.transformer.impl.StatusCodeFieldTransformer">
+        <constructor-arg name="statusCodeKey" value="status"/>
+    </bean>
+
+    <bean id="tdsMetricsTransformer"
+          class="sgf.gateway.integration.metrics.tds.transformer.impl.LogEntryTransformerImpl">
+        <constructor-arg name="tokenizer" ref="tdsMetricsTokenizer"/>
+        <constructor-arg name="fieldSpecifiedStrategy" ref="tdsMetricsFieldSpecifiedStrategy"/>
+        <constructor-arg name="fieldTransformers">
+            <list>
+                <ref bean="tdsMetricsCompletedFieldTransformer"/>
+                <ref bean="tdsMetricsStartDateFieldTransformer"/>
+                <ref bean="tdsMetricsEndDateFieldTransformer"/>
+                <ref bean="tdsMetricsOpenIdFieldTransformer"/>
+                <ref bean="tdsMetricsUserAgentFieldTransformer"/>
+                <ref bean="tdsMetricsFileURIFieldTransformer"/>
+                <ref bean="tdsMetricsRemoteAddressFieldTransformer"/>
+                <ref bean="tdsMetricsBytesSentFieldTransformer"/>
+                <ref bean="tdsMetricsStatusCodeFieldTransformer"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+</beans>

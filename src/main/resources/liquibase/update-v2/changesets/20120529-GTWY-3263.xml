@@ -1,0 +1,36 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   logicalFilePath="/Liquibase/update-v2/changesets/20120529-GTWY-3263.xml">
+
+    <changeSet id="20120529-GTWY-3263" author="sgf" context="cadis">
+
+        <sql>
+            UPDATE
+
+            metadata.activity AS activity
+
+            SET
+
+            description = resource.description
+
+            FROM
+
+            metadata.resource AS resource
+
+            JOIN
+
+            metadata.project AS project ON resource.id = project.dataset_id
+
+            WHERE
+
+            project.id = activity.id
+
+            AND
+
+            project.dataset_id IS NOT NULL;
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

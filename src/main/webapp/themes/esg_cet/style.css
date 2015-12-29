@@ -1,0 +1,129 @@
+
+.admin_actions h4 {
+	padding: 15px 0 8px 0;
+}
+
+.admin_actions li {
+	list-style: none;
+}
+
+.admin_actions li.desc {	
+	padding: 5px 0px 8px 10px;
+}
+
+/* page header background image */
+.pageHeaderImage {
+    width:100%;
+    height:125px;
+    background-image:url("/themes/esg_cet/images/earth.png");
+    background-size:cover;
+}
+
+/* page header without background image */
+.pageHeaderNoImage {
+    height:90px;
+    background-color: #25445E;
+}
+
+/* ESG text on top of the page header image */
+.pageHeaderEsgText {
+    margin: 20px 10px 10px 55px;    /* top right bottom left */
+    float: left;
+    font-family: Merriweather Sans, Arial, Helvetica, sans-serif;
+    font-size: 30px;
+    color: white;
+    /*
+     * create a text border so it shows up on the background
+     * horizontal-offset vertical-offset blur color
+     */
+    text-shadow: -1px 0 6px black,
+        0 1px 6px black,
+        1px 0 6px black,
+        0 -1px black,
+        0px 4px 3px rgba(0,0,0,0.4),
+        0px 8px 13px rgba(0,0,0,0.1),
+        0px 18px 23px rgba(0,0,0,0.1);
+}
+
+/* ESG text when the page header image isn't displayed */
+.pageHeaderEsgTextNoImage {
+    margin: 5px 10px 10px 55px;    /* top right bottom left */
+    float: left;
+    font-family: Merriweather Sans, Arial, Helvetica, sans-serif;
+    font-size: 30px;
+    color: white;
+    /*
+     * create a text border so it shows up on the background
+     * horizontal-offset vertical-offset blur color
+     */
+    text-shadow: -1px 0 6px black,
+    0 1px 6px black,
+    1px 0 6px black,
+    0 -1px black,
+    0px 4px 3px rgba(0,0,0,0.4),
+    0px 8px 13px rgba(0,0,0,0.1),
+    0px 18px 23px rgba(0,0,0,0.1);
+}
+
+/* page header right side block */
+.pageHeaderRight {
+    float: right;
+}
+
+/* page header search */
+.pageHeaderSearch {
+    margin: 80px 5px 8px 5px;
+    /* setting clear moves the div below elements floated to the right */
+    clear: right;
+    font-size: 16px;
+}
+.pageHeaderSearch input {
+    margin: 0 5px;
+}
+.pageHeaderSearch input[type=submit] {
+    display: block;
+    background-color: transparent;
+    background-size: auto;
+    line-height: 2;
+    min-height: 24.18px;
+    border: none;
+    border-width: 1px;
+    border-style: solid;
+    border-color: gray;
+    border-spacing: 2px;
+    box-sizing: border-box;
+    cursor: pointer;
+    color: #000;
+    font: 93% arial,helvetica,clean,sans-serif;
+    margin: 0;
+    padding: 0 10px !important;
+    text-shadow: none;
+    text-rendering: auto;
+}
+
+/*
+
+Tags for the footer.
+
+*/
+/* customized formatting for the page footer */
+#pageFooter {
+    background-color: rgb(248, 248, 248);
+}
+
+#pageFooter #text_menu_div {
+    padding-top: 10px;
+}
+
+#pageFooter #text_menu_div a:visited {
+    color: blue;
+}
+
+#pageFooter #user_div {
+    padding-top: 15px;
+}
+
+#pageFooter #software_version_div {
+    padding-top: 15px;
+    font-size: 90%;
+}

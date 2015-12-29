@@ -1,0 +1,22 @@
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+				   logicalFilePath="/Liquibase/update-v3/changesets/20150129-GTWY-4197">
+
+	<changeSet id="20150129-GTWY-4197" author="sgf">
+
+		<dropAllForeignKeyConstraints baseTableSchemaName="workspace" baseTableName="search_criteria" />
+		<dropAllForeignKeyConstraints baseTableSchemaName="workspace" baseTableName="search_facet" />
+		<dropAllForeignKeyConstraints baseTableSchemaName="workspace" baseTableName="search_result" />
+		<dropAllForeignKeyConstraints baseTableSchemaName="workspace" baseTableName="workspace" />
+
+		<dropTable schemaName="workspace" tableName="charge_code" />
+		<dropTable schemaName="workspace" tableName="search_criteria" />
+		<dropTable schemaName="workspace" tableName="search_facet" />
+		<dropTable schemaName="workspace" tableName="search_result" />
+		<dropTable schemaName="workspace" tableName="workspace" />
+
+	</changeSet>
+
+</databaseChangeLog>

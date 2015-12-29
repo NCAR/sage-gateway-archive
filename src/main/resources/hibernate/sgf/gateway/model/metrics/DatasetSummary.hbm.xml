@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <query name="datasetFileDownloadCount" cacheable="true">
+        <![CDATA[
+            select count(*) from FileDownload
+        ]]>
+    </query>
+
+    <sql-query name="datasetFileDownloadCountAndSize" cacheable="true">
+        <return-scalar column="byte_sum" type="long"/>
+        <return-scalar column="count" type="long"/>
+        <![CDATA[
+            SELECT CASE WHEN sum(lf.size) IS NULL THEN 0 ELSE sum(lf.size) END as byte_sum, count(lf.id) as count
+            FROM connectby('metadata.dataset', 'id', 'parent_dataset', CAST((SELECT id FROM metadata.dataset WHERE id = CAST( :datasetId AS uuid) AND project = CAST( :projectId AS uuid )) AS text), 0, '~') AS t(id uuid, parent_dataset uuid, level int, branch text)
+            JOIN metadata.logical_file as lf on t.id = lf.dataset
+            JOIN metadata.file_access_point as fap on lf.id = fap.logical_file
+            JOIN metrics.file_download as fd on fap.id = fd.file_access_point_id
+        ]]>
+    </sql-query>
+</hibernate-mapping>

@@ -1,0 +1,14 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20140522-GTWY-3932.xml">
+
+	<changeSet id="20140522-GTWY-3932" author="sgf">
+
+		<sql>
+			UPDATE security.group set name='ACADIS', description='ACADIS PIs' WHERE id = '7855eed5-0f2d-41e4-b438-3f39a199402f';
+		</sql>
+
+	</changeSet>
+
+</databaseChangeLog>

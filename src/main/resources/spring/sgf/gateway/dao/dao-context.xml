@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="requiredSchemaDetectionStrategy" class="sgf.gateway.dao.database.install.RequiredSchemaDetectionStrategy">
+        <constructor-arg index="0" ref="liquibaseDataSource"/>
+        <constructor-arg index="1" value="metadata"/>
+    </bean>
+
+    <bean id="databaseInstaller" class="sgf.gateway.dao.database.install.LiquibaseBootStrapperImpl"
+          init-method="initializeDatabase">
+        <property name="dataSource" ref="liquibaseDataSource"/>
+        <property name="newDatabaseDetectionStrategy" ref="requiredSchemaDetectionStrategy"/>
+        <property name="installChangeLog" value="classpath:liquibase/install/changelog.xml"/>
+        <property name="contexts" value="${liquibase.contexts}"/>
+        <property name="roleAdmin" value="${database.role.admin}"/>
+        <property name="roleUser" value="${database.role.user}"/>
+        <property name="roleReadOnly" value="${database.role.read_only}"/>
+    </bean>
+
+
+    <!-- Hibernate session factory -->
+    <bean id="hibernateSessionFactory" class="sgf.gateway.dao.impl.hibernate.TypeLocalSessionFactoryBean"
+          depends-on="databaseInstaller">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">sgf.gateway.utils.hibernate.ExtendedPostgreSQLDialect</prop>
+                <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
+                <prop key="net.sf.ehcache.configurationResourceName">ehcache-hibernate.xml</prop>
+                <prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache:true}</prop>
+                <prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache:true}</prop>
+                <prop key="hibernate.connection.release_mode">after_transaction</prop>
+                <prop key="hibernate.jdbc.batch_size">20</prop>
+                <prop key="org.hibernate.envers.audit_table_suffix">_aud</prop>
+                <prop key="org.hibernate.envers.default_schema">audit</prop>
+                <prop key="org.hibernate.envers.global_with_modified_flag">true</prop>
+                <prop key="org.hibernate.envers.audit_strategy">
+                    ${org.hibernate.envers.audit_strategy:org.hibernate.envers.strategy.ValidityAuditStrategy}
+                </prop>
+                <!-- PLEASE USE EXTREME CAUTION WHEN CHANGING THE VALUE OF hibernate.htm2ddl.auto -->
+                <!-- Improper use of this field can delete your entire database. -->
+                <!-- For more information: http://stackoverflow.com/questions/4507142/does-hibernate-create-tables-in-the-database-automatically -->
+                <prop key="hibernate.hbm2ddl.auto">validate</prop>
+            </props>
+        </property>
+        <property name="cacheableMappingLocations">
+            <list>
+                <value>classpath*:sgf/gateway/**/**.hbm.xml</value>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="MACBasedUUIDGenerator" class="sgf.gateway.dao.impl.MACBasedUUIDGenerator">
+        <!-- FIXME This should become a property value -->
+        <constructor-arg index="0" value="00:C0:F0:3D:5B:7C"/>
+    </bean>
+
+    <bean id="randomUUIDGenerator" class="sgf.gateway.dao.impl.RandomUUIDGenerator"/>
+
+
+    <bean id="nullVersionIdentifierStrategy" class="sgf.gateway.dao.impl.hibernate.NullVersionIdentifierStrategy">
+        <constructor-arg index="0" ref="MACBasedUUIDGenerator"/>
+    </bean>
+
+    <import resource="classpath:sgf/gateway/dao/metadata/impl/hibernate/metadata-dao-context.xml"/>
+    <import resource="classpath:sgf/gateway/dao/metrics/impl/hibernate/metrics-dao-context.xml"/>
+    <import resource="classpath:sgf/gateway/dao/security/impl/hibernate/security-dao-context.xml"/>
+    <import resource="classpath:sgf/gateway/dao/workspace/impl/hibernate/workspace-dao-context.xml"/>
+
+</beans>

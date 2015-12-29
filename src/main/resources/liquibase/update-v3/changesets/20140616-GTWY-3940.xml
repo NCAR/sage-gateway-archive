@@ -1,0 +1,36 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20140616-GTWY-3940.xml">
+
+	<changeSet id="20140616-GTWY-3940.0" author="sgf">
+
+		<addColumn schemaName="metadata" tableName="dataset">
+			<column name="container_type" type="text"/>
+		</addColumn>
+		
+	</changeSet>
+	
+	<changeSet id="20140616-GTWY-3940.1" author="sgf">
+
+		<sql>
+			UPDATE metadata.dataset
+			SET container_type = 'DATASET'
+		</sql>
+
+		<sql>
+			UPDATE metadata.dataset AS d
+			SET container_type = 'PROJECT'
+			FROM metadata.project AS p
+			WHERE d.id = p.dataset_id
+		</sql>
+		
+	</changeSet>
+	
+	<changeSet id="20140616-GTWY-3940.2" author="sgf">
+
+		<addNotNullConstraint schemaName="metadata" tableName="dataset" columnName="container_type"/>
+            
+	</changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,1 @@
+Here is your ${gateway.name} OpenID for login

@@ -1,0 +1,35 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20130716-GTWY-3712.xml">
+
+	<changeSet id="20130716-GTWY-3712.0" author="sgf">
+		<sql>
+			ALTER TABLE metadata.descriptive_metadata ADD COLUMN model_name text;
+		</sql>
+		<sql>
+			UPDATE metadata.descriptive_metadata 
+				SET model_name = subquery.model_name
+				FROM
+				(
+					SELECT 
+					  model_component.id, 
+					  model_component.name as model_name, 
+					  dataset.model_component_id, 
+					  dataset.id as dataset_id
+					FROM 
+					  metadata.model_component, 
+					  metadata.dataset
+					WHERE 
+					  dataset.model_component_id = model_component.id
+				) AS subquery 
+				
+				WHERE descriptive_metadata.id = subquery.dataset_id;
+
+		</sql>
+		<dropForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="dataset" constraintName="fkey_dataset_model_component_id" />
+		<dropForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="model" constraintName="fkey_model_model_component" />
+		<dropTable schemaName="metadata" tableName="model_component" />
+	</changeSet>
+	
+</databaseChangeLog>

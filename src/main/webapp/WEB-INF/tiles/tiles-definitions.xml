@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+
+    <definition name="general-layout" template="/WEB-INF/tiles/layouts/layout-template.jsp" >
+
+        <put-attribute name="search" value="" />
+
+        <!-- <head> -->
+        <put-attribute name="head" value="/WEB-INF/views/html/common/includeCss.jsp" />
+        <put-attribute name="links" value="" />
+        <put-attribute name="scripts" value="/WEB-INF/views/html/common/includeJs.jsp" />
+        <put-attribute name="style" value="" />
+        <put-attribute name="googleanalytics" value="/includes/googleanalytics.html" />
+        <!-- </head> -->
+
+        <!-- <body> -->
+        <!-- common broadcast message message -->
+        <put-attribute name="broadcast-message" value="/common/broadcast-message.html" />
+
+        <!-- common banner -->
+        <put-attribute name="header" value="/includes/header.htm" />
+
+        <!-- customizable regions -->
+        <put-attribute name="body-header" value="" />
+        <put-attribute name="body" value="" />
+
+        <!-- common footer -->
+        <put-attribute name="footer" value="/includes/footer.html" />
+
+    </definition>
+
+    <definition name="exception-layout" extends="general-layout">
+        <put-attribute name="broadcast-message" value=""/>
+    </definition>
+
+</tiles-definitions>

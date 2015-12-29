@@ -1,0 +1,210 @@
+
+blockquote,ul,ol,dl {
+	/*giving blockquotes and lists room to breath*/
+	margin:1em;
+}
+
+ol li {
+	/*giving OL's LIs generated numbers*/
+	list-style: decimal outside;	
+}
+ul li {
+	/*giving UL's LIs generated disc markers*/
+	list-style: disc outside;
+}
+
+.available_facets .facet li {
+	list-style: none;
+}
+
+.available_facets .facet li a:visited {
+	color: #0066CC;
+}
+
+.available_facets .facet .facetLink {
+	color: #0066CC;
+	text-decoration: none;
+}
+
+.available_facets .facet .facetLink:hover {
+	text-decoration: underline;
+}
+
+.selected_facets .facet li {
+	list-style: none;
+}
+
+.selected_facets .facet li a:visited {
+	color: #0066CC;
+}
+
+.dataset_count {
+	color: grey;
+	font-size: 75%;
+	padding-left: 10px;
+}
+
+.admin_actions h4 {
+	padding-top: 8px;
+}
+
+.admin_actions li {
+	list-style: none;
+}
+
+.admin_actions li.desc {	
+	padding: 5px 0px 8px 10px;
+}
+
+ul.tool_list {
+	padding: 0px;
+	margin: 0px; 
+}
+
+ul.tool_list li {
+	list-style: none;
+/* 	padding-left: 10px; */
+	padding-top: 0px;
+	padding-bottom: 5px;
+/* 	margin-left: 10px; */
+
+}
+
+.tool_list_text {
+	padding-left: 25px;
+	padding-bottom: 10px;
+}
+
+.home_header {
+	background-color: #1A4C79; 
+	color: #ffffff;
+	padding: 5px 10px;
+	border-radius: 12px 12px 12px 12px;  //rounds corners
+}
+
+.return_link {
+	padding: 5px 0 8px 0;
+}
+
+/* page header background image */
+.pageHeaderImage {
+    width:100%;
+    height:125px;
+    background-image:url("/themes/cadis/images/caribou_pass_by_on_frozen_tundra.png");
+    background-size:cover;
+}
+
+/* page header without background image */
+.pageHeaderNoImage {
+    height:90px;
+    background-color: #BEC7CC;
+}
+
+/* ACADIS text on top of the page header image */
+.pageHeaderAcadisText {
+    margin: 25px 10px 0 10px;
+    float: left;
+    width: 330px;
+}
+
+/* ACADIS text when the page header image isn't displayed */
+.pageHeaderAcadisTextNoImage {
+    margin: 10px 10px 0 10px;
+    float: left;
+    width: 330px;
+}
+
+/* ACADIS logo on top of the page header image */
+.pageHeaderAcadisLogo {
+    margin: 26px 0px 5px 25px;
+    float: left;
+    width: 160px;
+}
+
+/* page header right side block */
+.pageHeaderRight {
+    float: right;
+}
+
+/* page header search */
+.pageHeaderSearch {
+    margin: 80px 5px 8px 5px;
+    font-size: 16px;
+}
+.pageHeaderSearch input {
+    margin: 0 5px;
+}
+.pageHeaderSearch input[type=submit] {
+    display: block;
+    background-color: transparent;
+    background-size: auto;
+    line-height: 2;
+    min-height: 24.18px;
+    border: none;
+    border-width: 1px;
+    border-style: solid;
+    border-color: gray;
+    border-spacing: 2px;
+    box-sizing: border-box;
+    cursor: pointer;
+    color: #000;
+    font: 93% arial,helvetica,clean,sans-serif;
+    margin: 0;
+    padding: 0 10px !important;
+    text-shadow: none;
+    text-rendering: auto;
+}
+
+/* customized formatting for the page footer */
+#pageFooter {
+    background-color: rgb(248, 248, 248);
+}
+
+/* generic formatting for a column in the footer */
+.pageFooterColumn {
+    float: left;
+    margin: 18px 0 0 0;
+}
+
+/* formatting that applies only to the first column */
+.pageFooterColumn:first-child {
+    padding-left: 10px;
+}
+
+/* formatting that applies only to the second column */
+.pageFooterColumn:nth-child(2) {
+    width: 400px;
+    padding-left: 15px;
+}
+
+/* formatting that applies only to the third column */
+.pageFooterColumn:nth-child(3) {
+    /*
+     * Override the column's default left float so the column aligns with the
+     * right side of the screen.
+     */
+    float: right;
+    width: 375px;
+    padding-left: 15px;
+}
+
+/* page footer text */
+.pageFooterText {
+    padding-top: 5px;
+}
+
+/* page footer image */
+.pageFooterImage {
+    padding-top: 5px;
+    padding-right: 10px;
+}
+
+/* borders for navigation tabs */
+.nav-tabs li a {
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    border-radius: 5px 5px 5px 5px;
+    padding: 10px;
+}

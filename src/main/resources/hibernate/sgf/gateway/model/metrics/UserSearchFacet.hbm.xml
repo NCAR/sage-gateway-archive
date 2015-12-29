@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.metrics.UserSearchFacet" table="user_search_facet" schema="metrics">
+
+        <composite-id>
+            <key-many-to-one name="userSearch" class="sgf.gateway.model.metrics.UserSearch" column="user_search_id"/>
+            <key-property name="name" type="java.lang.String" column="name"/>
+            <key-property name="value" type="java.lang.String" column="value"/>
+        </composite-id>
+
+        <many-to-one name="userSearch" class="sgf.gateway.model.metrics.UserSearch" column="user_search_id"
+                     not-null="true" insert="false" update="false"/>
+        <property name="name" column="name" type="java.lang.String" length="255" not-null="true" insert="false"
+                  update="false"/>
+        <property name="value" column="value" type="java.lang.String" length="255" not-null="true" insert="false"
+                  update="false"/>
+
+    </class>
+</hibernate-mapping>

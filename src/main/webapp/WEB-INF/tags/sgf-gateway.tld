@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/ web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+
+
+    <tlib-version>1.0</tlib-version>
+    <short-name>ESKE Tag Library</short-name>
+    <uri>sgf.gateway.ucar.edu/sgf.gateway/tdd</uri>
+    <description></description>
+
+    <tag>
+        <name>FileSizeFormat</name>
+        <tag-class>sgf.gateway.web.tags.FormatFileSizeTag</tag-class>
+        <body-content>JSP</body-content>
+        <description>Format file size in byte into a readable format</description>
+
+        <attribute>
+            <name>fileSize</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <name>FileSizeUnitFormat</name>
+        <tag-class>sgf.gateway.web.tags.FormatFileSizeUnitTag</tag-class>
+        <body-content>JSP</body-content>
+        <description>Format file size in byte into a readable format</description>
+
+        <attribute>
+            <name>fileSize</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>precision</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <name>FileUnitFormat</name>
+        <tag-class>sgf.gateway.web.tags.FormatFileUnitTag</tag-class>
+        <body-content>JSP</body-content>
+        <description>Format file size in byte into a readable format</description>
+
+        <attribute>
+            <name>fileSize</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <name>Abbreviate</name>
+        <tag-class>sgf.gateway.web.tags.Abbreviate</tag-class>
+        <body-content>JSP</body-content>
+        <description></description>
+
+        <attribute>
+            <name>maxWidth</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>value</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <name>LoginErrorMessage</name>
+        <tag-class>sgf.gateway.web.tags.LoginErrorMessage</tag-class>
+        <body-content>empty</body-content>
+        <description>Outputs the Spring Security Authentication Error Message if present in the HttpSession</description>
+    </tag>
+
+    <tag>
+        <name>datasetParentHierarchy</name>
+        <tag-class>
+            sgf.gateway.web.tags.html.DatasetParentHierarchyTag
+        </tag-class>
+        <body-content>EMPTY</body-content>
+        <attribute>
+            <name>parentList</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <name>authForWrite</name>
+        <tag-class>sgf.gateway.web.tags.AuthorizationUtilsAuthorizeWriteTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>dataset</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <function>
+        <name>urlEncode</name>
+        <function-class>sgf.gateway.web.functions.UrlEncodingFunctions</function-class>
+        <function-signature>boolean urlEncode(java.lang.String)</function-signature>
+    </function>
+
+    <function>
+        <description>Will format a String's \r\n, \r, and \n special characters into an html &lt;br&gt;\r\n.</description>
+        <name>formatReturnToBreak</name>
+        <function-class>sgf.gateway.web.functions.ReturnToBreakFunction</function-class>
+        <function-signature>java.lang.String format(java.lang.String)</function-signature>
+        <example>
+            ${gateway:formatReturnToBreak(string)}
+        </example>
+    </function>
+
+    <function>
+        <description>Will format a String's . - % _ # into an html &lt;wbr&gt;</description>
+        <name>formatWordWrap</name>
+        <function-class>sgf.gateway.web.functions.WordWrapFunction</function-class>
+        <function-signature>java.lang.String format(java.lang.String)</function-signature>
+        <example>
+            ${gateway:formatWordWrap(string)}
+        </example>
+    </function>
+
+    <function>
+        <description>Will filter a collection of Datasets to just the collection of Datasets in the published state.</description>
+        <name>filterPublished</name>
+        <function-class>sgf.gateway.model.metadata.DatasetFilterImpl</function-class>
+        <function-signature>java.util.Collection published(java.util.Collection)</function-signature>
+        <example>
+            ${gateway:filterPublished(dataset.nestedDatasets)}
+        </example>
+    </function>
+
+    <function>
+        <description>Will filter a collection of Datasets to just the collection of Datasets in the pre-published state.</description>
+        <name>filterPrePublished</name>
+        <function-class>sgf.gateway.model.metadata.DatasetFilterImpl</function-class>
+        <function-signature>java.util.Collection prePublished(java.util.Collection)</function-signature>
+        <example>
+            ${gateway:filterPrePublished(dataset.nestedDatasets)}
+        </example>
+    </function>
+
+    <function>
+        <description>Will filter a collection of Datasets to just the collection of Datasets in the retraced state.</description>
+        <name>filterRetracted</name>
+        <function-class>sgf.gateway.model.metadata.DatasetFilterImpl</function-class>
+        <function-signature>java.util.Collection retracted(java.util.Collection)</function-signature>
+        <example>
+            ${gateway:filterRetracted(dataset.nestedDatasets)}
+        </example>
+    </function>
+
+    <function>
+        <description>Filter a collection of contacts within a dataset to just the collection of PI contacts.</description>
+        <name>filterPIContacts</name>
+        <function-class>sgf.gateway.utils.modelfilters.ResponsiblePartyFilter</function-class>
+        <function-signature>java.util.Collection getPIContacts(sgf.gateway.model.metadata.Dataset)</function-signature>
+        <example>
+            ${gateway:filterPIContacts(sgf.gateway.model.metadata.Dataset)}
+        </example>
+    </function>
+
+    <function>
+        <description>Filter a collection of contacts within a dataset to just the collection of metadata contacts.</description>
+        <name>filterMetadataContacts</name>
+        <function-class>sgf.gateway.utils.modelfilters.ResponsiblePartyFilter</function-class>
+        <function-signature>java.util.Collection getMetadataContacts(sgf.gateway.model.metadata.Dataset)</function-signature>
+        <example>
+            ${gateway:filterMetadataContacts(sgf.gateway.model.metadata.Dataset)}
+        </example>
+    </function>
+
+    <function>
+        <description>Get the list of a dataset's parents.</description>
+        <name>getDatasetParentList</name>
+        <function-class>sgf.gateway.model.metadata.DatasetFilterImpl</function-class>
+        <function-signature>java.util.List getDatasetParentList(sgf.gateway.model.metadata.Dataset)</function-signature>
+        <example>
+            ${gateway:getDatasetParentList(sgf.gateway.model.metadata.Dataset)}
+        </example>
+    </function>
+
+    <function>
+        <description>Filter a collection of contacts within an ACADIS project to just the collection of lead PI contacts.</description>
+        <name>filterLeadPIContacts</name>
+        <function-class>sgf.gateway.utils.modelfilters.ResponsiblePartyFilter</function-class>
+        <function-signature>java.util.Collection getLeadPIs(sgf.gateway.model.metadata.Dataset)</function-signature>
+        <example>
+            ${gateway:filterLeadPIContacts(sgf.gateway.model.metadata.Dataset)}
+        </example>
+    </function>
+
+    <function>
+        <description>Filter a collection of contacts within an ACADIS project to just the collection of co-PI contacts.</description>
+        <name>filterCoPIContacts</name>
+        <function-class>sgf.gateway.utils.modelfilters.ResponsiblePartyFilter</function-class>
+        <function-signature>java.util.Collection getCoPIs(sgf.gateway.model.metadata.Dataset)</function-signature>
+        <example>
+            ${gateway:filterCoPIContacts(sgf.gateway.model.metadata.Dataset)}
+        </example>
+    </function>
+
+    <function>
+        <description>Filter a collection of contacts within an ACADIS project to just the collection of collaborating PI contacts.</description>
+        <name>filterCollaboratingPIContacts</name>
+        <function-class>sgf.gateway.utils.modelfilters.ResponsiblePartyFilter</function-class>
+        <function-signature>java.util.Collection getCollaboratingPIs(sgf.gateway.model.metadata.Dataset)</function-signature>
+        <example>
+            ${gateway:filterCollaboratingPIContacts(sgf.gateway.model.metadata.Dataset)}
+        </example>
+    </function>
+
+</taglib>

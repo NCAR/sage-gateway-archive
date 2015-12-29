@@ -1,0 +1,18 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+				   logicalFilePath="/Liquibase/update-v3/changesets/20141020-GTWY-4081.xml">
+
+	<changeSet id="20141020-GTWY-4081.1" author="sgf">
+		<dropForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="dataset" constraintName="fkey_dataset_predecessor" />
+		<dropForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="dataset" constraintName="fkey_dataset_successor" />
+	</changeSet>
+
+	<changeSet id="20141020-GTWY-4082.2" author="sgf">
+		<addForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="dataset" baseColumnNames="predecessor_dataset_id" constraintName="fkey_dataset_predecessor" referencedTableSchemaName="metadata" referencedTableName="dataset"
+								 referencedColumnNames="id" onUpdate="CASCADE" onDelete="SET NULL" />
+		<addForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="dataset" baseColumnNames="successor_dataset_id" constraintName="fkey_dataset_successor" referencedTableSchemaName="metadata" referencedTableName="dataset"
+								 referencedColumnNames="id" onUpdate="CASCADE" onDelete="SET NULL" />
+	</changeSet>
+
+</databaseChangeLog>

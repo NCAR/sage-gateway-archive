@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="repositoryController" class="sgf.gateway.web.controllers.oai.RepositoryController">
+        <constructor-arg index="0" ref="datasetRepository"/>
+        <constructor-arg index="1" ref="dataCenterRepository"/>
+        <constructor-arg index="2" ref="gateway"/>
+        <constructor-arg index="3" value="100"/>
+        <constructor-arg index="4" value="${ezid.publisher}"/>
+    </bean>
+
+</beans>

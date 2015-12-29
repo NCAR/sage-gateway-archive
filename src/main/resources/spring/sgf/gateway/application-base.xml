@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                           http://www.springframework.org/schema/cache
+                           http://www.springframework.org/schema/cache/spring-cache.xsd">
+
+
+    <!-- Use Java Common Annotations: @Resource, @PostConstruct, @PreDestroy annotations -->
+    <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/>
+
+    <bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+        <property name="propertyEditorRegistrars">
+            <list>
+                <bean class="sgf.gateway.utils.propertyeditors.CustomPropertyEditorRegistrar"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="ISO8601DateEditorNullable" class="sgf.gateway.utils.propertyeditors.SimpleFormatedDatePropertyEditor">
+        <constructor-arg index="0" value="yyyy-MM-dd"/>
+        <constructor-arg index="1" value="false"/>
+        <constructor-arg index="2" value="true"/>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>
+
+    <bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter"/>
+
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="webBindingInitializer">
+            <bean class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer">
+                <property name="propertyEditorRegistrars">
+                    <list>
+                        <bean class="sgf.gateway.utils.propertyeditors.CustomDataBindingRegistrar">
+                            <constructor-arg index="0" ref="datasetRepository"/>
+                            <constructor-arg index="1" ref="projectRepository"/>
+                            <constructor-arg index="2" ref="topicRepository"/>
+                            <constructor-arg index="3" ref="groupRepository"/>
+                            <constructor-arg index="4" ref="responsiblePartyRepository"/>
+                            <constructor-arg index="5" ref="metadataRepository"/>
+                        </bean>
+                    </list>
+                </property>
+                <property name="validator" ref="validator"/>
+            </bean>
+        </property>
+        <property name="messageConverters">
+            <list>
+                <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="constraintValidatorFactory">
+            <bean class="sgf.gateway.validation.factory.SpringAwareConstraintValidatorFactoryImpl"/>
+        </property>
+    </bean>
+
+    <!-- Load Model resources -->
+    <import resource="classpath:sgf/gateway/model/model-context.xml"/>
+
+    <!-- Load DAO resources -->
+    <import resource="classpath:sgf/gateway/dao/dao-context.xml"/>
+
+    <!-- Setup the application gateway -->
+    <bean id="gatewayManager" class="sgf.gateway.model.GatewayManager">
+        <constructor-arg index="0" value="${gateway.name}"/>
+        <constructor-arg index="1" value="${gateway.base.url}"/>
+        <constructor-arg index="2" value="${gateway.base.url.secure}"/>
+        <constructor-arg index="3" value="${gateway.version}"/>
+        <constructor-arg index="4" value="${myproxy.server.endpoint}"/>
+        <constructor-arg index="5" value="${gateway.administrator.email.address}"/>
+        <constructor-arg index="6" value="${gateway.administrator.email.address.exception}"/>
+        <constructor-arg index="7" value="${gateway.administrator.email.personal}"/>
+        <constructor-arg index="8" value="${gateway.distinguished.name}"/>
+    </bean>
+
+    <bean id="gateway" factory-method="getGatewayInstance" factory-bean="gatewayManager"/>
+
+    <cache:annotation-driven/>
+
+    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+        <property name="cacheManager" ref="ehcache"/>
+    </bean>
+
+    <bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="configLocation" value="classpath:ehcache.xml"/>
+        <property name="shared" value="true"/>
+    </bean>
+
+    <!-- Load Service resources -->
+    <import resource="classpath:sgf/gateway/service/service-context.xml"/>
+
+    <!-- Calling the email server -->
+    <import resource="classpath:sgf/gateway/mail/impl/mail-context.xml"/>
+
+    <import resource="classpath:sgf/gateway/utils/httpclient/httpclient-context.xml"/>
+
+    <import resource="classpath:sgf/gateway/web/controllers/dataset/dataset-controllers.xml"/>
+
+    <import resource="classpath:sgf/gateway/feature/feature-context.xml"/>
+
+    <import resource="classpath:sgf/gateway/validation/validation-context.xml"/>
+
+    <import resource="classpath:sgf/gateway/publishing/publishing-context.xml"/>
+
+    <import resource="classpath:sgf/gateway/audit/audit-context.xml"/>
+
+    <import resource="classpath:sgf/gateway/profile/profile-context.xml"/>
+
+</beans>

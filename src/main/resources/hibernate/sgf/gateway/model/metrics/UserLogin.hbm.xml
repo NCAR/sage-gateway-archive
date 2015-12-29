@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <typedef name="UserLoginType" class="sgf.gateway.utils.hibernate.EnumUserType">
+        <param name="enumClassName">sgf.gateway.model.metrics.UserLoginType</param>
+        <param name="columnType">INTEGER</param>
+    </typedef>
+
+    <class name="sgf.gateway.model.metrics.UserLogin" table="user_login" schema="metrics">
+
+        <composite-id>
+            <key-many-to-one name="user" class="sgf.gateway.model.security.User" column="users_id"/>
+            <key-property name="loginDate" type="java.util.Date" column="date_created"/>
+        </composite-id>
+
+        <many-to-one name="user" column="users_id" class="sgf.gateway.model.security.User" not-null="true"
+                     insert="false" update="false"/>
+        <property name="loginDate" column="date_created" type="java.util.Date" not-null="true" insert="false"
+                  update="false"/>
+        <property name="userLoginType" column="user_login_type_id" type="UserLoginType" not-null="true"/>
+
+    </class>
+</hibernate-mapping>

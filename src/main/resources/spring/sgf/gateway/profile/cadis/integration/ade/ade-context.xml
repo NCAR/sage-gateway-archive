@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                           http://www.springframework.org/schema/integration
+                           http://www.springframework.org/schema/integration/spring-integration-2.1.xsd">
+
+    <bean id="adeFeedReceiverStub" class="sgf.gateway.integration.ade.opensearch.receiver.impl.ReceiverStub"/>
+
+    <bean id="adeFeedReceiverImpl" class="sgf.gateway.integration.ade.opensearch.receiver.impl.ReceiverImpl">
+        <constructor-arg>
+            <bean class="sgf.gateway.integration.ade.opensearch.receiver.Reader">
+                <constructor-arg name="initialPage">
+                    <bean class="java.net.URI">
+                        <constructor-arg
+                                value="http://nsidc.org/api/dataset/2/OpenSearch?startIndex=1&amp;count=100&amp;source=ADE&amp;searchTerms=&amp;spatial=&amp;startDate=&amp;endDate=&amp;facetFilters=&amp;sortKeys=,,desc"/>
+                    </bean>
+                </constructor-arg>
+                <constructor-arg name="restTemplate" ref="adeFeedRestTemplate"/>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <bean id="adeFeedReceiver" class="org.togglz.spring.proxy.FeatureProxyFactoryBean">
+        <property name="feature" value="ADE_DATASET_HARVEST"/>
+        <property name="active" ref="adeFeedReceiverImpl"/>
+        <property name="inactive" ref="adeFeedReceiverStub"/>
+    </bean>
+
+    <bean id="adeHarvestListener" class="sgf.gateway.integration.ade.ADEHarvestListener">
+        <constructor-arg name="receiver" ref="adeFeedReceiver"/>
+        <constructor-arg name="harvester" ref="adeHarvestGateway"/>
+    </bean>
+
+    <int:gateway id="adeHarvestGateway" service-interface="sgf.gateway.integration.ade.ADEFeedHarvester"
+                 default-request-channel="adeFeedChannel"/>
+
+    <int:inbound-channel-adapter ref="adeFeedReceiver" method="receive" channel="adeFeedChannel">
+        <int:poller cron="0 0 18 * * ?" max-messages-per-poll="-1"/>
+    </int:inbound-channel-adapter>
+
+    <int:channel id="adeFeedChannel"/>
+
+    <int:chain input-channel="adeFeedChannel" output-channel="adeRemoteIndexableLoadChannel">
+
+        <int:splitter expression="payload.entries"/>
+
+        <int:filter>
+            <bean class="sgf.gateway.integration.ade.filter.DataCenterFilter">
+                <constructor-arg>
+                    <set>
+                        <value>Advanced Cooperative Arctic Data and Information Service</value>
+                        <value>UCAR/NCAR - Earth Observing Laboratory</value>
+                    </set>
+                </constructor-arg>
+            </bean>
+        </int:filter>
+
+        <int:filter>
+            <bean id="NSIDCDatasetNotBrokeredFilter"
+                  class="sgf.gateway.integration.ade.filter.NSIDCDatasetNotBrokeredFilter">
+                <constructor-arg name="datasetRepository" ref="datasetRepository"/>
+                <constructor-arg name="nsidcDataCenterName" value="National Snow and Ice Data Center"/>
+            </bean>
+        </int:filter>
+
+        <int:filter>
+            <bean id="ValidURIFilter" class="sgf.gateway.integration.ade.filter.ValidURIFilter"/>
+        </int:filter>
+
+        <int:transformer>
+            <bean class="sgf.gateway.integration.ade.transformer.EntryToADEDatasetPayloadTransformer">
+                <constructor-arg name="dataCenter" value="${ade.datacenter.name}"/>
+            </bean>
+        </int:transformer>
+
+    </int:chain>
+
+    <int:channel id="adeRemoteIndexableLoadChannel"/>
+
+    <int:service-activator input-channel="adeRemoteIndexableLoadChannel">
+        <bean class="sgf.gateway.integration.service.RemoteIndexableLoadService">
+            <constructor-arg name="searchService" ref="searchService"/>
+        </bean>
+    </int:service-activator>
+
+</beans>

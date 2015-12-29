@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <typedef name="UserSearchType" class="sgf.gateway.utils.hibernate.EnumUserType">
+        <param name="enumClassName">sgf.gateway.model.metrics.UserSearchType</param>
+        <param name="columnType">INTEGER</param>
+    </typedef>
+
+    <class name="sgf.gateway.model.metrics.UserSearch" table="user_search" schema="metrics">
+
+        <id name="identifier" column="id" access="field">
+            <type name="sgf.gateway.utils.hibernate.UUIDUserType"/>
+        </id>
+
+        <many-to-one name="user" column="users_id" class="sgf.gateway.model.security.User" not-null="true"/>
+
+        <property name="created" column="date_created" type="java.util.Date" not-null="true"/>
+
+        <property name="product" column="product" type="java.lang.String" length="255" not-null="true"/>
+        <property name="userSearchType" column="user_search_type_id" type="UserSearchType" not-null="true"/>
+
+        <set name="userSearchFacets" inverse="true" cascade="all-delete-orphan">
+            <key column="user_search_id"/>
+            <one-to-many class="sgf.gateway.model.metrics.UserSearchFacet"/>
+        </set>
+
+    </class>
+
+</hibernate-mapping>

@@ -1,0 +1,34 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100309-SGF-1310.xml">
+
+    <changeSet id="20100309-SGF-1310a" author="NCW" context="esg_ncar">
+        <sql>
+
+            UPDATE metadata.file_access_point SET
+            version=1,
+            path='/etc/',
+            full_access_url='gsiftp://vetsproc.ucar.edu:2811/tmp/test.txt',
+            data_access_capability_id='1b5093d8-19ce-4e07-b4b7-523c5849665b'::uuid
+            WHERE id='4d02d9d7-6c3c-4cc0-9c86-fa9f159e6b9c'::uuid;
+
+        </sql>
+    </changeSet>
+
+    <changeSet id="20100309-SGF-1310b" author="NCW" context="esg_pcmdi">
+        <sql>
+
+            UPDATE metadata.file_access_point SET
+            version=1,
+            path='/etc/',
+            full_access_url='gsiftp://pcmdi3.llnl.gov:2811/tmp/test.txt',
+            data_access_capability_id='1b5093d8-19ce-4e07-b4b7-523c5849665b'::uuid
+            WHERE id='4d02d9d7-6c3c-4cc0-9c86-fa9f159e6b9c'::uuid;
+
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
+

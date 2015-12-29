@@ -1,0 +1,15 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100119-SGF-1144.xml">
+
+    <changeSet id="20100119-SGF-1144" author="luca" context="core">
+        <comment>Updating BADC IdP endpoint</comment>
+        <sql>
+            UPDATE metadata.gateway SET idp_endpoint='https://ndg3beta.badc.rl.ac.uk/OpenID/Provider/server' WHERE name='BADC';
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
+

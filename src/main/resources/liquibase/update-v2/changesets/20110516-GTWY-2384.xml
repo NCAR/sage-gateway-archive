@@ -1,0 +1,35 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet id="20110516-GTWY-2384" author="sgf">
+
+        <sql>
+            CREATE TABLE metrics.datanode_harvest
+            (
+            version integer DEFAULT 1,
+            name text NOT NULL,
+            distinguished_name text NOT NULL,
+            description text,
+            metrics_service_endpoint text NOT NULL,
+            last_metrics_harvest_date timestamp with time zone,
+            CONSTRAINT pkey_datanode_harvest PRIMARY KEY (distinguished_name)
+            )
+            WITH (
+            OIDS=FALSE
+            );
+        </sql>
+
+        <addUniqueConstraint schemaName="metrics" tableName="datanode_harvest" columnNames="name"/>
+
+        <sql>
+            ALTER TABLE metrics.datanode_harvest OWNER TO "${database.role.admin}";
+            REVOKE ALL ON TABLE metrics.datanode_harvest FROM public;
+            GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE metrics.datanode_harvest TO "${database.role.user}";
+            GRANT SELECT ON TABLE metrics.datanode_harvest TO "${database.role.read_only}";
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>
+

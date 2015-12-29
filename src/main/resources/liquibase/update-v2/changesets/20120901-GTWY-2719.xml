@@ -1,0 +1,36 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   logicalFilePath="/Liquibase/update-v2/changesets/20120824-GTWY-3435.xml">
+
+    <changeSet id="20120901-GTWY-2719" author="sgf">
+
+
+        <sql>
+            DROP TABLE oai.harvesting_log CASCADE;
+            DROP TABLE oai.harvesting_record CASCADE;
+            DROP TABLE oai.metadata_format CASCADE;
+            DROP TABLE oai.record_status CASCADE;
+
+            DROP SCHEMA oai;
+        </sql>
+
+        <sql>
+            DROP TABLE qrtz_blob_triggers CASCADE;
+            DROP TABLE qrtz_calendars CASCADE;
+            DROP TABLE qrtz_cron_triggers CASCADE;
+            DROP TABLE qrtz_fired_triggers CASCADE;
+            DROP TABLE qrtz_job_details CASCADE;
+            DROP TABLE qrtz_job_listeners CASCADE;
+            DROP TABLE qrtz_locks CASCADE;
+            DROP TABLE qrtz_paused_trigger_grps CASCADE;
+            DROP TABLE qrtz_scheduler_state CASCADE;
+            DROP TABLE qrtz_simple_triggers CASCADE;
+            DROP TABLE qrtz_trigger_listeners CASCADE;
+            DROP TABLE qrtz_triggers CASCADE;
+        </sql>
+
+
+    </changeSet>
+
+</databaseChangeLog>

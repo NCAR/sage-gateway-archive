@@ -1,0 +1,15 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="/Liquibase/update-v2/changesets/20110912-GTWY-2569.xml">
+
+    <changeSet id="20110912-GTWY-2569.0" author="sgf">
+        <dropTable tableName="persistent_identifier" schemaName="metadata" />
+    </changeSet>
+
+    <changeSet id="20110912-GTWY-2569.1" author="sfg">
+        <dropTable tableName="persistent_indentifier_type" schemaName="metadata" />
+    </changeSet>
+
+</databaseChangeLog>

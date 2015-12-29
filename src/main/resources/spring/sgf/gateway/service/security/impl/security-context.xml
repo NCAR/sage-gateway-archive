@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+							http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+
+    <!-- AccessDecisionVoter(s) for READ operations on domain objects of type Dataset. -->
+    <bean id="readDatasetVoter" class="sgf.gateway.service.security.impl.acegi.AcegiAccessDecisionVoter">
+        <constructor-arg index="0" value="config_attribute_dataset_read"/>
+        <property name="authorizationService" ref="authorizationService"/>
+        <property name="operation" ref="sgf.gateway.model.security.Operation.READ"/>
+        <property name="acegiRuntimeUserServiceImpl" ref="runtimeUserService"/>
+    </bean>
+
+    <!-- AccessDecisionVoter(s) for WRITE operations on domain objects of type Dataset. -->
+    <bean id="writeDatasetVoter" class="sgf.gateway.service.security.impl.acegi.AcegiAccessDecisionVoter">
+        <constructor-arg index="0" value="config_attribute_dataset_write"/>
+        <property name="authorizationService" ref="authorizationService"/>
+        <property name="operation" ref="sgf.gateway.model.security.Operation.WRITE"/>
+        <property name="acegiRuntimeUserServiceImpl" ref="runtimeUserService"/>
+    </bean>
+
+    <!-- Utility class used to trigger AOP authorization -->
+    <bean id="authorizationUtils" class="sgf.gateway.service.security.impl.acegi.AuthorizationUtilsImpl">
+        <constructor-arg index="0" ref="readDatasetVoter"/>
+        <constructor-arg index="1" ref="writeDatasetVoter"/>
+    </bean>
+
+    <!-- ACL permissions -->
+    <bean id="sgf.gateway.model.security.Operation.READ"
+          class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+    <bean id="sgf.gateway.model.security.Operation.WRITE"
+          class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+    <bean id="sgf.gateway.model.security.Operation.EXECUTE"
+          class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+
+</beans>

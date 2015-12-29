@@ -1,0 +1,15 @@
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20130613-GTWY-3668.xml">
+
+	<changeSet id="20130613-GTWY-3668" author="sgf">
+		
+		<dropColumn schemaName="metadata" tableName="dataset" columnName="replica_source_gateway_name"/>
+		<dropColumn schemaName="metadata" tableName="dataset" columnName="is_replica"/>
+		<dropColumn schemaName="metadata" tableName="file_access_point" columnName="replica_id"/>
+		
+	</changeSet>
+	
+</databaseChangeLog>

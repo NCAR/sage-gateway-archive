@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-file="http://www.springframework.org/schema/integration/file"
+       xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                           http://www.springframework.org/schema/integration
+                           http://www.springframework.org/schema/integration/spring-integration-2.1.xsd
+                           http://www.springframework.org/schema/integration/file
+                           http://www.springframework.org/schema/integration/file/spring-integration-file.xsd
+                           http://www.springframework.org/schema/integration/jms
+                           http://www.springframework.org/schema/integration/jms/spring-integration-jms-2.0.xsd">
+
+    <bean id="tdsMetricsLogFileQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="queue.metrics.tds.logfile"/>
+    </bean>
+
+    <bean id="tdsMetricsLogFileEntryQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="queue.metrics.tds.logfileentry"/>
+    </bean>
+
+    <bean id="tdsMetricsFileDownloadPayloadQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="queue.metrics.tds.filedownloadpayload"/>
+    </bean>
+
+    <bean id="tdsMetricsLogFileFilter" class="org.springframework.integration.file.filters.RegexPatternFileListFilter">
+        <constructor-arg name="pattern" value="tds-metrics\..+\.txt"/>
+    </bean>
+
+    <int-file:inbound-channel-adapter channel="tdsMetricsLogFileChannel" directory="${integration.tds.metrics.incoming}"
+                                      filter="tdsMetricsLogFileFilter">
+        <!-- careful setting max-messages-per-poll to -1 as it could create an infinite loop if the move to processing fails for some reason -->
+        <int:poller cron="0 */10 * * * ?" max-messages-per-poll="10"/>
+    </int-file:inbound-channel-adapter>
+
+    <int:channel id="tdsMetricsLogFileChannel"/>
+
+    <int:service-activator input-channel="tdsMetricsLogFileChannel" output-channel="tdsMetricsLogFileReaderChannel">
+        <bean class="sgf.gateway.integration.service.FileMoveService">
+            <constructor-arg name="destination" value="${integration.tds.metrics.processing}"/>
+        </bean>
+    </int:service-activator>
+
+    <int-jms:channel id="tdsMetricsLogFileReaderChannel" queue="tdsMetricsLogFileQueue"
+                     connection-factory="jmsConnectionFactory" error-handler="tdsMetricsErrorHandler"/>
+
+    <int:service-activator input-channel="tdsMetricsLogFileReaderChannel"
+                           output-channel="tdsMetricsLogFileArchiveChannel">
+        <bean class="sgf.gateway.integration.service.FileLineReaderService">
+            <constructor-arg name="outputChannel" ref="tdsMetricsLogFileLineChannel"/>
+        </bean>
+    </int:service-activator>
+
+    <int:channel id="tdsMetricsLogFileArchiveChannel"/>
+
+    <int:service-activator input-channel="tdsMetricsLogFileArchiveChannel" output-channel="nullChannel">
+        <bean class="sgf.gateway.integration.service.FileMoveService">
+            <constructor-arg name="destination" value="${integration.tds.metrics.archive}"/>
+        </bean>
+    </int:service-activator>
+
+    <int:channel id="tdsMetricsLogFileLineChannel"/>
+
+    <int:chain input-channel="tdsMetricsLogFileLineChannel" output-channel="tdsMetricsLogFileEntryChannel">
+
+        <int:transformer ref="stringTrimTransformer"/>
+
+        <int:filter ref="stringWhitespaceFilter"/>
+
+        <int:filter ref="stringCommentFilter"/>
+
+        <int:filter ref="tdsMetricsFilter"/>
+
+    </int:chain>
+
+    <int-jms:channel id="tdsMetricsLogFileEntryChannel" queue="tdsMetricsLogFileEntryQueue"
+                     connection-factory="jmsConnectionFactory" error-handler="tdsMetricsErrorHandler"/>
+
+    <int:chain input-channel="tdsMetricsLogFileEntryChannel" output-channel="tdsMetricsFileDownloadPayloadChannel">
+
+        <int:transformer ref="tdsMetricsTransformer"/>
+
+        <int:filter ref="tdsMetricsStatusFilter"/>
+
+        <int:filter ref="tdsMetricsFileFilter"/>
+
+    </int:chain>
+
+    <int-jms:channel id="tdsMetricsFileDownloadPayloadChannel" queue="tdsMetricsFileDownloadPayloadQueue"
+                     connection-factory="jmsConnectionFactory" error-handler="tdsMetricsErrorHandler"/>
+
+    <int:service-activator input-channel="tdsMetricsFileDownloadPayloadChannel" ref="metricsDownloadService"
+                           method="saveFileDownload"/>
+
+</beans>

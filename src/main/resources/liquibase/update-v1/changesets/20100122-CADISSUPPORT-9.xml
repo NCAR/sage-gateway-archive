@@ -1,0 +1,24 @@
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100122-CADISSUPPORT-9.xml">
+
+    <changeSet id="20100122-CADISSUPPORT-9" author="hannah" context="cadis">
+        <comment>Addition of new disciplines to support Polaris project.</comment>
+        <insert tableName="topic" schemaName="metadata">
+            <column name="id" value="ac9b9182-4452-4180-b473-8c90a0a77a90"/>
+            <column name="version" value="0"/>
+            <column name="name" value="Interdisciplinary Studies"/>
+            <column name="taxonomy_id" value="3"/>
+        </insert>
+        <insert tableName="topic" schemaName="metadata">
+            <column name="id" value="205d738d-93a1-4efe-bc59-8961f608caac"/>
+            <column name="version" value="0"/>
+            <column name="name" value="Education and Outreach"/>
+            <column name="taxonomy_id" value="3"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,29 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20130423-GTWY-TD-72.xml">
+
+	<changeSet id="20130423-GTWY-TD-72.0" author="sgf">
+
+		<sql>
+		delete from metadata.descriptive_metadata
+		where id in (
+		  select dm.id
+		  from metadata.dataset d
+		  right outer join metadata.descriptive_metadata dm on dm.id = d.id
+		  where d.id is null
+		);
+		</sql>
+	
+	</changeSet>
+
+	<changeSet id="20130423-GTWY-TD-72.1" author="sgf">
+
+		<addForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="descriptive_metadata"
+			referencedTableSchemaName="metadata" referencedTableName="dataset"
+			baseColumnNames="id" referencedColumnNames="id"
+			constraintName="fkey_descriptive_metadata_dataset" deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE"/>
+	
+	</changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,380 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+				   logicalFilePath="/Liquibase/update-v3/changesets/20140923-GTWY-4034.xml">
+
+	<changeSet id="20141015-GTWY-4077.1" author="sgf">
+		<sql>
+			CREATE SCHEMA audit
+			AUTHORIZATION ${database.role.admin};
+
+			REVOKE ALL ON SCHEMA audit FROM public;
+			GRANT ALL ON SCHEMA audit TO ${database.role.admin};
+			GRANT ALL ON SCHEMA audit TO ${database.role.user};
+			GRANT USAGE ON SCHEMA audit TO ${database.role.read_only};
+		</sql>
+	</changeSet>
+
+	<changeSet id="20141015-GTWY-4077.2" author="sgf">
+		<sql>
+			CREATE SEQUENCE hibernate_sequence START WITH 1 INCREMENT BY 1;
+
+			ALTER SEQUENCE hibernate_sequence OWNER TO "${database.role.admin}";
+			REVOKE ALL ON SEQUENCE hibernate_sequence FROM public;
+			GRANT ALL ON SEQUENCE hibernate_sequence TO "${database.role.admin}";
+			GRANT SELECT, UPDATE ON SEQUENCE hibernate_sequence TO "${database.role.user}";
+			GRANT SELECT ON SEQUENCE hibernate_sequence TO "${database.role.read_only}";
+		</sql>
+	</changeSet>
+
+	<changeSet id="20141015-GTWY-4077.3" author="sgf">
+		<sql>
+			CREATE TABLE audit.revision
+			(
+			id bigint NOT NULL,
+			revision_date timestamp with time zone NOT NULL,
+			user_id uuid NOT NULL,
+			username text,
+			openid text,
+			CONSTRAINT revision_pkey PRIMARY KEY (id)
+			)
+			WITH (
+			OIDS=FALSE
+			);
+
+			ALTER TABLE audit.revision OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.revision FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.revision TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.revision TO "${database.role.read_only}";
+		</sql>
+	</changeSet>
+
+	<changeSet id="20141015-GTWY-4077.4" author="sgf">
+		<sql>
+			CREATE TABLE audit.award_aud
+			(
+			rev bigint NOT NULL,
+			revtype smallint NOT NULL,
+			dataset_id uuid NOT NULL,
+			idx_order integer NOT NULL,
+			revend bigint,
+			award_number text,
+			CONSTRAINT award_aud_pkey PRIMARY KEY (rev, revtype, dataset_id, idx_order),
+			CONSTRAINT fk_1i2ndn6ynunjbh1x5u57e4s4w FOREIGN KEY (rev)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION,
+			CONSTRAINT fk_7gh8p9sw78tdeh8swqufb31nq FOREIGN KEY (revend)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			OIDS=FALSE
+			);
+			ALTER TABLE audit.award_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.award_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.award_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.award_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.dataset_aud
+			(
+			id uuid NOT NULL,
+			rev bigint NOT NULL,
+			revtype smallint,
+			revend bigint,
+			short_name text,
+			brokered boolean,
+			is_visible boolean,
+			author text,
+			title text,
+			description text,
+			authoritative_id text,
+			doi text,
+			container_type text,
+			project_group text,
+			CONSTRAINT dataset_aud_pkey PRIMARY KEY (id, rev),
+			CONSTRAINT fk_7o9q2xbgpkh21b9cyiw9kl2xp FOREIGN KEY (revend)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION,
+			CONSTRAINT fk_faoo0v920bcwv1afnm7k4xk4e FOREIGN KEY (rev)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			OIDS=FALSE
+			);
+			ALTER TABLE audit.dataset_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.dataset_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.dataset_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.dataset_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.dataset_geographic_bounding_box_aud
+			(
+			id uuid NOT NULL,
+			rev bigint NOT NULL,
+			revtype smallint,
+			revend bigint,
+			west_bound_longitude double precision,
+			east_bound_longitude double precision,
+			south_bound_latitude double precision,
+			north_bound_latitude double precision,
+			CONSTRAINT dataset_geographic_bounding_box_aud_pkey PRIMARY KEY (id, rev),
+			CONSTRAINT fk_o86xav11sejqve0j433b2e4t3 FOREIGN KEY (revend)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION,
+			CONSTRAINT fk_qe6hmrge21udx76nosl8sm1im FOREIGN KEY (rev)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			OIDS=FALSE
+			);
+			ALTER TABLE audit.dataset_geographic_bounding_box_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.dataset_geographic_bounding_box_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.dataset_geographic_bounding_box_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.dataset_geographic_bounding_box_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.dataset_time_period_aud
+			(
+			id uuid NOT NULL,
+			rev bigint NOT NULL,
+			revtype smallint,
+			revend bigint,
+			begin_date timestamp without time zone,
+			end_date timestamp without time zone,
+			CONSTRAINT dataset_time_period_aud_pkey PRIMARY KEY (id, rev),
+			CONSTRAINT fk_1vds4gjata7tjxqx6ajjjnusb FOREIGN KEY (revend)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION,
+			CONSTRAINT fk_lw1b8sfpkihec52aqf873a8rh FOREIGN KEY (rev)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			OIDS=FALSE
+			);
+			ALTER TABLE audit.dataset_time_period_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.dataset_time_period_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.dataset_time_period_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.dataset_time_period_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.dataset_version_aud
+			(
+			id uuid NOT NULL,
+			rev bigint NOT NULL,
+			revtype smallint,
+			revend bigint,
+			version bigint,
+			version_id text,
+			comment text,
+			label text,
+			published_state_id integer,
+			authoritative_source_uri text,
+			authoritative_source_date_created timestamp without time zone,
+			authoritative_source_date_modified timestamp without time zone,
+			CONSTRAINT dataset_version_aud_pkey PRIMARY KEY (id, rev),
+			CONSTRAINT fk_ewk8vybefc1gdnxdler52p454 FOREIGN KEY (revend)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION,
+			CONSTRAINT fk_thadn49v3cfekdsrocbreggep FOREIGN KEY (rev)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			OIDS=FALSE
+			);
+			ALTER TABLE audit.dataset_version_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.dataset_version_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.dataset_version_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.dataset_version_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.datasetimpl_datasetimpl_aud
+			(
+			rev bigint NOT NULL,
+			parent_dataset_id uuid NOT NULL,
+			id uuid NOT NULL,
+			parent_display_order integer NOT NULL,
+			revtype smallint,
+			revend bigint,
+			CONSTRAINT datasetimpl_datasetimpl_aud_pkey PRIMARY KEY (rev, parent_dataset_id, id, parent_display_order),
+			CONSTRAINT fk_fowxydqbxnlsmowsfft2iprft FOREIGN KEY (rev)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION,
+			CONSTRAINT fk_pyukwqdtqerc1av5oobg59tg5 FOREIGN KEY (revend)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			OIDS=FALSE
+			);
+			ALTER TABLE audit.datasetimpl_datasetimpl_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.datasetimpl_datasetimpl_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.datasetimpl_datasetimpl_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.datasetimpl_datasetimpl_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.datasetimpl_datasetversionimpl_aud
+			(
+			rev bigint NOT NULL,
+			dataset_id uuid NOT NULL,
+			id uuid NOT NULL,
+			index integer NOT NULL,
+			revtype smallint,
+			revend bigint,
+			CONSTRAINT datasetimpl_datasetversionimpl_aud_pkey PRIMARY KEY (rev, dataset_id, id, index),
+			CONSTRAINT fk_3d0q1woco09oumt1nny4560ed FOREIGN KEY (revend)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION,
+			CONSTRAINT fk_g0xcepocltogucfqdpvcvuncu FOREIGN KEY (rev)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			OIDS=FALSE
+			);
+			ALTER TABLE audit.datasetimpl_datasetversionimpl_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.datasetimpl_datasetversionimpl_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.datasetimpl_datasetversionimpl_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.datasetimpl_datasetversionimpl_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.descriptive_metadata_aud
+			(
+			id uuid NOT NULL,
+			rev bigint NOT NULL,
+			revtype smallint,
+			revend bigint,
+			language text,
+			credit text,
+			distribution_uri text,
+			distribution_uri_text text,
+			resolution_type_id integer,
+			dataset_progress_id integer,
+			model_name text,
+			CONSTRAINT descriptive_metadata_aud_pkey PRIMARY KEY (id, rev),
+			CONSTRAINT fk_dqx768aipmeho459mq7pxljvx FOREIGN KEY (revend)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION,
+			CONSTRAINT fk_mhessefhi8b795mx8k8c0ec9l FOREIGN KEY (rev)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			OIDS=FALSE
+			);
+			ALTER TABLE audit.descriptive_metadata_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.descriptive_metadata_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.descriptive_metadata_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.descriptive_metadata_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.descriptivemetadataimpl_responsiblepartyimpl_aud
+			(
+			rev bigint NOT NULL,
+			descriptive_metadata_id uuid NOT NULL,
+			id uuid NOT NULL,
+			idx_order integer NOT NULL,
+			revtype smallint,
+			revend bigint,
+			CONSTRAINT descriptivemetadataimpl_responsiblepartyimpl_aud_pkey PRIMARY KEY (rev, descriptive_metadata_id, id, idx_order),
+			CONSTRAINT fk_9kcjsxxt7occplmjq5s21u5lk FOREIGN KEY (revend)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION,
+			CONSTRAINT fk_q5kue0l5i7ppp33e0dfed58nw FOREIGN KEY (rev)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			OIDS=FALSE
+			);
+			ALTER TABLE audit.descriptivemetadataimpl_responsiblepartyimpl_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.descriptivemetadataimpl_responsiblepartyimpl_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.descriptivemetadataimpl_responsiblepartyimpl_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.descriptivemetadataimpl_responsiblepartyimpl_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.institution_aud
+			(
+			id uuid NOT NULL,
+			rev bigint NOT NULL,
+			revtype smallint,
+			revend bigint,
+			name text,
+			CONSTRAINT institution_aud_pkey PRIMARY KEY (id, rev),
+			CONSTRAINT fk_20jpiuufbtfmumoes0k0vwbky FOREIGN KEY (revend)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION,
+			CONSTRAINT fk_oiu7ax1lmsyfvgxta56hhnmd9 FOREIGN KEY (rev)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			OIDS=FALSE
+			);
+			ALTER TABLE audit.institution_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.institution_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.institution_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.institution_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.logical_file_aud
+			(
+			id uuid NOT NULL,
+			rev bigint NOT NULL,
+			revtype smallint,
+			revend bigint,
+			version bigint,
+			name text,
+			description text,
+			lineage_id text,
+			version_id text,
+			cmor_tracking_id text,
+			label text,
+			disk_location text,
+			size bigint,
+			CONSTRAINT logical_file_aud_pkey PRIMARY KEY (id, rev),
+			CONSTRAINT fk_dwwf108bn7809fkuhcp9f6bs1 FOREIGN KEY (rev)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION,
+			CONSTRAINT fk_i5s6u2nnkjoilk33lnt1oon90 FOREIGN KEY (revend)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			OIDS=FALSE
+			);
+			ALTER TABLE audit.logical_file_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.logical_file_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.logical_file_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.logical_file_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.responsible_party_aud
+			(
+			id uuid NOT NULL,
+			rev bigint NOT NULL,
+			revtype smallint,
+			revend bigint,
+			version integer,
+			individual_name text,
+			organization_name text,
+			position_name text,
+			email text,
+			role text,
+			CONSTRAINT responsible_party_aud_pkey PRIMARY KEY (id, rev),
+			CONSTRAINT fk_9bvxnqw73sce90vx6lumpojen FOREIGN KEY (rev)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION,
+			CONSTRAINT fk_g0idaroqj1o7ed60k66as5v4m FOREIGN KEY (revend)
+			REFERENCES audit.revision (id) MATCH SIMPLE
+			ON UPDATE NO ACTION ON DELETE NO ACTION
+			)
+			WITH (
+			OIDS=FALSE
+			);
+			ALTER TABLE audit.responsible_party_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.responsible_party_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.responsible_party_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.responsible_party_aud TO "${database.role.read_only}";
+		</sql>
+	</changeSet>
+
+	<changeSet id="20141015-GTWY-4077.5" author="sgf">
+		<sql>
+			ALTER TABLE audit.revision ALTER COLUMN user_id DROP NOT NULL;
+		</sql>
+	</changeSet>
+</databaseChangeLog>

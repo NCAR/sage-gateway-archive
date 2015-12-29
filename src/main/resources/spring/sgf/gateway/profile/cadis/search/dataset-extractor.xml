@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="datasetIdFieldExtractor" class="sgf.gateway.search.extract.dataset.DatasetIdFieldExtractor"/>
+    <bean id="datasetTypeFieldExtractor" class="sgf.gateway.search.extract.dataset.DatasetTypeFieldExtractor">
+        <constructor-arg index="0" ref="datasetDocumentType"/>
+        <constructor-arg index="1" ref="projectDocumentType"/>
+        <constructor-arg index="2" ref="softwareDocumentType"/>
+    </bean>
+    <bean id="datasetTitleFieldExtractor" class="sgf.gateway.search.extract.dataset.DatasetTitleFieldExtractor"/>
+    <bean id="datasetDescriptionFieldExtractor"
+          class="sgf.gateway.search.extract.dataset.DatasetDescriptionFieldExtractor"/>
+    <bean id="datasetShortNameFieldExtractor"
+          class="sgf.gateway.search.extract.dataset.DatasetShortNameFieldExtractor"/>
+    <bean id="datasetResponsiblePartiesFieldExtractor"
+          class="sgf.gateway.search.extract.dataset.DatasetResponsiblePartiesFieldExtractor"/>
+    <bean id="datasetProjectsFieldExtractor" class="sgf.gateway.search.extract.dataset.DatasetProjectsFieldExtractor"/>
+    <bean id="datasetInstrumentKeywordsFieldExtractor"
+          class="sgf.gateway.search.extract.dataset.DatasetInstrumentKeywordsFieldExtractor"/>
+    <bean id="datasetScienceKeywordFieldExtractor"
+          class="sgf.gateway.search.extract.dataset.DatasetScienceKeywordFieldExtractor"/>
+    <bean id="datasetScienceKeywordDisciplineFieldExtractor"
+          class="sgf.gateway.search.extract.dataset.DatasetScienceKeywordDisciplineFieldExtractor"/>
+    <bean id="datasetLocationsFieldExtractor"
+          class="sgf.gateway.search.extract.dataset.DatasetLocationsFieldExtractor"/>
+    <bean id="datasetPlatformTypesFieldExtractor"
+          class="sgf.gateway.search.extract.dataset.DatasetPlatformTypesFieldExtractor"/>
+    <bean id="datasetWesternLonFieldExtractor"
+          class="sgf.gateway.search.extract.dataset.DatasetWesternLonFieldExtractor"/>
+    <bean id="datasetEasternLonFieldExtractor"
+          class="sgf.gateway.search.extract.dataset.DatasetEasternLonFieldExtractor"/>
+    <bean id="datasetNorthernLatFieldExtractor"
+          class="sgf.gateway.search.extract.dataset.DatasetNorthernLatFieldExtractor"/>
+    <bean id="datasetSouthernLatFieldExtractor"
+          class="sgf.gateway.search.extract.dataset.DatasetSouthernLatFieldExtractor"/>
+    <bean id="datasetStartDateFieldExtractor"
+          class="sgf.gateway.search.extract.dataset.DatasetStartDateFieldExtractor"/>
+    <bean id="datasetEndDateFieldExtractor" class="sgf.gateway.search.extract.dataset.DatasetEndDateFieldExtractor"/>
+    <bean id="datasetDataCenterFieldExtractor"
+          class="sgf.gateway.search.extract.dataset.DatasetDataCenterFieldExtractor"/>
+    <bean id="datasetAwardNumberExtractor" class="sgf.gateway.search.extract.dataset.DatasetAwardNumberExtractor"/>
+    <bean id="datasetDOIExtractor" class="sgf.gateway.search.extract.dataset.DatasetDOIExtractor"/>
+
+    <bean id="datasetSearchDocumentExtractor" class="sgf.gateway.search.extract.SearchDocumentExtractorImpl">
+        <constructor-arg>
+            <list>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="idField"/>
+                    <constructor-arg index="1" ref="datasetIdFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="typeField"/>
+                    <constructor-arg index="1" ref="datasetTypeFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="nameField"/>
+                    <constructor-arg index="1" ref="datasetTitleFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="descriptionField"/>
+                    <constructor-arg index="1" ref="datasetDescriptionFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="shortNameField"/>
+                    <constructor-arg index="1" ref="datasetShortNameFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="responsiblePartyField"/>
+                    <constructor-arg index="1" ref="datasetResponsiblePartiesFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="projectField"/>
+                    <constructor-arg index="1" ref="datasetProjectsFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="instrumentField"/>
+                    <constructor-arg index="1" ref="datasetInstrumentKeywordsFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="disciplineField"/>
+                    <constructor-arg index="1" ref="datasetScienceKeywordDisciplineFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="scienceKeywordField"/>
+                    <constructor-arg index="1" ref="datasetScienceKeywordFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="locationField"/>
+                    <constructor-arg index="1" ref="datasetLocationsFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="platformField"/>
+                    <constructor-arg index="1" ref="datasetPlatformTypesFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="westernLongitudeField"/>
+                    <constructor-arg index="1" ref="datasetWesternLonFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="easternLongitudeField"/>
+                    <constructor-arg index="1" ref="datasetEasternLonFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="northernLatitudeField"/>
+                    <constructor-arg index="1" ref="datasetNorthernLatFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="southernLatitudeField"/>
+                    <constructor-arg index="1" ref="datasetSouthernLatFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="startDateField"/>
+                    <constructor-arg index="1" ref="datasetStartDateFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="endDateField"/>
+                    <constructor-arg index="1" ref="datasetEndDateFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="dataCenterField"/>
+                    <constructor-arg index="1" ref="datasetDataCenterFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="awardNumberField"/>
+                    <constructor-arg index="1" ref="datasetAwardNumberExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="doiField"/>
+                    <constructor-arg index="1" ref="datasetDOIExtractor"/>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="datasetSearchDocumentExtractorDeletion" class="sgf.gateway.search.extract.SearchDocumentExtractorImpl">
+        <constructor-arg>
+            <list>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="idField"/>
+                    <constructor-arg index="1" ref="datasetIdFieldExtractor"/>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+</beans>

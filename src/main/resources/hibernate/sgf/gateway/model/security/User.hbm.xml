@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <joined-subclass name="sgf.gateway.model.security.User" extends="sgf.gateway.model.security.Principal" table="user"
+                     schema="security">
+
+        <key column="id"/>
+
+        <property name="firstName" column="firstName" type="string" length="100"/>
+        <property name="middleName" column="middleName" type="string" length="100"/>
+        <property name="lastName" column="lastName" type="string" length="100"/>
+        <property name="email" column="email" type="string" not-null="true" unique="true" length="100"/>
+        <property name="userName" column="userName" type="string" not-null="false" unique="true" length="100"/>
+        <property name="password" column="password" type="string" length="100"/>
+        <property name="loginType" column="loginType" type="string" not-null="true" length="100"/>
+
+        <property name="organization" column="organization" type="string" length="200"/>
+        <property name="organizationType" column="organization_type" type="string" length="100"/>
+        <property name="city" column="city" type="string" length="100"/>
+        <property name="state" column="state" type="string" length="100"/>
+        <property name="country" column="country" type="string" length="100"/>
+
+        <!-- OpenID -->
+        <property name="openid" column="openid" type="string" length="200"/>
+
+        <!-- X509 Distinguished Name -->
+        <property name="dn" column="dn" type="string" length="300"/>
+
+        <!-- NOTE: user memberships are NOT lazy loaded -->
+        <set name="memberships" inverse="true" lazy="false" cascade="all-delete-orphan">
+            <key column="user_id"/>
+            <one-to-many class="sgf.gateway.model.security.Membership"/>
+        </set>
+
+        <set name="userData" inverse="true" lazy="true" cascade="all-delete-orphan">
+            <key column="user_id"/>
+            <one-to-many class="sgf.gateway.model.security.UserData"/>
+        </set>
+
+
+    </joined-subclass>
+
+    <query name="findUsersByGroupData" cacheable="true">
+        <![CDATA[
+            select user from User user, UserData udata, GroupData gdata where gdata = :groupData and udata.groupData = gdata and udata in elements(user.userData)
+        ]]>
+    </query>
+
+    <query name="findUsersThatMatch" cacheable="true">
+        <![CDATA[
+            from User user where lower(user.firstName) like :match
+                               or lower(user.lastName) like :match
+                               or lower(user.userName) like :match
+                               or lower(user.email) like :match
+                               order by lower(user.lastName)
+        ]]>
+    </query>
+
+    <query name="countUsersThatMatch" cacheable="true">
+        <![CDATA[
+            select count(*) from User user where lower(user.firstName) like :match
+                           or lower(user.lastName) like :match
+                           or lower(user.userName) like :match
+                           or lower(user.email) like :match
+        ]]>
+    </query>
+
+    <query name="findGroupUsersInStatusThatMatch" cacheable="true">
+        <![CDATA[
+            select user from User user, Membership membership, Group grp
+                    where membership.user = user and membership.group = grp
+                    and membership.role =  1
+                    and grp.name = :groupName
+                    and membership.status = :status
+                    and (lower(user.firstName) like :match or lower(user.lastName) like :match or lower(user.userName) like :match or lower(user.email) like :match)
+                    order by lower(user.lastName)
+        ]]>
+    </query>
+
+    <query name="countGroupUsersInStatusThatMatch" cacheable="true">
+        <![CDATA[
+            select count(*) from User user, Membership membership, Group grp
+                    where membership.user = user and membership.group = grp
+                    and membership.role =  1
+                    and grp.name = :groupName
+                    and membership.status = :status
+                    and (lower(user.firstName) like :match or lower(user.lastName) like :match or lower(user.userName) like :match or lower(user.email) like :match)
+        ]]>
+    </query>
+
+</hibernate-mapping>

@@ -1,0 +1,18 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet id="20110211-GTWY-2104" author="sgf" >
+
+        <addColumn schemaName="security" tableName="group" >
+            <column name="gateway_id" type="uuid" >
+            </column>
+        </addColumn>
+
+        <addForeignKeyConstraint constraintName="fkey_group_gateway_id" referencedTableSchemaName="metadata" referencedTableName="gateway" referencedColumnNames="id" baseTableSchemaName="security" baseTableName="group" baseColumnNames="gateway_id" />
+
+    </changeSet>
+
+</databaseChangeLog>
+

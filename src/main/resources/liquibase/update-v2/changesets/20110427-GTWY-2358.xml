@@ -1,0 +1,15 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="/Liquibase/update-v2/changesets/20110419-GTWY-2303.xml">
+
+    <changeSet id="20110427-GTWY-2358" author="sgf">
+
+        <sql>
+            UPDATE security.group SET gateway_id = 'b3234836-8940-490d-a0be-b5da135b0def' WHERE id IN ('426052df-a7d4-46b5-96bb-d32178f570e5', 'b347a0d6-cdff-4696-ac03-68dce6473aee');
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

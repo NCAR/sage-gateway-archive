@@ -1,0 +1,11 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="/Liquibase/update-v2/changesets/20110726-GTWY-2448.xml">
+
+    <changeSet id="20110726-GTWY-2448" author="sgf">
+        <addUniqueConstraint schemaName="metadata" tableName="dataset" columnNames="persistent_identifier, authoritative_source"/>
+    </changeSet>
+
+</databaseChangeLog>

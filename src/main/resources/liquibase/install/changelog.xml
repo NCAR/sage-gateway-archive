@@ -1,0 +1,26 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" >
+
+	<preConditions>
+		<dbms type="PostgreSQL" />
+	</preConditions>
+
+	<!-- Load the baseline schema -->    
+	<changeSet id="1" author="sgf">
+		<comment>Baseline schema from 1.2.0 release</comment>
+		<sqlFile  path="liquibase/install/baseline-schema.sql" endDelimiter=";" splitStatements="false" />
+	</changeSet>
+
+	<!--  Set of data absolutely necessary to run a gateway and tests (enums) -->
+	<include file="changesets/system-initialization.xml" relativeToChangelogFile="true"/>
+
+	<!--  Shared registry information (gateways, metadata profiles, basic user and groups) -->
+	<include file="changesets/esg-initialization.xml" relativeToChangelogFile="true"/>
+
+	<!-- Version marker, no changes after this have been inserted.  This should be the last change in this file. -->
+	<changeSet author="MajorVersion" id="4"></changeSet>
+
+</databaseChangeLog>
+

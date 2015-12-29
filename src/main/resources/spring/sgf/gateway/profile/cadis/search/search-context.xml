@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <import resource="classpath:sgf/gateway/profile/cadis/search/field.xml"/>
+    <import resource="classpath:sgf/gateway/profile/cadis/search/facet.xml"/>
+    <import resource="classpath:sgf/gateway/profile/cadis/search/document-type.xml"/>
+    <import resource="classpath:sgf/gateway/profile/cadis/search/dataset-extractor.xml"/>
+    <import resource="classpath:sgf/gateway/profile/cadis/search/remoteindexable-extractor.xml"/>
+    <import resource="classpath:sgf/gateway/profile/cadis/search/solr-provider.xml"/>
+    <import resource="classpath:sgf/gateway/profile/cadis/search/indexer.xml"/>
+    <import resource="classpath:sgf/gateway/profile/cadis/search/service.xml"/>
+
+</beans>

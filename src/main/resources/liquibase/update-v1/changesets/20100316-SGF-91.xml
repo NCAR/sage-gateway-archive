@@ -1,0 +1,161 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100316-SGF-91.xml">
+
+    <!-- Include the changes sets for this particular release -->
+    <changeSet author="nch" id="20100316-SGF-91">
+
+        <!-- curator -->
+        <sql>
+            CREATE INDEX idx_computing_environment_language_compiler_ref ON curator.computing_environment USING btree (language_compiler_ref);
+            CREATE INDEX idx_computing_environment_property_value_id ON curator.computing_environment USING btree (machine_ref);
+        </sql>
+
+        <!-- metadata -->
+        <sql>
+            CREATE INDEX idx_activity_activity_type_id ON metadata.activity USING btree (activity_type_id);
+            CREATE INDEX idx_activity_link_activity_id ON metadata.activity_link USING btree (activity_id);
+            CREATE INDEX idx_activity_link_link_type_id ON metadata.activity_link USING btree (link_type_id);
+            CREATE INDEX idx_annotation_user_id ON metadata.annotation USING btree (user_id);
+            CREATE INDEX idx_c_d_m_c_r_t_xref_cadis_descriptive_metadata_id ON metadata.cadis_descriptive_metadata_cadis_resolution_type_xref USING btree (cadis_descriptive_metadata_id);
+            CREATE INDEX idx_c_d_m_c_r_t_xref_cadis_resolution_type_id ON metadata.cadis_descriptive_metadata_cadis_resolution_type_xref USING btree (cadis_resolution_type_id);
+            CREATE INDEX idx_campaign_activity_id ON metadata.campaign USING btree (id);
+            CREATE INDEX idx_contact_user_id ON metadata.contact USING btree (user_id);
+            CREATE INDEX idx_coordinate_axis_coordinate_type_id ON metadata.coordinate_axis USING btree (coordinate_type_id);
+            CREATE INDEX idx_coordinate_axis_geophysical_properties_id ON metadata.coordinate_axis USING btree (geophysical_properties_id);
+            CREATE INDEX idx_coordinate_axis_unit_id ON metadata.coordinate_axis USING btree (unit_id);
+            CREATE INDEX idx_d_a_c_a_xref_data_access_application_id ON metadata.data_access_capability_application_xref USING btree (data_access_capability_ref);
+            CREATE INDEX idx_d_a_c_a_xref_data_access_application_ref ON metadata.data_access_capability_application_xref USING btree (data_access_application_ref);
+            CREATE INDEX idx_dataset_dataset_license_id ON metadata.dataset USING btree (license_id);
+            CREATE INDEX idx_dataset_model_component_id ON metadata.dataset USING btree (model_component_id);
+            CREATE INDEX idx_dataset_activity_xref_activty_id ON metadata.dataset_activity_xref USING btree (activity_id);
+            CREATE INDEX idx_dataset_activity_xref_dataset_id ON metadata.dataset_activity_xref USING btree (dataset_id);
+            CREATE INDEX idx_dataset_citation_creator_contact_id ON metadata.dataset_citation USING btree (creator_contact_id);
+            CREATE INDEX idx_dataset_citation_descriptive_metadata_id ON metadata.dataset_citation USING btree (descriptive_metadata_id);
+            CREATE INDEX idx_dataset_citation_publisher_contact_id ON metadata.dataset_citation USING btree (publisher_contact_id);
+            CREATE INDEX idx_dataset_contact_xref_contact_id ON metadata.dataset_contact_xref USING btree (contact_id);
+            CREATE INDEX idx_dataset_contact_xref_contact_type_id ON metadata.dataset_contact_xref USING btree (contact_type_id);
+            CREATE INDEX idx_dataset_contact_xref_dataset_id ON metadata.dataset_contact_xref USING btree (dataset_id);
+            CREATE INDEX idx_dataset_data_format_xref_data_format_id ON metadata.dataset_data_format_xref USING btree (data_format_id);
+            CREATE INDEX idx_dataset_data_format_xref_dataset_id ON metadata.dataset_data_format_xref USING btree (dataset_id);
+            CREATE INDEX idx_dataset_restriction_dataset_id ON metadata.dataset_restriction USING btree (id);
+            CREATE INDEX idx_dataset_topic_xref_dataset_id ON metadata.dataset_topic_xref USING btree (dataset_id);
+            CREATE INDEX idx_dataset_topic_xref_topic_id ON metadata.dataset_topic_xref USING btree (topic_id);
+            CREATE INDEX idx_dataset_typed_contact_contact_id ON metadata.dataset_typed_contact USING btree (contact_id);
+            CREATE INDEX idx_dataset_typed_contact_contact_type_id ON metadata.dataset_typed_contact USING btree (contact_type_id);
+            CREATE INDEX idx_dataset_typed_contact_dataset_id ON metadata.dataset_typed_contact USING btree (dataset_id);
+            CREATE INDEX idx_dataset_version_published_state_id ON metadata.dataset_version USING btree (published_state_id);
+            CREATE INDEX idx_dataset_version_user_id ON metadata.dataset_version USING btree (publisher);
+            CREATE INDEX idx_dataset_version_variable_xref_dataset_version_id ON metadata.dataset_version_variable_xref USING btree (dataset_version_id);
+            CREATE INDEX idx_dataset_version_variable_xref_variable_id ON metadata.dataset_version_variable_xref USING btree (variable_id);
+            CREATE INDEX idx_descriptive_metadata_data_product_type_id ON metadata.descriptive_metadata USING btree (data_product_type_id);
+            CREATE INDEX idx_descriptive_metadata_dataset_progress_id ON metadata.descriptive_metadata USING btree (dataset_progress_id);
+            CREATE INDEX idx_descriptive_metadata_physical_domain_id ON metadata.descriptive_metadata USING btree (physical_domain_id);
+            CREATE INDEX idx_descriptive_metadata_resolution_type_id ON metadata.descriptive_metadata USING btree (resolution_type_id);
+            CREATE INDEX idx_d_m_d_t_xref_data_type_id ON metadata.descriptive_metadata_data_type_xref USING btree (data_type_id);
+            CREATE INDEX idx_d_m_d_t_xref_descriptive_metadata_id ON metadata.descriptive_metadata_data_type_xref USING btree (descriptive_metadata_id);
+            CREATE INDEX idx_d_m_i_t_xref_descriptive_metadata_id ON metadata.descriptive_metadata_instrument_type_xref USING btree (descriptive_metadata_id);
+            CREATE INDEX idx_d_m_i_t_xref_instrument_type_id ON metadata.descriptive_metadata_instrument_type_xref USING btree (instrument_type_id);
+            CREATE INDEX idx_descriptive_metadata_link_descriptive_metadata_id ON metadata.descriptive_metadata_link USING btree (descriptive_metadata_id);
+            CREATE INDEX idx_descriptive_metadata_link_link_type_id ON metadata.descriptive_metadata_link USING btree (link_type_id);
+            CREATE INDEX idx_d_m_l_xref_descriptive_metadata_id ON metadata.descriptive_metadata_location_xref USING btree (descriptive_metadata_id);
+            CREATE INDEX idx_d_m_l_xref_location_id ON metadata.descriptive_metadata_location_xref USING btree (location_id);
+            CREATE INDEX idx_d_m_p_t_xref_descriptive_metadata_id ON metadata.descriptive_metadata_platform_type_xref USING btree (descriptive_metadata_id);
+            CREATE INDEX idx_d_m_p_t_xref_platform_type_id ON metadata.descriptive_metadata_platform_type_xref USING btree (platform_type_id);
+            CREATE INDEX idx_d_m_t_f_xref_descriptive_metadata_id ON metadata.descriptive_metadata_time_frequency_xref USING btree (descriptive_metadata_id);
+            CREATE INDEX idx_d_m_t_f_xref_time_frequency_id ON metadata.descriptive_metadata_time_frequency_xref USING btree (time_frequency_id);
+            CREATE INDEX idx_ensemble_activity_id ON metadata.ensemble USING btree (id);
+            CREATE INDEX idx_experiment_activity_id ON metadata.experiment USING btree (id);
+            CREATE INDEX idx_file_access_point_storage_type_id ON metadata.file_access_point USING btree (storage_type_id);
+            CREATE INDEX idx_forcing_type_id ON metadata.forcing USING btree (type);
+            CREATE INDEX idx_gateway_metadata_profile_id ON metadata.gateway USING btree (metadata_profile_id);
+            CREATE INDEX idx_gateway_specific_metadata_dataset_id ON metadata.gateway_specific_metadata USING btree (dataset_ref);
+            CREATE INDEX idx_geophysical_properties_grid_id ON metadata.geophysical_properties USING btree (grid_id);
+            CREATE INDEX idx_geophysical_properties_dataset_id ON metadata.geophysical_properties USING btree (id);
+            CREATE INDEX idx_geospatial_coordinate_axis_coordinate_axis_id ON metadata.geospatial_coordinate_axis USING btree (id);
+            CREATE INDEX idx_location_taxonomy_id ON metadata.location USING btree (taxonomy_id);
+            CREATE INDEX idx_logical_file_data_format_id ON metadata.logical_file USING btree (data_format_id);
+            CREATE INDEX idx_l_f_v_xref_logical_file_id ON metadata.logical_file_variable_xref USING btree (logical_file_id);
+            CREATE INDEX idx_l_f_v_xref_variable_id ON metadata.logical_file_variable_xref USING btree (variable_id);
+            CREATE INDEX idx_project_activity_id ON metadata.project USING btree (id);
+            CREATE INDEX idx_project_dataset_id ON metadata.project USING btree (dataset_id);
+            CREATE INDEX idx_resource_tag_xref_tag_ref ON metadata.resource_tag_xref USING btree (tag_ref);
+            CREATE INDEX idx_time_coordinate_axis_coordinate_axis_id ON metadata.time_coordinate_axis USING btree (id);
+            CREATE INDEX idx_topic_taxonomy_id ON metadata.topic USING btree (taxonomy_id);
+            CREATE INDEX idx_variable_dataset_version_id ON metadata.variable USING btree (dataset_version_id);
+            CREATE INDEX idx_variable_standard_name_xref_variable_id ON metadata.variable_standard_name_xref USING btree (variable_id);
+            CREATE INDEX idx_z_coordinate_axis_geospatial_coordinate_axis_id ON metadata.z_coordinate_axis USING btree (id);
+            CREATE INDEX idx_z_coordinate_axis_z_positive_type_id ON metadata.z_coordinate_axis USING btree (z_positive_type_id);
+        </sql>
+
+        <!-- metrics -->
+        <sql>
+            CREATE INDEX idx_clickstream_users_id ON metrics.clickstream USING btree (users_id);
+            CREATE INDEX idx_clickstream_user_agent_id ON metrics.clickstream USING btree (user_agent_id);
+            CREATE INDEX idx_file_download_users_id ON metrics.file_download USING btree (users_id);
+            CREATE INDEX idx_file_download_file_access_point_id ON metrics.file_download USING btree (file_access_point_id);
+            CREATE INDEX idx_file_download_user_agent_id ON metrics.file_download USING btree (user_agent_id);
+            CREATE INDEX idx_user_agent_operating_system_type_id ON metrics.user_agent USING btree (operating_system_type_id);
+            CREATE INDEX idx_user_agent_user_agent_type ON metrics.user_agent USING btree (user_agent_type_id);
+            CREATE INDEX idx_user_logic_user_login_type_id ON metrics.user_login USING btree (user_login_type_id);
+            CREATE INDEX idx_user_login_users_id ON metrics.user_login USING btree (users_id);
+            CREATE INDEX idx_user_search_users_id ON metrics.user_search USING btree (users_id);
+            CREATE INDEX idx_user_search_facet_user_search_id ON metrics.user_search_facet USING btree (user_search_id);
+        </sql>
+
+        <!-- oai -->
+        <sql>
+            CREATE INDEX idx_harvesting_log_harvester_gateway_id ON oai.harvesting_log USING btree (harvester_gateway_id);
+            CREATE INDEX idx_harvesting_log_metadata_format_id ON oai.harvesting_log USING btree (metadata_format_id);
+            CREATE INDEX idx_harvesting_log_repository_gateway_id ON oai.harvesting_log USING btree (repository_gateway_id);
+            CREATE INDEX idx_harvesting_record_harvesting_log_id ON oai.harvesting_record USING btree (harvesting_log_id);
+            CREATE INDEX idx_harvesting_record_record_status_id ON oai.harvesting_record USING btree (record_status_id);
+        </sql>
+
+        <!-- security -->
+        <sql>
+            CREATE INDEX idx_security_authorization_token_user_id ON security.authorization_token USING btree (user_id);
+            CREATE INDEX idx_group_principal_id ON security.group USING btree (id);
+            CREATE INDEX idx_group_data_group_data_type_id ON security.group_data USING btree (group_data_type_id);
+            CREATE INDEX idx_group_default_role_group_id ON security.group_default_role USING btree (group_id);
+            CREATE INDEX idx_group_default_role_role_id ON security.group_default_role USING btree (role_id);
+            CREATE INDEX idx_group_group_data_xref_group_data_id ON security.group_group_data_xref USING btree (group_data_id);
+            CREATE INDEX idx_group_group_data_xref_group_id ON security.group_group_data_xref USING btree (group_id);
+            CREATE INDEX idx_membership_group_id ON security.membership USING btree (group_id);
+            CREATE INDEX idx_membership_role_id ON security.membership USING btree (role_id);
+            CREATE INDEX idx_membership_status_id ON security.membership USING btree (status_id);
+            CREATE INDEX idx_membership_user_id ON security.membership USING btree (user_id);
+            CREATE INDEX idx_permission_operation_id ON security.permission USING btree (operation_id);
+            CREATE INDEX idx_permission_principal_id ON security.permission USING btree (principal_id);
+            CREATE INDEX idx_principal_gateway_id ON security.principal USING btree (gateway_id);
+            CREATE INDEX idx_role_operation_xref_operation_id ON security.role_operation_xref USING btree (operation_id);
+            CREATE INDEX idx_role_operation_xref_role_id ON security.role_operation_xref USING btree (role_id);
+            CREATE INDEX idx_user_principal_id ON security.user USING btree (id);
+            CREATE INDEX idx_user_data_group_data_id ON security.user_data USING btree (group_data_id);
+            CREATE INDEX idx_user_data_user_id ON security.user_data USING btree (user_id);
+        </sql>
+
+        <!-- workspace -->
+        <sql>
+            CREATE INDEX idx_data_transfer_item_error_id ON workspace.data_transfer_item USING btree (error_id);
+            CREATE INDEX idx_data_transfer_item_request_id ON workspace.data_transfer_item USING btree (request_id);
+            CREATE INDEX idx_data_transfer_item_status_id ON workspace.data_transfer_item USING btree (status_id);
+            CREATE INDEX idx_data_transfer_request_data_access_capability_type_id ON workspace.data_transfer_request USING btree (data_access_capability_type_id);
+            CREATE INDEX idx_data_transfer_request_dataset_id ON workspace.data_transfer_request USING btree (dataset_id);
+            CREATE INDEX idx_data_transfer_request_error_id ON workspace.data_transfer_request USING btree (error_id);
+            CREATE INDEX idx_data_transfer_request_gateway_id ON workspace.data_transfer_request USING btree (gateway_id);
+            CREATE INDEX idx_data_transfer_request_status_id ON workspace.data_transfer_request USING btree (status_id);
+            CREATE INDEX idx_data_transfer_request_user_id ON workspace.data_transfer_request USING btree (user_id);
+            CREATE INDEX idx_data_transfer_request_error_data_access_capability_type_id ON workspace.data_transfer_request_error USING btree (data_access_capability_type_id);
+            CREATE INDEX idx_search_criteria_workspace_id ON workspace.search_criteria USING btree (workspace_id);
+            CREATE INDEX idx_search_facet_search_criteria_id ON workspace.search_facet USING btree (search_criteria_id);
+            CREATE INDEX idx_search_result_workspace_id ON workspace.search_result USING btree (workspace_id);
+            CREATE INDEX idx_workspace_gateway_id ON workspace.workspace USING btree (gateway_id);
+            CREATE INDEX idx_workspace_principal_id ON workspace.workspace USING btree (principal_id);
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

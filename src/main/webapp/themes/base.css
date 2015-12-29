@@ -1,0 +1,500 @@
+/*
+
+The base css used for the entire Gateway Portal Software.  All themes should override this file.
+
+File Setup
+
+- Styles appear in the file in the order that they are displayed in a normal page:  header, page title, error/info messages, content, footer, etc...
+- Then visual components like the descriptive-row tag appear in alphabetical order after all the page elements.
+
+*/
+
+html, body {
+    margin : 0;
+    padding : 0;
+	height: 100%;
+}
+
+body {
+	background-color: #FEFEFE;
+	color: #212121;
+	font-family: Verdana, Arial, Helvetica, Sans-Serif;
+}
+
+/*
+ * Container for all page content. The #page* elements create high-level
+ * page formatting that keeps the footer at the bottom of the page.
+ */
+#pageContainer {
+    /*
+     * Ensure the page stays the full height of the screen, even if there
+     * is hardly any content
+     */
+    min-height:100%;
+    /* allows absolute positioning inside of the container */
+    position:relative;
+}
+
+/*
+ * Enclosure for core page content, the things that aren't the header and
+ * footer. Must have bottom padding that is equal to or slightly larger
+ * than the height of the footer.
+ */
+#pageBody {
+    /* height of the footer element + 5px for content padding */
+    padding-bottom:115px;
+    text-align: left;
+}
+
+/*
+ * The footer is a fixed height so that #pageBody can be set to ride above it.
+ * The div is absolutely positioned at the bottom of the #pageContainer. When
+ * there's not much content, the min-height:100% in #pageContainer ensures the
+ * footer is at the bottom of the screen. When there's more than a page of
+ * the footer stays at the very bottom.
+ */
+#pageFooter {
+    text-align: center;
+    width:100%;     /* stretch across the whole page */
+    height: 110px;
+    position:absolute;
+    bottom:0;
+    left:0;
+}
+
+ol,ul,dl {
+    /*bringing lists on to the page with breathing room */
+    margin-left:2em;
+}
+
+ul li {
+    list-style-type: none;
+}
+
+ul {
+    margin: 0;
+}
+
+.broadcast-message-banner {
+	background-color: #F9D044;
+	text-align: center;
+	padding: 10px 0 10px 0;
+}
+
+.broadcast-message-banner p {
+	margin-bottom: 10px;
+}
+
+.noDisplay {
+	display: none;
+}
+
+.highlight {
+	color: #2647A0;
+}
+
+.required {
+	color: #2647A0;
+}
+
+.extra_wide {
+
+}
+
+.dataset_name {
+	padding-bottom: 10px;
+}
+
+.dataset_name h1 {
+	font-size: 22px;
+	font-weight: bold;
+	margin: 0;
+}
+
+/*
+
+styles for the search page
+
+*/
+
+.search {
+	padding: 0 0 0 200px;
+}
+
+.stats {
+	margin: 15px 0 0 200px;
+}
+
+.count {
+	display: inline;
+}
+
+.resultsPerPage {
+	display: inline;
+	padding: 0 0 0 30px;
+}
+
+.available_facets {
+	float: left;
+	width: 160px;
+}
+
+.available_facets .facet {
+	margin: 10px 0 0 0;
+}
+
+.available_facets .facet ul {
+	margin: 0 0 6px 5px;
+}
+
+.available_facets .facet .more ul {
+	margin: -6px 0 6px 5px;
+}
+
+.available_facets .facet li {
+	margin: 0 0 1px 0;
+}
+
+.available_facets .facet li a:visited {
+	color: blue;
+}
+
+.available_facets .facet .facetLink {
+	color: blue;
+	cursor: pointer;
+	margin: 0 0 0 5px;
+	text-decoration: underline;
+}
+
+.selected_facets {
+	overflow: hidden;
+}
+
+.selected_facets .facet {
+	display: inline;
+	float: left;
+	margin: 0 10px 0 0;
+}
+
+.selected_facets .facet ul {
+	margin: 0 0 5px 5px;
+}
+
+.selected_facets .facet li {
+	margin: 0 0 1px 0;
+}
+
+.selected_facets .facet li a:visited {
+	color: blue;
+}
+
+.selected_facets .facet .remove {
+	font-size: 10px;
+}
+
+.results {
+	margin: 15px 0 0 200px;
+	overflow: hidden;
+}
+
+.results table th {
+	padding: 0 0 5px 0;
+	text-align: left;
+}
+
+.results table th .action {
+	text-align: left;
+}
+
+.results table td {
+	padding: 0 0 20px 0;
+	vertical-align: top;
+}
+
+.results table td .action {
+	text-align: left;
+	padding: 3px 3px 0 0;
+}
+
+.result {
+	
+}
+
+.result .title {
+	
+}
+
+.result .metadata {
+	color: grey;
+	font-size: 75%;
+	padding-left: 20px;
+}
+
+.containerType {
+	color: grey;
+	font-size: 75%;
+	padding-left: 20px;
+}
+
+.result .description {
+	padding-left: 20px;
+	padding-right: 6px;
+}
+
+.pagination {
+	margin-left: 200px;
+	padding: 10px 0 0 0;
+}
+
+.pagination .next a:visited {
+	color: blue;
+}
+
+.pagination .previous a:visited {
+	color: blue;
+}
+
+.result-select-column {
+	width: 25px;
+	vertical-align: text-top;
+	text-align: left;
+}
+
+/*
+
+styles for the sortable jquery widget
+
+*/
+
+.sortable {
+    margin: 0;
+    padding: 0;
+    width: 55%;
+}
+
+.sortable li {
+    cursor: pointer;
+    list-style-type: none;
+    margin: 0 3px 3px 0;
+    padding: 0.2em;
+    background: #F2F2F2;
+    border: 1px solid #DDDDDD;
+    /*
+     * Sets the height of each list element row. This must be set to a value
+     * to ensure that the overall vertical size of the unordered list remains
+     * unchanged while elements are being dragged.
+     */
+    height: 26px;
+}
+
+
+/*
+
+styles for the descriptive_row tag
+
+*/
+
+.descriptive_row_table {
+	
+}
+
+.descriptive_row_table_bottom_row {
+	margin: 0 0 10px 0;
+}
+
+.descriptive_row_table tr {
+	vertical-align: top;
+}
+
+.descriptive_row_table td {
+
+}
+
+.descriptive_row_table .descriptive_row_required_text {
+	padding: 0 2px 0 0;
+	width: 425px;
+	font-size: 85%;
+}
+
+.descriptive_row_table .descriptive_row_name {
+	margin: 0 3px 0 0;
+    /* remove this width when all tables converted to spans */
+	width: 175px;
+}
+
+.descriptive_row_table .descriptive_row_name span {
+    display: inline-block;
+    width: 175px;
+}
+
+.descriptive_row_table .descriptive_row_value {
+	width: 250px;
+}
+
+.descriptive_row_table .descriptive_row_value .extra_wide {
+	width: 500px;
+}
+
+.descriptive_row_table .descriptive_row_error {
+	color: red;
+	font-weight: bold;
+}
+
+.descriptive_row_table .descriptive_row_textarea {
+	margin: 0 10px 0 0;
+	height: 150px;
+	width: 425px;
+}
+
+.descriptive_row_table .descriptive_row_help {
+	vertical-align: top;
+	width: 175px;
+}
+
+.descriptive_row_table .descriptive_row_help span {
+	font-size: 85%;
+}
+
+.descriptive_row_table .descriptive_textarea_help {
+	vertical-align: top;
+	width: 425px;
+}
+
+.descriptive_row_table .descriptive_textarea_help span {
+	font-size: 85%;
+}
+
+.descriptive_row_table .descriptive_row_example {
+	vertical-align: top;
+	width: 280px;
+}
+
+.descriptive_row_table .descriptive_row_example span {
+	font-size: 85%;
+}
+
+.descriptive_row_table .descriptive_textarea_example {
+	vertical-align: top;
+	width: 425px;
+}
+
+.descriptive_row_table .descriptive_textarea_example span {
+	font-size: 85%;
+}
+
+/*
+ styles for the retracted dataset div that lives on the view-dataset.jsp.
+*/
+.retracted_dataset {
+	padding-bottom: 10px;
+}
+
+.retracted_dataset span {
+	color: red;
+	font-size: 150%;
+	font-weight: bold;
+}
+
+/* Create Dataset Wizard */
+.wizardTable {
+    display:table;
+    
+}
+.wizardSelected {
+    font-weight:bold;
+    color: #000;
+    background-color: #ccc;
+}
+.wizardRow {
+    display:table-row;
+}
+.wizardRowGroup {
+    display:table-row-group;
+    outline: 1px solid grey;
+}
+.wizardCell {
+    display:table-cell;
+    margin: 10px;
+    padding: 20px;
+}
+
+/*.alternate_row:nth-of-type(even){
+  */
+.alternate_row {
+    background:#EDF5FF;
+     width:100%;
+}
+
+/*
+ * Formatting for a file input so that it looks like a Bootstrap button
+ */
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: inline-block;
+}
+
+/* navigation menu */
+.navbar {
+    font-size: 16px;
+}
+
+/*
+ * Ensure that sub-menu dropdown items don't show up as bulleted. This is
+ * needed because of the list formatting specified above in this file.
+ */
+.navbar ul li {
+    list-style: none;
+}
+
+/*
+ * If the display width is at least 768 pixels (desktop), then force navbar
+ * menu items to drop down on hover. Set the hidden menu option to display as
+ * a block when the li tag is hovered over. This display setting also lets
+ * you redirect to a page when you click on the dropdown button itself.
+ * To use, set the anchor's href element in the <li class="dropdown">:
+ * <ul class="nav navbar-nav navbar-right">
+ *    <li class="dropdown">
+ *        <a href="<c:url value="/ac/guest/secure/login.html"/>"
+ *            role="button" aria-haspopup="true" aria-expanded="false">
+ *            Sign in <span class="caret"></span>
+ *        </a>
+ * ...
+ */
+@media (min-width: 768px) {
+    ul.nav li.dropdown:hover > ul.dropdown-menu {
+        display: block;
+    }
+}
+
+/* change bootstrap colors when hovering on a table row */
+.table-hover tbody tr:hover td, .highlightRow {
+    background-color: #9494B8;
+    color:#ffffff;
+    /* change to a hand when hovering on a row */
+    cursor: pointer;
+}
+
+/* content of panel shown when navigation tab is selected */
+.tab-content {
+    /*
+     * Put in padding to ensure the tab-panel content doesn't butt up against the
+     * top of the panel. First number is top/bottom padding, second number is
+     * left/right padding.
+     */
+    padding: 5px 15px;
+}

@@ -1,0 +1,16 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100618-SGF-1506.xml">
+
+    <changeSet author="nch" id="20100618-SGF-1506">
+
+
+        <addColumn schemaName="metrics" tableName="file_download">
+            <column name="success" type="boolean" value="true" />
+        </addColumn>
+
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.metadata.inventory.VariableImpl" table="variable" schema="metadata">
+        <cache usage="read-write"/>
+
+        <id name="identifier" column="id" type="sgf.gateway.utils.hibernate.UUIDUserType" access="field"/>
+
+        <many-to-one name="parent" column="dataset_version_id" class="sgf.gateway.model.metadata.DatasetVersionImpl"
+                     not-null="true" access="field"/>
+
+        <property name="name" column="name" type="string" not-null="true" access="field"/>
+        <property name="description" column="description" type="string" access="field"/>
+
+        <!-- Save new units, but make sure we don't delete them -->
+        <many-to-one name="units" column="units_id" class="sgf.gateway.model.metadata.inventory.UnitImpl"
+                     cascade="persist,merge,save-update" access="field"/>
+
+        <!-- Save new StandardNames, but make sure we don't delete them -->
+        <set name="standardNamesReference" outer-join="true" table="variable_standard_name_xref" schema="metadata"
+             access="field" cascade="persist,merge,save-update">
+            <cache usage="read-write"/>
+            <key column="variable_id"/>
+            <many-to-many class="sgf.gateway.model.metadata.inventory.StandardNameImpl" column="standard_name_id"/>
+        </set>
+
+    </class>
+
+    <query name="findVariablesByStandardName" cacheable="true">
+        <![CDATA[
+            SELECT variable from sgf.gateway.model.metadata.inventory.VariableImpl variable
+            inner join variable.standardNamesReference standardName
+            where lower(standardName.name) = lower(:name) and standardName.type = :type
+        ]]>
+    </query>
+
+</hibernate-mapping>

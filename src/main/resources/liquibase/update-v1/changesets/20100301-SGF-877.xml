@@ -1,0 +1,93 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100301-SGF-877.xml">
+
+    <changeSet id="20100301-SGF-877" author="danielle">
+        <comment>Adding the feature for project renewal in CADIS</comment>
+
+        <createTable tableName="cadis_project" schemaName="metadata">
+            <column name="id" type="uuid">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pkey_cadis_project"/>
+            </column>
+            <column name="continuing_project_id" type="uuid"/>
+        </createTable>
+        <sql>
+            ALTER TABLE metadata.cadis_project OWNER TO postgres;
+            GRANT ALL ON TABLE metadata.cadis_project TO postgres;
+            GRANT ALL ON TABLE metadata.cadis_project TO public;
+        </sql>
+        <addForeignKeyConstraint constraintName="fkey_cadis_project_project_id"
+                                 baseTableSchemaName="metadata" baseTableName="cadis_project" baseColumnNames="id"
+                                 referencedTableSchemaName="metadata" referencedTableName="project" referencedColumnNames="id"
+                                 onDelete="CASCADE" onUpdate="CASCADE" deferrable="true" initiallyDeferred="true"/>
+        <addForeignKeyConstraint constraintName="fkey_continuing_project_id_project_id"
+                                 baseTableSchemaName="metadata" baseTableName="cadis_project" baseColumnNames="continuing_project_id"
+                                 referencedTableSchemaName="metadata" referencedTableName="project" referencedColumnNames="id"
+                                 onDelete="CASCADE" onUpdate="CASCADE" deferrable="true" initiallyDeferred="true"/>
+
+        <createTable tableName="cadis_project_project_xref" schemaName="metadata">
+            <column name="cadis_project_id" type="uuid">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pkey_cadis_project_project_xref"/>
+            </column>
+            <column name="project_id" type="uuid">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pkey_cadis_project_project_xref"/>
+            </column>
+        </createTable>
+        <sql>
+            ALTER TABLE metadata.cadis_project_project_xref OWNER TO postgres;
+            GRANT ALL ON TABLE metadata.cadis_project_project_xref TO postgres;
+            GRANT ALL ON TABLE metadata.cadis_project_project_xref TO public;
+        </sql>
+        <addForeignKeyConstraint constraintName="fkey_cadis_project_project_xref"
+                                 baseTableSchemaName="metadata" baseTableName="cadis_project_project_xref" baseColumnNames="cadis_project_id"
+                                 referencedTableSchemaName="metadata" referencedTableName="cadis_project" referencedColumnNames="id"
+                                 onDelete="CASCADE" onUpdate="CASCADE" deferrable="true" initiallyDeferred="true"/>
+        <addForeignKeyConstraint constraintName="fkey_cadis_project_project_id_xref"
+                                 baseTableSchemaName="metadata" baseTableName="cadis_project_project_xref" baseColumnNames="project_id"
+                                 referencedTableSchemaName="metadata" referencedTableName="project" referencedColumnNames="id"
+                                 onDelete="CASCADE" onUpdate="CASCADE" deferrable="true" initiallyDeferred="true"/>
+
+        <createTable tableName="cadis_project_typed_contact" schemaName="metadata">
+            <column name="cadis_project_id" type="uuid">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pkey_cadis_project_typed_contact"/>
+            </column>
+            <column name="contact_id" type="uuid">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pkey_cadis_project_typed_contact"/>
+            </column>
+            <column name="contact_type_id" type="integer">
+                <constraints nullable="false" primaryKey="true"
+                             primaryKeyName="pkey_cadis_project_typed_contact"/>
+            </column>
+            <column name="idx_order" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="nsf_award_number" type="varchar"/>
+        </createTable>
+        <sql>
+            ALTER TABLE metadata.cadis_project_typed_contact OWNER TO postgres;
+            GRANT ALL ON TABLE metadata.cadis_project_typed_contact TO postgres;
+            GRANT ALL ON TABLE metadata.cadis_project_typed_contact TO public;
+        </sql>
+        <addForeignKeyConstraint constraintName="fkey_cadis_project_typed_contact_cadis_project_id"
+                                 baseTableSchemaName="metadata" baseTableName="cadis_project_typed_contact" baseColumnNames="cadis_project_id"
+                                 referencedTableSchemaName="metadata" referencedTableName="cadis_project" referencedColumnNames="id"
+                                 onDelete="CASCADE" onUpdate="CASCADE" deferrable="true" initiallyDeferred="true"/>
+        <addForeignKeyConstraint constraintName="fkey_cadis_project_typed_contact_contact_id"
+                                 baseTableSchemaName="metadata" baseTableName="cadis_project_typed_contact" baseColumnNames="contact_id"
+                                 referencedTableSchemaName="metadata" referencedTableName="contact" referencedColumnNames="id"
+                                 onDelete="CASCADE" onUpdate="CASCADE" deferrable="true" initiallyDeferred="true"/>
+        <addForeignKeyConstraint constraintName="fkey_cadis_project_typed_contact_contact_type_id"
+                                 baseTableSchemaName="metadata" baseTableName="cadis_project_typed_contact" baseColumnNames="contact_type_id"
+                                 referencedTableSchemaName="metadata" referencedTableName="contact_type" referencedColumnNames="id"
+                                 onDelete="CASCADE" onUpdate="CASCADE" deferrable="true" initiallyDeferred="true"/>
+
+    </changeSet>
+
+</databaseChangeLog>

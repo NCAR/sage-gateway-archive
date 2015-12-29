@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.metadata.ScienceKeywordImpl" table="science_keyword" schema="metadata" lazy="false">
+
+        <id name="identifier" column="id" access="field" type="sgf.gateway.utils.hibernate.UUIDUserType"/>
+
+        <version name="version" column="version" unsaved-value="null" access="field"/>
+
+        <property name="category" column="category" type="string" access="field"/>
+        <property name="topic" column="topic" type="string" access="field"/>
+        <property name="term" column="term" type="string" access="field"/>
+        <property name="variableLevel1" column="variable_level_1" type="string" access="field"/>
+        <property name="variableLevel2" column="variable_level_2" type="string" access="field"/>
+        <property name="variableLevel3" column="variable_level_3" type="string" access="field"/>
+        <property name="variableLevel4" column="variable_level_4" type="string" access="field"/>
+        <property name="displayText" column="display" type="string" access="field"/>
+        <property name="dateCreated" column="date_created" type="timestamp" insert="false" update="false"
+                  access="field"/>
+        <property name="dateUpdated" column="date_updated" type="timestamp" insert="false" update="false"
+                  access="field"/>
+
+        <set name="metadataReference" table="descriptive_metadata_science_keyword_xref" schema="metadata" inverse="true"
+             cascade="persist,merge,save-update" lazy="extra" access="field">
+            <key column="science_keyword_id"/>
+            <many-to-many class="sgf.gateway.model.metadata.descriptive.DescriptiveMetadataImpl"
+                          column="descriptive_metadata_id"/>
+        </set>
+
+    </class>
+
+    <sql-query name="findUsedScienceKeywordTopics" cacheable="true">
+        <return-scalar column="topic" type="string"/>
+        SELECT
+        DISTINCT(science_keyword.topic) as topic
+        FROM
+        metadata.descriptive_metadata AS descriptive_metadata
+        JOIN
+        metadata.descriptive_metadata_science_keyword_xref AS descriptive_metadata_science_keyword_xref ON
+        descriptive_metadata.id = descriptive_metadata_science_keyword_xref.descriptive_metadata_id
+        JOIN
+        metadata.science_keyword AS science_keyword ON descriptive_metadata_science_keyword_xref.science_keyword_id =
+        science_keyword.id
+        ORDER BY
+        topic
+    </sql-query>
+</hibernate-mapping>

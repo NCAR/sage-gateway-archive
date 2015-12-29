@@ -1,0 +1,73 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="/Liquibase/update-v2/changesets/20120801-GTWY-3408.xml">
+
+    <changeSet id="20120801-GTWY-3408" author="sgf">
+
+        <createProcedure >
+            CREATE OR REPLACE FUNCTION metrics.save_metrics() RETURNS trigger AS '
+            DECLARE
+            user_row security.user%ROWTYPE;
+            fap_row metadata.file_access_point%ROWTYPE;
+            logical_file_row metadata.logical_file%ROWTYPE;
+            BEGIN
+
+            -- What I have (NEW values):
+            -- INSERT INTO metrics.file_download (user_openid, file_access_point_uri, date_started, date_completed, success, duration, user_agent_name) VALUES (?, ?, ?, ?, ?, ?, ?)
+
+            -- Check that openid is given
+            IF NEW.user_openid IS NULL THEN
+            RAISE EXCEPTION ''openid cannot be null'';
+            END IF;
+
+            -- Look up values for User based on unique openid
+            SELECT * INTO user_row from security.user where openid = NEW.user_openid;
+
+            NEW.user_username := user_row.username;
+            NEW.user_id := user_row.id;
+            NEW.user_email := user_row.email;
+            NEW.user_firstname := user_row.firstname;
+            NEW.user_lastname := user_row.lastname;
+
+            -- User Agent
+            SELECT id INTO NEW.user_agent_id FROM metrics.user_agent WHERE name = NEW.user_agent_name;
+
+            -- Check for given File access point
+            IF NEW.file_access_point_uri IS NULL THEN
+            RAISE EXCEPTION ''file_access_point_uri cannot be null'';
+            END IF;
+
+            SELECT * INTO fap_row FROM metadata.file_access_point where full_access_url = NEW.file_access_point_uri;
+
+            NEW.file_access_point_id := fap_row.id;
+
+            -- logical_file
+            SELECT * INTO logical_file_row FROM metadata.logical_file where id = fap_row.logical_file_id;
+
+            NEW.logical_file_id := logical_file_row.id;
+            NEW.logical_file_name := logical_file_row.name;
+            NEW.logical_file_size := logical_file_row.size;
+            NEW.logical_file_lineage_id := logical_file_row.lineage_id;
+            NEW.logical_file_version_id := logical_file_row.version_id;
+
+            RETURN NEW;
+            END; '
+            LANGUAGE plpgsql;
+        </createProcedure>
+
+        <sql>
+            CREATE TRIGGER metrics_trigger BEFORE INSERT on metrics.file_download
+            FOR EACH ROW
+            EXECUTE PROCEDURE metrics.save_metrics();
+        </sql>
+
+        <sql>
+            ALTER FUNCTION metrics.save_metrics() OWNER TO ${database.role.admin};
+            REVOKE ALL ON FUNCTION metrics.save_metrics() FROM public;
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

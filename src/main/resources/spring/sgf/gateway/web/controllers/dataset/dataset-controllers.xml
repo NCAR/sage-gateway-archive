@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="datasetController" class="sgf.gateway.web.controllers.dataset.DatasetController">
+        <constructor-arg index="0" ref="datasetRepository"/>
+        <constructor-arg index="1" ref="gateway"/>
+        <constructor-arg index="2" ref="moreLikeThisService"/>
+        <constructor-arg index="3" value="${ezid.publisher}"/>
+        <property name="datasetView" value="${views.browse.dataset}"/>
+    </bean>
+
+    <bean id="datasetAtomFeedController" class="sgf.gateway.web.controllers.dataset.DatasetAtomFeedController">
+        <constructor-arg index="0" ref="datasetRepository"/>
+    </bean>
+
+    <bean id="wgetScriptViewSelector" class="sgf.gateway.web.controllers.download.WgetScriptViewSelector">
+        <constructor-arg name="certificateView" value="download-wget-certificate"/>
+        <constructor-arg name="noCertificateView" value="download-wget-no-certificate"/>
+    </bean>
+
+    <bean id="filesController" class="sgf.gateway.web.controllers.dataset.file.FilesController">
+        <constructor-arg name="gateway" ref="gateway"/>
+        <constructor-arg name="logicalFileService" ref="logicalFileService"/>
+        <constructor-arg name="runtimeUserService" ref="runtimeUserService"/>
+        <constructor-arg name="authorizationUtils" ref="authorizationUtils"/>
+        <constructor-arg name="httpEndpointStrategy" ref="httpEndpointStrategy"/>
+        <constructor-arg name="gridftpEndpointStrategy" ref="gridftpEndpointStrategy"/>
+        <constructor-arg name="wgetViewSelector" ref="wgetScriptViewSelector"/>
+    </bean>
+
+    <bean id="massDeleteController" class="sgf.gateway.web.controllers.dataset.file.MassDeleteController">
+        <constructor-arg name="logicalFileService" ref="logicalFileService"/>
+        <constructor-arg name="authorizationUtils" ref="authorizationUtils"/>
+    </bean>
+
+    <bean id="viewDoiController" class="sgf.gateway.web.controllers.dataset.doi.ViewDoiController">
+    </bean>
+
+    <bean id="addDoiController" class="sgf.gateway.web.controllers.dataset.doi.AddDoiController">
+        <constructor-arg name="doiService" ref="doiService"/>
+        <constructor-arg name="authorizationUtils" ref="authorizationUtils"/>
+        <constructor-arg name="publisher" value="${ezid.publisher}"/>
+    </bean>
+
+    <bean id="editDoiController" class="sgf.gateway.web.controllers.dataset.doi.EditDoiController">
+        <constructor-arg name="doiService" ref="doiService"/>
+        <constructor-arg name="authorizationUtils" ref="authorizationUtils"/>
+        <constructor-arg name="publisher" value="${ezid.publisher}"/>
+    </bean>
+
+    <bean id="basicFileUploadController" class="sgf.gateway.web.controllers.dataset.file.BasicFileUploadController">
+        <constructor-arg name="logicalFileService" ref="logicalFileService"/>
+        <constructor-arg name="authorizationUtils" ref="authorizationUtils"/>
+    </bean>
+
+    <bean id="bulkFileUploadController" class="sgf.gateway.web.controllers.dataset.file.BulkFileUploadController">
+        <constructor-arg name="logicalFileService" ref="logicalFileService"/>
+        <constructor-arg name="authorizationUtils" ref="authorizationUtils"/>
+    </bean>
+
+    <bean id="md5ChecksumController" class="sgf.gateway.web.controllers.dataset.file.checksum.Md5ChecksumController">
+        <constructor-arg name="authorizationUtils" ref="authorizationUtils"/>
+        <constructor-arg name="checksumService" ref="checksumService"/>
+    </bean>
+
+    <bean id="relatedLinkController" class="sgf.gateway.web.controllers.dataset.relatedLink.RelatedLinkController">
+        <constructor-arg name="relatedLinkService" ref="relatedLinkService"/>
+        <constructor-arg name="authorizationUtils" ref="authorizationUtils"/>
+    </bean>
+
+    <bean id="relatedLinkEditorController"
+          class="sgf.gateway.web.controllers.dataset.relatedLink.RelatedLinkEditorController">
+        <constructor-arg name="relatedLinkService" ref="relatedLinkService"/>
+        <constructor-arg name="authorizationUtils" ref="authorizationUtils"/>
+    </bean>
+
+    <bean id="responsiblePartyController"
+          class="sgf.gateway.web.controllers.dataset.responsibleParty.ResponsiblePartyController">
+    </bean>
+
+    <bean id="addResponsiblePartyController"
+          class="sgf.gateway.web.controllers.dataset.responsibleParty.AddResponsiblePartyController">
+        <constructor-arg name="cadisDatasetService" ref="cadisDatasetService"/>
+        <constructor-arg name="authorizationUtils" ref="authorizationUtils"/>
+        <constructor-arg name="responsiblePartyRepository" ref="responsiblePartyRepository"/>
+    </bean>
+
+    <bean id="editresponsiblePartyController"
+          class="sgf.gateway.web.controllers.dataset.responsibleParty.EditResponsiblePartyController">
+        <constructor-arg name="cadisDatasetService" ref="cadisDatasetService"/>
+        <constructor-arg name="authorizationUtils" ref="authorizationUtils"/>
+        <constructor-arg name="responsiblePartyRepository" ref="responsiblePartyRepository"/>
+    </bean>
+
+    <bean id="deleteResponsiblePartyController"
+          class="sgf.gateway.web.controllers.dataset.responsibleParty.DeleteResponsiblePartyController">
+        <constructor-arg name="cadisDatasetService" ref="cadisDatasetService"/>
+        <constructor-arg name="authorizationUtils" ref="authorizationUtils"/>
+    </bean>
+
+    <bean id="responsiblePartyOrderController"
+          class="sgf.gateway.web.controllers.dataset.responsibleParty.ResponsiblePartyOrderController">
+        <constructor-arg name="cadisDatasetService" ref="cadisDatasetService"/>
+        <constructor-arg name="authorizationUtils" ref="authorizationUtils"/>
+    </bean>
+
+    <bean id="datasetOrderController" class="sgf.gateway.web.controllers.dataset.DatasetOrderController">
+        <constructor-arg name="cadisDatasetService" ref="cadisDatasetService"/>
+        <constructor-arg name="authorizationUtils" ref="authorizationUtils"/>
+    </bean>
+
+    <bean id="addAwardValidator" class="sgf.gateway.validation.spring.DefaultValidator">
+        <constructor-arg index="0">
+            <value>sgf.gateway.web.controllers.project.command.NewAwardCommand</value>
+        </constructor-arg>
+        <property name="requiredValidators">
+            <list>
+                <bean class="sgf.gateway.validation.spring.required.RequiredFieldValidator">
+                    <constructor-arg index="0" value="awardNumber"/>
+                    <constructor-arg index="1" value=""/>
+                    <constructor-arg index="2" value="Award Number is required"/>
+                </bean>
+            </list>
+        </property>
+        <property name="persistentDataValidators">
+            <list>
+                <bean class="sgf.gateway.validation.spring.persistence.ProjectAwardUniqueValidator">
+                    <constructor-arg index="0" value="awardNumber"/>
+                    <constructor-arg index="1" value=""/>
+                    <constructor-arg index="2" value="Award Number already exists in this Collection"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="datasetAwardEditorController" class="sgf.gateway.web.controllers.dataset.DatasetAwardEditorController">
+        <constructor-arg index="0" ref="addAwardValidator"/>
+        <constructor-arg index="1" ref="cadisDatasetService"/>
+    </bean>
+
+    <bean id="shareDatasetController" class="sgf.gateway.web.controllers.dataset.share.ShareDatasetController">
+        <constructor-arg name="shareDataService" ref="shareDataService"/>
+        <constructor-arg name="authorizationUtils" ref="authorizationUtils"/>
+        <constructor-arg name="shareUrl" value="${share.url}"/>
+    </bean>
+
+</beans>

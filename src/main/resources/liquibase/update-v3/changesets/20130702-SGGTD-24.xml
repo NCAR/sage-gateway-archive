@@ -1,0 +1,105 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20130702-SGGTD-24.xml">
+
+	<changeSet id="20130702-SGGTD-24" author="sgf">
+		
+		<dropTable schemaName="metadata" tableName="dataset_access_point"/>
+		
+	</changeSet>
+	
+	<changeSet id="20130702-SGGTD-24-1" author="sgf">
+		
+		<dropColumn schemaName="metadata" tableName="file_access_point" columnName="data_access_capability_id" />
+
+	</changeSet>
+	
+	<changeSet id="20130702-SGGTD-24-2" author="sgf">
+		
+		<renameColumn schemaName="metadata" tableName="file_access_point" oldColumnName="full_access_url" newColumnName="endpoint" />
+		
+	</changeSet>
+	
+	<changeSet id="20130702-SGGTD-24-3" author="sgf">
+		
+		<dropUniqueConstraint schemaName="metadata" tableName="file_access_point" constraintName="file_access_point_unique_url" />
+		<addUniqueConstraint schemaName="metadata" tableName="file_access_point" constraintName="file_access_point_unique_endpoint" columnNames="endpoint" deferrable="true" initiallyDeferred="true" />
+		
+		<dropColumn schemaName="metadata" tableName="file_access_point" columnName="file_name"/>
+		<dropColumn schemaName="metadata" tableName="file_access_point" columnName="path"/>
+		
+	</changeSet>
+	
+	<changeSet id="20130702-SGGTD-24-4" author="sgf">
+		
+		<dropColumn schemaName="metrics" tableName="file_download" columnName="file_access_point_id"/>
+		<dropColumn schemaName="workspace" tableName="data_transfer_request_error" columnName="data_access_capability_type_id"/>
+		
+	</changeSet>
+	
+	<changeSet id="20130702-SGGTD-24-5" author="sgf">
+		
+		<addColumn schemaName="workspace" tableName="data_transfer_item" >
+			<column name="disk_location" type="text" />
+		</addColumn>
+		
+	</changeSet>
+	
+	<changeSet id="20130702-SGGTD-24-6" author="sgf">
+		
+		<dropColumn schemaName="workspace" tableName="data_transfer_item" columnName="target_id" />
+		
+	</changeSet>
+	
+	<changeSet id="20130702-SGGTD-24-7" author="sgf">
+		
+		<dropColumn schemaName="metadata" tableName="file_access_point" columnName="storage_type_id" />
+		
+		<dropTable schemaName="metadata" tableName="storage_type" />
+		
+	</changeSet>
+	
+	<changeSet id="20130702-SGGTD-24-8" author="sgf">
+		
+		<dropForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="data_access_capability_application_xref" constraintName="fkey_data_access_application_id" />
+		
+		<dropForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="data_access_capability_application_xref" constraintName="fkey_data_access_capability_id" />
+		
+		<dropForeignKeyConstraint baseTableSchemaName="workspace" baseTableName="data_transfer_request" constraintName="fkey_data_transfer_request_capability_type" />
+		
+		<dropTable schemaName="metadata" tableName="data_access_application" />
+		
+		<dropTable schemaName="metadata" tableName="data_access_application_protocol_xref" />
+		
+		<dropTable schemaName="metadata" tableName="data_access_capability" />
+		
+		<dropTable schemaName="metadata" tableName="data_access_capability_application_xref" />
+		
+		<dropTable schemaName="metadata" tableName="data_access_capability_type" />
+		
+		<dropTable schemaName="metadata" tableName="data_access_protocol" />
+		
+	</changeSet>
+	
+	<changeSet id="20130702-SGGTD-24-9" author="sgf">
+		
+		<dropColumn schemaName="workspace" tableName="data_transfer_request" columnName="data_access_capability_type_id"/>
+		
+	</changeSet>
+	
+	<changeSet id="20130702-SGGTD-24-10" author="sgf">
+		
+		<dropForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="datanode" constraintName="fkey_federation_gateway_id" />
+		
+		<dropTable schemaName="metrics" tableName="datanode_harvest" />
+		
+		<dropTable schemaName="metadata" tableName="federation_gateway"/>
+		
+		<dropTable schemaName="metadata" tableName="datanode"/>
+		
+		<dropTable schemaName="metadata" tableName="gateway_specific_metadata"/>
+		
+	</changeSet>
+	
+</databaseChangeLog>

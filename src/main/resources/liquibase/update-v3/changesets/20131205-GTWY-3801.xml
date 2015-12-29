@@ -1,0 +1,13 @@
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20131205-GTWY-3801.xml">
+
+	<changeSet id="20131205-GTWY-3801" author="sgf">
+
+		<renameColumn schemaName="metrics" tableName="file_download" oldColumnName="success" newColumnName="completed"/>
+
+	</changeSet>
+
+</databaseChangeLog>

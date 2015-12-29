@@ -1,0 +1,76 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20130406-GTWY-3615.xml">
+
+	<changeSet id="20130406-GTWY-3615" author="sgf">
+		<sql>
+		CREATE TABLE metadata.dataset_geographic_bounding_box
+		(
+		  id uuid NOT NULL,
+		  west_bound_longitude double precision,
+		  east_bound_longitude double precision,
+		  south_bound_latitude double precision,
+		  north_bound_latitude double precision,
+		  
+		  CONSTRAINT dataset_geographic_bounding_box_pkey PRIMARY KEY (id )
+		)
+		WITH (
+		  OIDS=FALSE
+		);
+		
+		ALTER TABLE metadata.dataset_geographic_bounding_box OWNER TO "${database.role.admin}";
+		REVOKE ALL ON TABLE metadata.dataset_geographic_bounding_box FROM public;
+		GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE metadata.dataset_geographic_bounding_box TO "${database.role.user}";
+		GRANT SELECT ON TABLE metadata.dataset_geographic_bounding_box TO "${database.role.read_only}";
+		</sql>
+		
+		<sql>
+		
+		INSERT INTO metadata.dataset_geographic_bounding_box
+		 (id, west_bound_longitude, east_bound_longitude)
+		
+		SELECT 
+		  coordinate_axis.geophysical_properties_id, 
+		  geospatial_coordinate_axis.start_range as west_bound_longitude, 
+		  geospatial_coordinate_axis.end_range as east_bound_longitude
+		FROM 
+		  metadata.coordinate_axis, 
+		  metadata.geospatial_coordinate_axis
+		WHERE 
+		  coordinate_axis.id = geospatial_coordinate_axis.id AND
+		  coordinate_type_id = 1;
+		
+		UPDATE metadata.dataset_geographic_bounding_box
+		SET
+		  south_bound_latitude = subquery.south_bound_latitude,
+		  north_bound_latitude = subquery.north_bound_latitude
+		FROM 
+		(
+		  SELECT
+		    geophysical_properties_id,
+		    geospatial_coordinate_axis.start_range as south_bound_latitude, 
+		    geospatial_coordinate_axis.end_range as north_bound_latitude
+		  FROM 
+		    metadata.coordinate_axis, 
+		    metadata.geospatial_coordinate_axis
+		  WHERE 
+		    coordinate_axis.id = geospatial_coordinate_axis.id AND
+		    coordinate_type_id = 0
+		) as subquery 
+		WHERE 
+		  dataset_geographic_bounding_box.id = subquery.geophysical_properties_id;
+				
+		</sql>
+		
+		<addNotNullConstraint schemaName="metadata" tableName="dataset_geographic_bounding_box" columnName="west_bound_longitude"/>
+		<addNotNullConstraint schemaName="metadata" tableName="dataset_geographic_bounding_box" columnName="east_bound_longitude"/>
+		<addNotNullConstraint schemaName="metadata" tableName="dataset_geographic_bounding_box" columnName="south_bound_latitude"/>
+		<addNotNullConstraint schemaName="metadata" tableName="dataset_geographic_bounding_box" columnName="north_bound_latitude"/>
+		
+	</changeSet>
+	
+	
+	
+</databaseChangeLog>
+

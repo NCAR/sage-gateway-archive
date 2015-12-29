@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-event="http://www.springframework.org/schema/integration/event"
+       xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                           http://www.springframework.org/schema/integration
+                           http://www.springframework.org/schema/integration/spring-integration-2.1.xsd
+                           http://www.springframework.org/schema/integration/event
+                           http://www.springframework.org/schema/integration/event/spring-integration-event-2.1.xsd
+                           http://www.springframework.org/schema/integration/jms
+                           http://www.springframework.org/schema/integration/jms/spring-integration-jms-2.0.xsd">
+
+    <bean id="threddsPublishingErrorHandler" class="sgf.gateway.integration.message.JMSChannelMessagingErrorHandler">
+        <constructor-arg name="exceptionService">
+            <bean class="sgf.gateway.integration.publishing.service.impl.ThreddsPublishingFailureIntegrationExceptionServiceImplLogger">
+                <constructor-arg index="0">
+                    <bean class="sgf.gateway.integration.publishing.service.impl.ThreddsPublishingFailureIntegrationExceptionServiceImpl">
+                        <constructor-arg name="exceptionService" ref="emailIntegrationExceptionService"/>
+                    </bean>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <bean id="threddsDatasetDetailsQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="queue.publishing.thredds.details"/>
+    </bean>
+
+    <int-event:inbound-channel-adapter event-types="sgf.gateway.publishing.thredds.ThreddsPublishingEvent"
+                                       channel="threddsPublishingEventChannel"/>
+
+    <int:channel id="threddsPublishingEventChannel"/>
+
+    <int:transformer input-channel="threddsPublishingEventChannel" output-channel="threddsDatasetDetails"
+                     expression="payload.threddsDatasetDetails"/>
+
+    <int-jms:channel id="threddsDatasetDetails" queue="threddsDatasetDetailsQueue"
+                     connection-factory="publishingJMSConnectionFactory" error-handler="threddsPublishingErrorHandler"/>
+
+    <int:service-activator input-channel="threddsDatasetDetails" output-channel="threddsPublishingSuccessChannel">
+        <bean class="sgf.gateway.integration.publishing.service.ThreddsPublishingIntegrationServiceLogger">
+            <constructor-arg index="0">
+                <bean class="sgf.gateway.integration.publishing.service.ThreddsPublishingIntegrationService">
+                    <constructor-arg name="publishingService" ref="threddsPublishingService"/>
+                </bean>
+            </constructor-arg>
+        </bean>
+    </int:service-activator>
+
+    <int:channel id="threddsPublishingSuccessChannel"/>
+
+    <int:service-activator input-channel="threddsPublishingSuccessChannel" ref="threddsPublishingMailService"
+                           method="sendSuccessMessage"/>
+
+</beans>

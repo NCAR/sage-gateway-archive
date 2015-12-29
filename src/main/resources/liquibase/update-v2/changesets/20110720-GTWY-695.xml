@@ -1,0 +1,35 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="/Liquibase/update-v2/changesets/20110720-GTWY-695.xml">
+
+    <changeSet id="20110720-GTWY-695" author="sgf">
+        <sql>
+
+            CREATE TABLE metadata.publishing_operation
+            (
+            id uuid NOT NULL,
+            "version" bigint,
+            description character varying NOT NULL,
+            task_results text NOT NULL,
+            has_task_errors boolean NOT NULL,
+            is_complete boolean NOT NULL,
+            change_log_comment character varying NOT NULL,
+            publishing_operation_type character varying NOT NULL,
+            initiator uuid ,
+            date_created timestamp with time zone NOT NULL DEFAULT default_timestamp(),
+            CONSTRAINT pkey_publishing_operation_id PRIMARY KEY (id),
+            CONSTRAINT fkey_initiator_user_id FOREIGN KEY (initiator)
+            REFERENCES "security"."user" (id) MATCH FULL
+            ON UPDATE SET NULL ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED
+            )
+            WITH (OIDS=FALSE);
+
+            ALTER TABLE metadata.publishing_operation OWNER TO ${database.role.admin};
+            GRANT ALL ON TABLE metadata.publishing_operation TO ${database.role.user};
+
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

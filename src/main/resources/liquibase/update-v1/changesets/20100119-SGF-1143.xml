@@ -1,0 +1,22 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100119-SGF-1143.xml">
+
+    <changeSet id="20100119-SGF-1143" author="luca" context="esg_ncar">
+        <comment>Inserting CCSM run b30.044g</comment>
+        <sql>
+            INSERT INTO metadata.resource (id, name, description, type_id) VALUES('e76ab355-91a0-48a2-a5da-7e34204eb5b9', 'CCSM run b30.044g', 'CCSM 3.0IPCC SRES A1B 720 ppm stabilization scenarioCCSM 3.0 IPCC SRES A1B 720 ppm stabilization scenario', 2);
+            INSERT INTO metadata.persistent_identifier(identifier, type_id,resource_id) values ('model_ccsm_b30.044g', 0,'e76ab355-91a0-48a2-a5da-7e34204eb5b9');
+            INSERT INTO curator.model_component (id, configured,unconfigured_model_component_id, software_version) values('e76ab355-91a0-48a2-a5da-7e34204eb5b9', true,'37bd04e3-16e6-4eb7-8818-71ecb59d8cdf', 3.0);
+            INSERT INTO curator.model (id) values('e76ab355-91a0-48a2-a5da-7e34204eb5b9');
+            INSERT INTO metadata.resource (id, name, description, type_id) VALUES('6c2e6463-4e9b-4812-adda-091f3f846edb', 'CCSM run b30.044g data', 'CCSM3.0 IPCC SRES A1B 720 ppm stabilization scenarioCCSM 3.0 IPCC SRES A1B 720 ppm stabilization scenario', 2);
+            INSERT INTO metadata.persistent_identifier (identifier, type_id,resource_id) values ('ucar.cgd.ccsm.b30.044g', 0,'6c2e6463-4e9b-4812-adda-091f3f846edb');
+            INSERT INTO metadata.dataset (id, parent_dataset_id, dataset_state_id,model_component_id, parent_display_order) VALUES('6c2e6463-4e9b-4812-adda-091f3f846edb','e89a2292-c13e-45f2-93b0-655ea9c2d6a0', 1,'e76ab355-91a0-48a2-a5da-7e34204eb5b9', 239);
+            INSERT INTO metadata.descriptive_metadata(id) VALUES('6c2e6463-4e9b-4812-adda-091f3f846edb');
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
+

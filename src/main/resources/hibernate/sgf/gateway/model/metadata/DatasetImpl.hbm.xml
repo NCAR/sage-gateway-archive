@@ -1,0 +1,266 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <typedef name="containerType" class="sgf.gateway.utils.hibernate.EnumUserType">
+        <param name="enumClassName">sgf.gateway.model.metadata.ContainerType</param>
+        <param name="columnType">VARCHAR</param>
+    </typedef>
+
+    <typedef name="ActivityType" class="sgf.gateway.utils.hibernate.EnumUserType">
+        <param name="enumClassName">sgf.gateway.model.metadata.activities.ActivityType</param>
+        <param name="columnType">INTEGER</param>
+    </typedef>
+
+
+    <class name="sgf.gateway.model.metadata.DatasetImpl" table="dataset" schema="metadata">
+
+        <id name="identifier" column="id" access="field" type="sgf.gateway.utils.hibernate.UUIDUserType"/>
+
+        <version name="version" column="version" unsaved-value="null" access="field"/>
+
+        <!--
+            SPECIAL NOTE
+
+            On the following mappings we tried to get hibernate to manage the "parentDisplayOrder".  The mapping for that would look like the following:
+
+            <many-to-one name="parentDataset" column="parent_dataset_id" class="sgf.gateway.model.metadata.Dataset" insert="false" update="false" access="field" cascade="none" />
+
+            <list name="nestedDatasets" table="dataset" schema="metadata" lazy="true" cascade="all" access="field" >
+                <key column="parent_dataset_id" />
+                <list-index column="parent_display_order" base="0" />
+                <one-to-many class="sgf.gateway.model.metadata.Dataset" />
+            </list>
+
+            However, the parent value for the new child dataset was not being set properly and would cause a constraint violation "check_parent" to occur at insert time.
+            The "check_parent" constraint is needed so we can verify that a dataset either has a gateway or dataset parent.  There was concern that if we removed the
+            constraint that manually inserted data (Test Data) could be inserted and cause strange errors during testing.
+
+            Nate W. was able to manage the indexing of child datasets manually.
+
+            We also tried adding the property not-null="true" to the list's key column above, but since we can have either a parent gateway or parent dataset, when we
+            were only creating a new top level dataset a null-pointer-exception was being thrown by hibernate.
+        -->
+        <!--
+            Cascade Note
+
+            On the many-to-one association cascade="none" since we do not want to persist UP the hierarchy when something is changed in the child.
+
+            On the list association cascade="all" since we want to persist DOWN the hierarchy when something is changed in the parent.
+
+            On the list association cascade="all" we might need to change the all value to include the "delete-orphan" cascade option.
+
+            Nathan H.
+        -->
+
+        <many-to-one name="parentDataset" column="parent_dataset_id" class="sgf.gateway.model.metadata.DatasetImpl"
+                     access="field" cascade="none" update="false" insert="false"/>
+
+        <property name="nestedDatasetCount" access="field"
+                  formula="(SELECT count(metadata.dataset.id) from metadata.dataset where metadata.dataset.parent_dataset_id = id )"
+                  lazy="false"/>
+
+        <property name="shortName" column="short_name" type="string" access="field"/>
+
+        <property name="brokered" column="brokered" type="boolean" access="field"/>
+
+        <property name="isVisible" column="is_visible" type="boolean" access="field"/>
+
+        <property name="title" column="title" type="string" access="field"/>
+
+        <property name="description" column="description" type="string" access="field"/>
+
+        <property name="dateCreated" column="date_created" type="timestamp" insert="false" update="false"
+                  access="field"/>
+
+        <property name="dateUpdated" column="date_updated" type="timestamp" insert="false" update="false"
+                  access="field"/>
+
+        <property name="authoritativeIdentifier" column="authoritative_id" type="string" access="field"/>
+
+        <property name="doi" column="doi" type="string" access="field"/>
+
+        <property name="containerType" column="container_type" type="containerType" access="field"/>
+
+        <property name="projectGroup" column="project_group" type="string" access="field"/>
+
+        <many-to-one name="predecessorProject" class="sgf.gateway.model.metadata.DatasetImpl"
+                     column="predecessor_dataset_id" unique="true" access="field"/>
+
+        <many-to-one name="successorProject" class="sgf.gateway.model.metadata.DatasetImpl"
+                     column="successor_dataset_id" unique="true" access="field"/>
+
+        <many-to-one name="institution" column="institution_id"
+                     class="sgf.gateway.model.metadata.descriptive.Institution" cascade="persist,merge,save-update"
+                     access="field"/>
+
+        <list name="nestedDatasetsReference" table="dataset" schema="metadata" lazy="true" cascade="all" access="field">
+            <key column="parent_dataset_id"/>
+            <list-index column="parent_display_order" base="0"/>
+            <one-to-many class="sgf.gateway.model.metadata.DatasetImpl"/>
+        </list>
+
+        <list name="datasetVersionsReference" table="dataset_version" schema="metadata" cascade="all,delete-orphan"
+              access="field">
+            <key column="dataset_id" not-null="true"/>
+            <list-index column="index" base="0"/>
+            <one-to-many class="sgf.gateway.model.metadata.DatasetVersionImpl"/>
+        </list>
+
+        <map name="activitiesReference" cascade="persist,merge,save-update" table="dataset_activity_xref"
+             schema="metadata" access="field">
+            <key column="dataset_id"/>
+            <map-key
+                    formula="(select distinct metadata.activity.activity_type_id from metadata.activity left outer join metadata.dataset_activity_xref on (dataset_activity_xref.activity_id = activity.id) where metadata.dataset_activity_xref.activity_id= activity_id)"
+                    type="ActivityType"/>
+            <many-to-many column="activity_id" class="sgf.gateway.model.metadata.activities.ActivityImpl"/>
+        </map>
+
+        <set name="permissions" inverse="true" lazy="true" cascade="all-delete-orphan" access="field">
+            <key column="dataset_id"/>
+            <one-to-many class="sgf.gateway.model.security.Permission"/>
+        </set>
+
+        <set name="topicsReference" table="dataset_topic_xref" schema="metadata" access="field"
+             cascade="persist,merge,save-update">
+            <cache usage="read-write"/>
+            <key column="dataset_id"/>
+            <many-to-many class="sgf.gateway.model.metadata.TopicImpl" column="topic_id"/>
+        </set>
+
+        <set name="dataFormatsReference" table="dataset_data_format_xref" schema="metadata" access="field"
+             cascade="persist,merge,save-update">
+            <cache usage="read-write"/>
+            <key column="dataset_id"/>
+            <many-to-many class="sgf.gateway.model.metadata.DataFormatImpl" column="data_format_id"/>
+        </set>
+
+        <!-- Maps the descriptive metadata to this dataset -->
+        <one-to-one name="descriptiveMetadata" class="sgf.gateway.model.metadata.descriptive.DescriptiveMetadataImpl"
+                    lazy="proxy" cascade="all" access="field"/>
+
+        <!-- Maps the license to this dataset -->
+        <many-to-one name="license" column="license_id" class="sgf.gateway.model.metadata.LicenseImpl"
+                     cascade="persist,merge,save-update" access="field"/>
+
+        <!-- Maps the SoftwareProperties to this dataset -->
+        <one-to-one name="softwareProperties" class="sgf.gateway.model.metadata.SoftwarePropertiesImpl" cascade="all"
+                    access="field"/>
+
+        <!-- Maps the metadata profile to this dataset -->
+        <many-to-one name="metadataProfile" class="sgf.gateway.model.metadata.MetadataProfileImpl"
+                     column="metadata_profile_id" cascade="persist,merge,save-update" access="field"/>
+
+        <many-to-one name="dataCenter" class="sgf.gateway.model.metadata.DataCenterImpl" column="data_center_id"
+                     cascade="persist,merge,save-update" access="field"/>
+
+        <list name="awards" table="award" schema="metadata" cascade="all" access="field">
+            <key column="dataset_id"/>
+            <list-index column="idx_order"/>
+            <composite-element class="sgf.gateway.model.metadata.activities.project.Award">
+                <property name="awardNumber" type="string" column="award_number" not-null="true" access="field"/>
+            </composite-element>
+        </list>
+
+
+    </class>
+
+    <sql-query name="findDatasetByShortName">
+        <return-scalar column="uuid" type="sgf.gateway.utils.hibernate.UUIDUserType"/>
+        select id as uuid from metadata.dataset where short_name = :identifier
+    </sql-query>
+
+    <sql-query name="findDatasetByShortNameCaseInsensitive">
+        <return-scalar column="uuid" type="sgf.gateway.utils.hibernate.UUIDUserType"/>
+        select id as uuid from metadata.dataset where lower (short_name) = lower(:identifier)
+    </sql-query>
+
+    <sql-query name="findDatasetsByPartialShortName">
+        <return-scalar column="dataset_id" type="sgf.gateway.utils.hibernate.UUIDUserType"/>
+        WITH RECURSIVE datasets(dataset_id) AS (
+        select id as uuid from metadata.dataset where lower(short_name) like :partialIdentifier
+        )
+        SELECT dataset_id FROM datasets
+    </sql-query>
+
+    <query name="getAllDatasets" cacheable="true">
+        <![CDATA[
+            from sgf.gateway.model.metadata.DatasetImpl dataset
+        ]]>
+    </query>
+
+    <query name="findDatasetsById" cacheable="true">
+        <![CDATA[
+            from sgf.gateway.model.metadata.DatasetImpl dataset where dataset.identifier in (:datasetIds)
+        ]]>
+    </query>
+
+    <query name="findDatasetsByGroupUserAndOperation" cacheable="true">
+        <![CDATA[
+            select distinct dataset from DatasetImpl dataset, Permission permission, Group ggroup, Membership membership, Role role
+            where permission.dataset = dataset
+            and permission.operation = :operation
+            and permission.principal = ggroup
+            and membership.user = :user
+            and membership.group = ggroup
+            and membership.role = role
+            and membership.status = 3
+            and dataset.brokered = false
+            and :operation in elements(role.operations)
+        ]]>
+    </query>
+
+    <query name="findDatasetsByUserAndOperation" cacheable="true">
+        <![CDATA[
+            select dataset from DatasetImpl dataset, Permission permission
+            where permission.dataset = dataset
+            and permission.operation = :operation
+            and permission.principal = :user
+            and dataset.brokered = false
+        ]]>
+    </query>
+
+    <query name="findVisibleTopLevelDatasets" cacheable="true">
+        <![CDATA[
+            from DatasetImpl dataset where
+            dataset.parentDataset is null
+            AND dataset.brokered = FALSE
+        ]]>
+    </query>
+
+    <sql-query name="oldestDateUpdated">
+        <return-scalar column="minDate" type="date"/>
+        select min(date_updated) as minDate from metadata.dataset
+    </sql-query>
+
+
+    <sql-query name="findDatasetsByScienceKeywordTopic">
+        <return-scalar column="dataset_id" type="sgf.gateway.utils.hibernate.UUIDUserType"/>
+        <![CDATA[
+            SELECT DISTINCT(d.id) AS dataset_id, d.title
+                FROM metadata.dataset AS d
+            JOIN metadata.descriptive_metadata AS dm on dm.id = d.id
+            JOIN metadata.descriptive_metadata_science_keyword_xref AS xref ON dm.id = xref.descriptive_metadata_id
+            JOIN metadata.science_keyword AS sk ON xref.science_keyword_id = sk.id
+            WHERE sk.topic = :scienceKeywordTopic
+            order by d.title
+        ]]>
+    </sql-query>
+
+    <sql-query name="findDatasetCountByScienceKeywordTopic">
+        <return-scalar column="dataset_count" type="integer"/>
+        <![CDATA[
+            SELECT COUNT(DISTINCT d.id) AS dataset_count
+                FROM metadata.dataset AS d
+            JOIN metadata.descriptive_metadata AS dm on dm.id = d.id
+            JOIN metadata.descriptive_metadata_science_keyword_xref AS xref ON dm.id = xref.descriptive_metadata_id
+            JOIN metadata.science_keyword AS sk ON xref.science_keyword_id = sk.id
+            WHERE sk.topic = :scienceKeywordTopic
+        ]]>
+    </sql-query>
+
+</hibernate-mapping>

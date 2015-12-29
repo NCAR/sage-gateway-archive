@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <!-- Configure the new publishing execution services -->
+
+    <bean id="publishingService" class="sgf.gateway.service.publishing.impl.spring.PublishingServiceImpl">
+        <constructor-arg index="0" ref="datasetRepository"/>
+    </bean>
+
+    <bean id="esgRemotePublishingService"
+          class="sgf.gateway.service.publishing.impl.spring.LoggingRemotePublishingServiceImpl">
+        <constructor-arg index="0" ref="exceptionHandlingRemotePublishingService"/>
+    </bean>
+
+    <bean id="exceptionHandlingRemotePublishingService"
+          class="sgf.gateway.service.publishing.impl.spring.ExceptionHandlingRemotePublishingServiceProxyImpl">
+        <constructor-arg index="0" ref="exceptionHandlingService"/>
+        <constructor-arg index="1" ref="authorizationRemotePublishingService"/>
+    </bean>
+
+    <bean id="authorizationRemotePublishingService"
+          class="sgf.gateway.service.publishing.impl.spring.RemotePublishingServiceAuthorizationProxyImpl">
+        <constructor-arg index="0" ref="remotePublishingServiceImpl"/>
+        <constructor-arg index="1" ref="runtimeUserService"/>
+        <constructor-arg index="2" ref="authorizationService"/>
+        <constructor-arg index="3" ref="datasetRepository"/>
+    </bean>
+
+    <bean id="remotePublishingServiceImpl"
+          class="sgf.gateway.service.publishing.impl.spring.RemotePublishingServiceImpl">
+        <constructor-arg index="0" ref="publishingService"/>
+        <constructor-arg index="1" ref="runtimeUserService"/>
+    </bean>
+
+</beans>

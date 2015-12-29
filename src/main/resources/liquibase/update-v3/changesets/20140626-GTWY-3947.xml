@@ -1,0 +1,22 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   logicalFilePath="/Liquibase/update-v3/changesets/20140626-GTWY-3947.xml">
+
+    <changeSet id="20140626-GTWY-3947.0" author="sgf">
+
+        <addColumn schemaName="metadata" tableName="descriptive_metadata">
+            <column name="distribution_uri" type="text"/>
+        </addColumn>
+
+    </changeSet>
+
+    <changeSet id="20140626-GTWY-3947.1" author="sgf">
+
+        <addColumn schemaName="metadata" tableName="descriptive_metadata">
+            <column name="distribution_uri_text" type="text"/>
+        </addColumn>
+
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="samlhttpClient3Factory" class="sgf.gateway.utils.httpclient.impl.HttpClient3FactoryImpl">
+        <constructor-arg index="0" value="${saml.service.remote.request.connection.timeout}"/>
+        <constructor-arg index="1" value="${saml.service.remote.request.socket.timeout}"/>
+    </bean>
+
+    <bean id="samlHttpClient3" factory-method="create" factory-bean="samlhttpClient3Factory">
+    </bean>
+
+</beans>

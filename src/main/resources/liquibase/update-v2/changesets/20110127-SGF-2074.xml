@@ -1,0 +1,74 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet id="20110127-SGF-2074" author="sgf">
+
+        <sql>
+            CREATE TABLE metadata.federation_gateway
+            (
+            id uuid NOT NULL,
+            "version" integer DEFAULT 1,
+            "name" text NOT NULL,
+            distinguished_name text NOT NULL,
+            description text,
+            base_endpoint text,
+            base_secure_endpoint text,
+            attributes_service_endpoint text,
+            oai_repository_endpoint text,
+            idp_endpoint text,
+            CONSTRAINT pkey_federation_gateway_id PRIMARY KEY (id)
+            )
+            WITH (
+            OIDS=FALSE
+            );
+        </sql>
+
+        <addUniqueConstraint schemaName="metadata" tableName="federation_gateway" columnNames="name"/>
+        <addUniqueConstraint schemaName="metadata" tableName="federation_gateway" columnNames="distinguished_name"/>
+
+        <sql>
+            ALTER TABLE metadata.federation_gateway OWNER TO "${database.role.admin}";
+            REVOKE ALL ON TABLE metadata.federation_gateway FROM public;
+            GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE metadata.federation_gateway TO "${database.role.user}";
+            GRANT SELECT ON TABLE metadata.federation_gateway TO "${database.role.read_only}";
+        </sql>
+
+        <dropTable schemaName="metadata" tableName="data_node" />
+
+        <sql>
+            CREATE TABLE metadata.datanode
+            (
+            id uuid NOT NULL,
+            "version" integer DEFAULT 1,
+            "name" text NOT NULL,
+            distinguished_name text NOT NULL,
+            description text,
+            metrics_service_endpoint text,
+            federation_gateway_id uuid NOT NULL,
+            CONSTRAINT pkey_datanode PRIMARY KEY (id)
+            )
+            WITH (
+            OIDS=FALSE
+            );
+        </sql>
+
+        <addForeignKeyConstraint constraintName="fkey_federation_gateway_id"
+                                 baseTableSchemaName="metadata" baseTableName="datanode"	baseColumnNames="federation_gateway_id"
+                                 referencedTableSchemaName="metadata" referencedTableName="federation_gateway" referencedColumnNames="id"
+                                 onUpdate="CASCADE" onDelete="CASCADE" />
+
+        <addUniqueConstraint schemaName="metadata" tableName="datanode" columnNames="name"/>
+        <addUniqueConstraint schemaName="metadata" tableName="datanode" columnNames="distinguished_name"/>
+
+        <sql>
+            ALTER TABLE metadata.datanode OWNER TO "${database.role.admin}";
+            REVOKE ALL ON TABLE metadata.datanode FROM public;
+            GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE metadata.datanode TO "${database.role.user}";
+            GRANT SELECT ON TABLE metadata.datanode TO "${database.role.read_only}";
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>
+

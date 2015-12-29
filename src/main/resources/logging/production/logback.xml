@@ -1,0 +1,158 @@
+<configuration>
+
+    <appender name="application_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+
+        <file>${catalina.base}/logs/gateway.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${catalina.base}/logs/gateway.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <!-- keep 30 days of history -->
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+
+    </appender>
+
+
+    <appender name="openid_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+
+        <file>${catalina.base}/logs/openid.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${catalina.base}/logs/openid.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <!-- keep 30 days of history -->
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+
+    </appender>
+
+    <appender name="publishing_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+
+        <file>${catalina.base}/publishing-logs/publishing.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${catalina.base}/publishing-logs/publishing.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+
+    </appender>
+
+    <logger name="sgf.spring.extensions.LoggingPropertyPlaceholderConfigurer" level="INFO" additivity="false">
+        <appender-ref ref="application_log"/>
+    </logger>
+
+    <logger name="sgf.gateway" level="INFO" additivity="false">
+        <appender-ref ref="application_log"/>
+    </logger>
+
+    <logger name="sgf.gateway.integration.message.SprIntDeadLetterLogger" level="ERROR" additivity="false">
+        <appender-ref ref="application_log"/>
+    </logger>
+
+    <logger name="sgf.gateway.integration.thredds.service.ProjectLoadService" level="WARN" additivity="false">
+        <appender-ref ref="application_log"/>
+    </logger>
+
+    <logger name="sgf.gateway.integration.service.DatasetLoadService" level="WARN" additivity="false">
+        <appender-ref ref="application_log"/>
+    </logger>
+
+    <logger name="sgf.gateway.integration.publishing.service.ThreddsPublishingIntegrationService" level="DEBUG"
+            additivity="false">
+        <appender-ref ref="publishing_log"/>
+    </logger>
+
+    <logger name="sgf.gateway.integration.publishing.service.impl.ThreddsPublishingFailureIntegrationExceptionServiceImplLogger"
+            level="DEBUG" additivity="false">
+        <appender-ref ref="publishing_log"/>
+    </logger>
+
+    <logger name="sgf.gateway.service.publishing.impl.spring.LoggingRemotePublishingServiceImpl" level="TRACE"
+            additivity="false">
+        <appender-ref ref="publishing_log"/>
+    </logger>
+
+    <logger name="sgf.gateway.web.controllers.oai.RepositoryController" level="WARN" additivity="false">
+        <appender-ref ref="application_log"/>
+    </logger>
+
+    <logger name="sgf.gateway.integration.ade.opensearch.receiver.Receiver" level="INFO" additivity="false">
+        <appender-ref ref="application_log"/>
+    </logger>
+
+    <logger name="sgf.gateway.search.service.SearchService" level="INFO" additivity="false">
+        <appender-ref ref="application_log"/>
+    </logger>
+
+    <logger name="exceptionLogger" level="INFO" additivity="false">
+        <appender-ref ref="application_log"/>
+    </logger>
+
+    <logger name="liquibase" level="INFO" additivity="false">
+        <appender-ref ref="application_log"/>
+    </logger>
+
+    <logger name="org.openid4java" level="DEBUG" additivity="false">
+        <appender-ref ref="openid_log"/>
+    </logger>
+
+    <root level="ERROR">
+        <appender-ref ref="application_log"/>
+    </root>
+
+    <appender name="tdsMetrics" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+
+        <file>${catalina.base}/metrics-logs/tds-error.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${catalina.base}/metrics-logs/tds-error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <!-- keep 30 days of history -->
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+
+    </appender>
+
+    <appender name="gridFTPMetrics" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+
+        <file>${catalina.base}/metrics-logs/gridftp-error.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${catalina.base}/metrics-logs/gridftp-error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <!-- keep 30 days of history -->
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+
+    </appender>
+
+    <logger name="tdsMetricsErrorLog" level="ERROR" additivity="false">
+        <appender-ref ref="tdsMetrics"/>
+    </logger>
+
+    <logger name="gridFTPMetricsErrorLog" level="ERROR" additivity="false">
+        <appender-ref ref="gridFTPMetrics"/>
+    </logger>
+
+</configuration>

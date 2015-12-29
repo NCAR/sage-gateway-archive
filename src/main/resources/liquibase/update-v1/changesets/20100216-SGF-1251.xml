@@ -1,0 +1,37 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100216-SGF-1251.xml">
+
+    <changeSet id="20100216-SGF-1251" author="luca" context="esg_ncar">
+        <comment>Updating and correcting PCM static data</comment>
+        <sql>
+            INSERT INTO metadata.resource (id, name, description, type_id) VALUES('b96de9f1-ead1-4152-add0-e5ab8f85d2a6', 'CCSM run PIcntrl', 'PCM1 1870 control experiment B05.02 B06.18 B06.38 B06.62 B07.44 combined into single time series 0010-1499 ', 2);
+            INSERT INTO metadata.persistent_identifier(identifier, type_id, resource_id) values ('model_ccsm_PIcntrl', 0, 'b96de9f1-ead1-4152-add0-e5ab8f85d2a6');
+            INSERT INTO curator.model_component (id, configured, unconfigured_model_component_id, software_version) values ('b96de9f1-ead1-4152-add0-e5ab8f85d2a6', true, '37bd04e3-16e6-4eb7-8818-71ecb59d8cdf', 3.0);
+            INSERT INTO curator.model (id) values('b96de9f1-ead1-4152-add0-e5ab8f85d2a6');
+            INSERT INTO metadata.resource (id, name, description, type_id) VALUES('7cc60bd7-054b-49dd-bbfa-1ac1cebff304', 'CCSM run PIcntrl data', 'PCM11870 control experiment B05.02 B06.18 B06.38 B06.62 B07.44 combined into single time series 0010-1499 ', 2);
+            INSERT INTO metadata.persistent_identifier (identifier, type_id, resource_id) values ('ucar.cgd.ccsm.PIcntrl', 0, '7cc60bd7-054b-49dd-bbfa-1ac1cebff304');
+            INSERT INTO metadata.dataset (id, parent_dataset_id, dataset_state_id, model_component_id, parent_display_order) VALUES ('7cc60bd7-054b-49dd-bbfa-1ac1cebff304', 'e89a2292-c13e-45f2-93b0-655ea9c2d6a0', 1, 'b96de9f1-ead1-4152-add0-e5ab8f85d2a6', 240);
+            INSERT INTO metadata.descriptive_metadata(id) VALUES ('7cc60bd7-054b-49dd-bbfa-1ac1cebff304');
+
+            UPDATE metadata.resource set name='PCM run B07.73a' where name='PCM run B07.73';
+            UPDATE metadata.persistent_identifier set identifier='model_pcm_B07.73a' where identifier='model_pcm_B07.73';
+            UPDATE metadata.resource set name='PCM run B07.73a data' where name='PCM run B07.73 data';
+            UPDATE metadata.persistent_identifier set identifier='ucar.cgd.pcm.B07.73a' where identifier='ucar.cgd.pcm.B07.73';
+
+            UPDATE metadata.resource set description='IPCC IS92a Business-As-Usual Future Scenario Run from B05.17' where description='IPCC IS92a Business-As-Ususal Future Scenario Run from B05.17';
+            UPDATE metadata.resource set description='IPCC IS92a Business-As-Usual Future Scenario Run from B05.17' where description='IPCC IS92a Business-As-Ususal Future Scenario Run from B05.17';
+            UPDATE metadata.resource set description='IPCC IS92a Business-As-Usual Future Scenario Run from B06.08' where description='IPCC IS92a Business-As-Ususal Future Scenario Run from B06.08';
+            UPDATE metadata.resource set description='IPCC IS92a Business-As-Usual Future Scenario Run from B06.08' where description='IPCC IS92a Business-As-Ususal Future Scenario Run from B06.08';
+            UPDATE metadata.resource set description='IPCC IS92a Business-As-Usual Future Scenario Run from B06.05' where description='IPCC IS92a Business-As-Ususal Future Scenario Run from B06.05';
+            UPDATE metadata.resource set description='IPCC IS92a Business-As-Usual Future Scenario Run from B06.05' where description='IPCC IS92a Business-As-Ususal Future Scenario Run from B06.05';
+
+            UPDATE metadata.resource set description='1% per year increasing CO2to doubling' where description='1% per year increasing CO2to do3ubling';
+
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
+

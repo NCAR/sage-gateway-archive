@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <!-- Support for annotation-based URL to controller mappings.
+         These mappings have the same order as any explicit XML configuration. -->
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+        <property name="order" value="1" />
+    </bean>
+
+    <bean id="resourceUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="order" value="1" />
+        <property name="mappings">
+            <props>
+                <prop key="/**">openidYadisController</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="jspHtmlViewResourceResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="order" value="1000" />
+        <property name="prefix" value="/WEB-INF/views/html/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+
+    <bean id="openidYadisController" class="sgf.gateway.web.controllers.security.openid.OpenidYadisController">
+        <constructor-arg index="0" ref="gateway" />
+        <constructor-arg index="1" ref="userRepository" />
+    </bean>
+
+</beans>

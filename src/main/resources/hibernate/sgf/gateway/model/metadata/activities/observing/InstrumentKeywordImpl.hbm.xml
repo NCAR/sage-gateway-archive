@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.metadata.activities.observing.InstrumentKeywordImpl" table="instrument_keyword"
+           schema="metadata" lazy="false">
+
+        <id name="identifier" column="id" type="sgf.gateway.utils.hibernate.UUIDUserType" access="field"/>
+        <version name="version" column="version" unsaved-value="null" access="field"/>
+
+        <property name="category" column="category" type="string" access="field"/>
+        <property name="instrumentClass" column="class" type="string" access="field"/>
+        <property name="type" column="type" type="string" access="field"/>
+        <property name="subtype" column="subtype" type="string" access="field"/>
+        <property name="shortName" column="short_name" type="string" access="field"/>
+        <property name="longName" column="long_name" type="string" access="field"/>
+        <property name="displayText" column="display" type="string" access="field"/>
+        <property name="dateCreated" column="date_created" type="timestamp" insert="false" update="false"
+                  access="field"/>
+        <property name="dateUpdated" column="date_updated" type="timestamp" insert="false" update="false"
+                  access="field"/>
+    </class>
+
+</hibernate-mapping>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                           http://activemq.apache.org/schema/core
+                           http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+    <broker xmlns="http://activemq.apache.org/schema/core" brokerName="localembeddedbroker"
+            dataDirectory="${gateway.home}/data/active-mq" persistent="true">
+        <transportConnectors>
+            <transportConnector name="vm" uri="vm://localembeddedbroker"/>
+        </transportConnectors>
+        <systemUsage>
+            <!-- setting sendFailIfNoSpace false means the broker will block message producers when the message usage limit has been reached
+                 until message consumers have had time to reduce the message volume -->
+            <systemUsage sendFailIfNoSpace="false">
+                <memoryUsage>
+                    <!-- this setting controls the in-memory volume of messages that can be sent to queues by message producers -->
+                    <memoryUsage limit="100 mb"/>
+                </memoryUsage>
+                <storeUsage>
+                    <storeUsage limit="5 gb"/>
+                </storeUsage>
+                <tempUsage>
+                    <tempUsage limit="100 mb"/>
+                </tempUsage>
+            </systemUsage>
+        </systemUsage>
+    </broker>
+
+    <!-- this class shuts down active mq thredds when the spring application context disposes of its resources on shutdown -->
+    <bean id="activeMQShutdown" class="sgf.gateway.integration.activemq.ActiveMQShutdown" destroy-method="destroy"/>
+
+    <bean id="jmsConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory" destroy-method="stop">
+        <property name="connectionFactory">
+            <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+                <property name="brokerURL" value="vm://localembeddedbroker"/>
+                <!-- See http://activemq.apache.org/what-is-the-prefetch-limit-for.html for more information -->
+                <property name="prefetchPolicy">
+                    <bean class="org.apache.activemq.ActiveMQPrefetchPolicy">
+                        <property name="queuePrefetch" value="100"/>
+                    </bean>
+                </property>
+                <property name="redeliveryPolicy">
+                    <bean class="org.apache.activemq.RedeliveryPolicy">
+                        <property name="maximumRedeliveries" value="0"/>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+</beans>

@@ -1,0 +1,30 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="/Liquibase/update-v2/changesets/20110907-GTWY-2677.xml">
+
+    <changeSet id="20110907-GTWY-2677" author="sgf">
+
+        <sql>
+            CREATE FUNCTION metadata.dataset_version_update_resource_timestamp() RETURNS TRIGGER AS
+            'BEGIN UPDATE metadata.resource set date_updated = public.default_timestamp() where id = NEW.dataset_id; return NULL; END;'
+            LANGUAGE plpgsql;
+        </sql>
+
+        <sql>
+            CREATE TRIGGER dataset_version_after_update
+            AFTER UPDATE
+            ON metadata.dataset_version
+            FOR EACH ROW
+            EXECUTE PROCEDURE metadata.dataset_version_update_resource_timestamp();
+        </sql>
+
+        <sql>
+            ALTER FUNCTION metadata.dataset_version_update_resource_timestamp() OWNER TO ${database.role.admin};
+            REVOKE ALL ON FUNCTION metadata.dataset_version_update_resource_timestamp() FROM public;
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

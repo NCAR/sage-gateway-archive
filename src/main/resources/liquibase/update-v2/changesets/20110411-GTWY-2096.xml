@@ -1,0 +1,28 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="/Liquibase/update-v2/changesets/20110411-GTWY-2096.xml">
+
+    <changeSet id="20110411-GTWY-2096.0" author="sgf" >
+
+        <addColumn schemaName="metrics" tableName="file_download" >
+            <column name="file_size" type="bigint" />
+        </addColumn>
+
+    </changeSet>
+
+    <changeSet id="20110411-GTWY-2096.1" author="sgf" >
+
+        <sql>
+            UPDATE metrics.file_download SET
+            file_size = (SELECT size FROM metadata.logical_file WHERE logical_file.id = (SELECT logical_file_id FROM metadata.file_access_point WHERE file_access_point.id = file_download.file_access_point_id));
+        </sql>
+
+    </changeSet>
+
+    <changeSet id="20110411-GTWY-2096.2" author="sgf" >
+        <addNotNullConstraint schemaName="metrics" tableName="file_download" columnName="file_size" />
+    </changeSet>
+
+</databaseChangeLog>

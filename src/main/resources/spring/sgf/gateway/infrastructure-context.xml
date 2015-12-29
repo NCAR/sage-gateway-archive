@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <!-- Please see the following link for a reasonable explanation of all the properties below:
+         http://www.tomcatexpert.com/blog/2010/04/01/configuring-jdbc-pool-high-concurrency -->
+    <bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url" value="${database.url}"/>
+        <property name="username" value="${database.username}"/>
+        <property name="password" value="${database.password}"/>
+        <property name="initialSize" value="${database.pool.initalSize}"/>
+        <property name="maxActive" value="${database.pool.maxActive}"/>
+        <property name="maxIdle" value="${database.pool.maxIdle}"/>
+        <property name="minIdle" value="${database.pool.minIdle}"/>
+        <property name="maxWait" value="120000"/>
+        <property name="validationQuery" value="SELECT 1"/>
+        <property name="testOnBorrow" value="true"/>
+        <property name="validationInterval" value="30000"/>
+        <property name="timeBetweenEvictionRunsMillis" value="1800000"/>
+    </bean>
+
+    <bean id="liquibaseDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url" value="${database.url}"/>
+        <property name="username" value="${database.admin.username}"/>
+        <property name="password" value="${database.admin.password}"/>
+        <property name="maxActive" value="1"/>
+        <property name="maxIdle" value="0"/>
+        <property name="minIdle" value="0"/>
+        <property name="maxWait" value="120000"/>
+        <property name="validationQuery" value="SELECT 1"/>
+        <property name="testOnBorrow" value="true"/>
+    </bean>
+
+    <!-- Real e-mail server -->
+    <bean name="javaMailSenderImpl" class="sgf.gateway.mail.impl.ExtendedJavaMailSenderImpl">
+        <property name="host" value="${email.server.host}"/>
+        <property name="port" value="${email.server.port}"/>
+        <property name="debug" value="${email.server.debug}"/>
+        <property name="username" value="${email.server.username}"/>
+        <property name="password" value="${email.server.password}"/>
+    </bean>
+
+</beans>

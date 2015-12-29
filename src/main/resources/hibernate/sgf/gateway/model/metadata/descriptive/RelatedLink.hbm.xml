@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.metadata.RelatedLinkImpl" table="descriptive_metadata_link" schema="metadata">
+
+        <id name="identifier" column="id" access="field" type="sgf.gateway.utils.hibernate.UUIDUserType"/>
+
+        <version name="version" column="version" unsaved-value="null" access="field"/>
+
+        <property name="text" column="text" type="string" not-null="true" access="field"/>
+        <property name="uri" column="uri" type="sgf.gateway.utils.hibernate.URIUserType" not-null="true"
+                  access="field"/>
+
+    </class>
+
+</hibernate-mapping>

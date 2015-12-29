@@ -1,0 +1,11 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+				   logicalFilePath="/Liquibase/update-v3/changesets/20140923-GTWY-4034.xml">
+
+	<changeSet id="20140923-GTWY-4034" author="sgf">
+		<dropForeignKeyConstraint baseTableSchemaName="security" baseTableName="group" constraintName="fkey_group_gateway_id" />
+		<dropColumn schemaName="security" tableName="group" columnName="gateway_id" />
+	</changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="gridFTPMetricsErrorLogService" class="sgf.gateway.integration.service.ErrorLogService">
+        <constructor-arg name="logName" value="gridFTPMetricsErrorLog"/>
+    </bean>
+
+    <bean id="gridFTPMetricsErrorHandler" class="sgf.gateway.integration.message.JMSChannelMessagingErrorHandler">
+        <constructor-arg name="exceptionService">
+            <bean class="sgf.gateway.integration.service.impl.ChainIntegrationExceptionServiceImpl">
+
+                <constructor-arg name="supportedClass" value="java.io.File"/>
+                <constructor-arg name="service" ref="emailIntegrationExceptionService"/>
+
+                <constructor-arg name="nextService">
+                    <bean class="sgf.gateway.integration.service.impl.ChainIntegrationExceptionServiceImpl">
+
+                        <constructor-arg name="supportedClass"
+                                         value="sgf.gateway.integration.metrics.FileDownloadPayload"/>
+                        <constructor-arg name="service">
+                            <bean class="sgf.gateway.integration.service.impl.AggregateIntegrationExceptionServiceImpl">
+                                <constructor-arg name="exceptionServices">
+                                    <list>
+                                        <bean class="sgf.gateway.integration.metrics.service.impl.LogEntryIntegrationExceptionServiceImpl">
+                                            <constructor-arg name="errorLogService"
+                                                             ref="gridFTPMetricsErrorLogService"/>
+                                        </bean>
+                                        <ref bean="emailIntegrationExceptionService"/>
+                                    </list>
+                                </constructor-arg>
+                            </bean>
+                        </constructor-arg>
+
+                        <constructor-arg name="nextService">
+                            <bean class="sgf.gateway.integration.service.impl.AggregateIntegrationExceptionServiceImpl">
+                                <constructor-arg name="exceptionServices">
+                                    <list>
+                                        <bean class="sgf.gateway.integration.service.impl.PayloadIntegrationExceptionServiceImpl">
+                                            <constructor-arg name="errorLogService"
+                                                             ref="gridFTPMetricsErrorLogService"/>
+                                        </bean>
+                                        <ref bean="emailIntegrationExceptionService"/>
+                                    </list>
+                                </constructor-arg>
+                            </bean>
+                        </constructor-arg>
+
+                    </bean>
+                </constructor-arg>
+
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <bean id="gridFTPMetricsFilter" class="sgf.gateway.integration.metrics.gridftp.filter.LogEntryFilter"/>
+
+    <bean id="gridFTPMetricsHostnameTransformer"
+          class="sgf.gateway.integration.metrics.gridftp.transformer.HostnameTransformer">
+        <constructor-arg name="hostKey" value="HOSTNAME"/>
+    </bean>
+
+    <bean id="gridFTPMetricsFileFilter" class="sgf.gateway.integration.metrics.filter.FileDownloadFilter">
+        <constructor-arg name="extensions">
+            <set>
+                <value>nc</value>
+            </set>
+        </constructor-arg>
+    </bean>
+
+    <bean id="gridFTPMetricsTokenizer"
+          class="sgf.gateway.integration.metrics.gridftp.transformer.impl.LogEntryTokenizerImpl"/>
+
+    <bean id="gridFTPMetricsFileURIStrategy"
+          class="sgf.gateway.integration.metrics.gridftp.transformer.impl.FileURIStrategy">
+        <constructor-arg name="schema" value="gsiftp"/>
+        <constructor-arg name="host" value="vetsman.ucar.edu"/>
+        <constructor-arg name="portKey" value="CONFID"/>
+        <constructor-arg name="stemKey" value="FILE"/>
+    </bean>
+
+    <bean id="gridFTPMetricsFileURIFieldTransformer"
+          class="sgf.gateway.integration.metrics.gridftp.transformer.impl.FileURIFieldTransformer">
+        <constructor-arg name="fileURIStrategy" ref="gridFTPMetricsFileURIStrategy"/>
+    </bean>
+
+    <bean id="gridFTPMetricsStartDateFieldTransformer"
+          class="sgf.gateway.integration.metrics.gridftp.transformer.impl.StartDateFieldTransformer">
+        <constructor-arg name="startDateKey" value="START"/>
+    </bean>
+
+    <bean id="gridFTPMetricsEndDateFieldTransformer"
+          class="sgf.gateway.integration.metrics.gridftp.transformer.impl.EndDateFieldTransformer">
+        <constructor-arg name="endDateKey" value="END"/>
+    </bean>
+
+    <bean id="gridFTPMetricsRemoteAddressFieldTransformer"
+          class="sgf.gateway.integration.metrics.gridftp.transformer.impl.RemoteAddressFieldTransformer">
+        <constructor-arg name="remoteAddressKey" value="CLIENTIP"/>
+    </bean>
+
+    <bean id="gridFTPMetricsBytesSentFieldTransformer"
+          class="sgf.gateway.integration.metrics.gridftp.transformer.impl.BytesSentFieldTransformer">
+        <constructor-arg name="bytesSentKey" value="NBYTES"/>
+    </bean>
+
+    <bean id="gridFTPMetricsStatusCodeFieldTransformer"
+          class="sgf.gateway.integration.metrics.gridftp.transformer.impl.StatusCodeFieldTransformer">
+        <constructor-arg name="statusCodeKey" value="CODE"/>
+    </bean>
+
+    <bean id="gridFTPMetricsCompletedFieldTransformer"
+          class="sgf.gateway.integration.metrics.gridftp.transformer.impl.CompletedFieldTransformer">
+        <constructor-arg name="statusCodeKey" value="CODE"/>
+        <constructor-arg name="bytesSentKey" value="NBYTES"/>
+        <constructor-arg name="successfulStatusCode" value="226"/>
+        <constructor-arg name="fileURIStrategy" ref="gridFTPMetricsFileURIStrategy"/>
+        <constructor-arg name="logicalFileRepository" ref="logicalFileRepository"/>
+    </bean>
+
+    <bean id="gridFTPMetricsOpenIdFieldTransformer"
+          class="sgf.gateway.integration.metrics.gridftp.transformer.impl.OpenIdFieldTransformer">
+        <constructor-arg name="userDNKey" value="USERDN"/>
+    </bean>
+
+    <bean id="gridFTPMetricsUserAgentFieldTransformer"
+          class="sgf.gateway.integration.metrics.gridftp.transformer.impl.UserAgentFieldTransformer">
+        <constructor-arg name="gridFtpUserAgent" value="Globus GridFTP"/>
+    </bean>
+
+    <bean id="gridFTPMetricsTransformer"
+          class="sgf.gateway.integration.metrics.gridftp.transformer.impl.LogEntryTransformerImpl">
+        <constructor-arg name="tokenizer" ref="gridFTPMetricsTokenizer"/>
+        <constructor-arg name="fieldTransformers">
+            <list>
+                <ref bean="gridFTPMetricsBytesSentFieldTransformer"/>
+                <ref bean="gridFTPMetricsFileURIFieldTransformer"/>
+                <ref bean="gridFTPMetricsCompletedFieldTransformer"/>
+                <ref bean="gridFTPMetricsStartDateFieldTransformer"/>
+                <ref bean="gridFTPMetricsEndDateFieldTransformer"/>
+                <ref bean="gridFTPMetricsRemoteAddressFieldTransformer"/>
+                <ref bean="gridFTPMetricsStatusCodeFieldTransformer"/>
+                <ref bean="gridFTPMetricsOpenIdFieldTransformer"/>
+                <ref bean="gridFTPMetricsUserAgentFieldTransformer"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+</beans>

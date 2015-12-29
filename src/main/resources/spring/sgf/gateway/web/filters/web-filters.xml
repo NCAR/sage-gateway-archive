@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="simpleServletErrorResponse" class="sgf.gateway.web.filters.exception.SimpleServletErrorResponse">
+        <constructor-arg index="0" value="An unexpected error has been encountered."/>
+    </bean>
+
+    <bean id="unhandledExceptionFilter" class="sgf.gateway.web.filters.exception.UnhandledExceptionFilter">
+        <constructor-arg index="0" ref="simpleServletErrorResponse"/>
+        <constructor-arg index="1" ref="exceptionHandlingService"/>
+    </bean>
+
+    <bean id="hibernateSessionFilter"
+          class="org.springframework.orm.hibernate4.support.ExtendedOpenSessionInViewFilter">
+        <constructor-arg index="0">
+            <list>
+                <bean class="org.springframework.orm.hibernate4.support.StartsWithShouldNotFilter">
+                    <constructor-arg index="0" value="/js/"/>
+                </bean>
+                <bean class="org.springframework.orm.hibernate4.support.StartsWithShouldNotFilter">
+                    <constructor-arg index="0" value="/themes/"/>
+                </bean>
+                <bean class="org.springframework.orm.hibernate4.support.StartsWithShouldNotFilter">
+                    <constructor-arg index="0" value="/index/"/>
+                </bean>
+            </list>
+        </constructor-arg>
+
+        <property name="sessionFactoryBeanName" value="hibernateSessionFactory"/>
+    </bean>
+
+    <import resource="classpath:sgf/gateway/web/filters/security/web-filters-security.xml"/>
+
+    <import resource="classpath:sgf/gateway/web/filters/metrics/web-filters-metrics.xml"/>
+
+</beans>

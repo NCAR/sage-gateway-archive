@@ -1,0 +1,18 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   logicalFilePath="/Liquibase/update-v3/changesets/20140707-GTWY-3978.xml">
+
+	<changeSet id="20140707-GTWY-3978" author="sgf">
+
+		<sql>
+			ALTER TABLE metadata.award DROP CONSTRAINT pkey_award
+		</sql>
+
+		<sql>
+			ALTER TABLE metadata.award ADD PRIMARY KEY (dataset_id, award_number) DEFERRABLE INITIALLY DEFERRED;
+		</sql>
+
+	</changeSet>
+
+</databaseChangeLog>

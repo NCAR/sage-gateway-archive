@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                           http://www.springframework.org/schema/integration
+                           http://www.springframework.org/schema/integration/spring-integration-2.1.xsd
+                           http://www.springframework.org/schema/integration/jms
+                           http://www.springframework.org/schema/integration/jms/spring-integration-jms-2.0.xsd">
+
+    <bean id="projectInboundQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="queue.projectInbound"/>
+    </bean>
+
+    <bean id="projectTransformedQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="queue.projectTransformed"/>
+    </bean>
+
+    <bean id="datasetInboundQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="queue.datasetInbound"/>
+    </bean>
+
+    <bean id="datasetTransformedQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="queue.datasetTransformed"/>
+    </bean>
+
+    <bean id="eolCatalogErrorHandler" class="sgf.gateway.integration.message.JMSChannelMessagingErrorHandler">
+        <constructor-arg name="exceptionService" ref="emailIntegrationExceptionService"/>
+    </bean>
+
+    <int:channel id="invDatasetRequestChannel"/>
+
+    <int:transformer input-channel="invDatasetRequestChannel" output-channel="invDatasetRequestSourceOnlyChannel"
+                     expression="payload.source"/>
+
+    <int:channel id="invDatasetRequestSourceOnlyChannel"/>
+
+    <int:service-activator input-channel="invDatasetRequestSourceOnlyChannel">
+        <bean class="sgf.gateway.integration.thredds.enricher.InvDatasetEnricher"/>
+    </int:service-activator>
+
+    <int-jms:channel id="projectInboundChannel" queue="projectInboundQueue" connection-factory="jmsConnectionFactory"
+                     error-handler="eolCatalogErrorHandler"/>
+
+    <int:chain input-channel="projectInboundChannel" output-channel="projectTransformedChannel">
+
+        <int:enricher request-channel="invDatasetRequestChannel">
+            <int:property name="invDataset" expression="payload"/>
+        </int:enricher>
+
+        <int:transformer ref="threddsProjectTransformer"/>
+
+    </int:chain>
+
+    <int-jms:channel id="projectTransformedChannel" queue="projectTransformedQueue"
+                     connection-factory="jmsConnectionFactory" error-handler="eolCatalogErrorHandler"/>
+
+    <int:chain input-channel="projectTransformedChannel" output-channel="datasetInboundChannel">
+
+        <int:service-activator ref="projectLoadService" method="load"/>
+
+        <int:splitter method="createDatasetPayloads">
+            <bean class="sgf.gateway.integration.thredds.splitter.ThreddsDatasetChildrenSplitter"/>
+        </int:splitter>
+
+    </int:chain>
+
+    <int-jms:channel id="datasetInboundChannel" queue="datasetInboundQueue" connection-factory="jmsConnectionFactory"
+                     error-handler="eolCatalogErrorHandler"/>
+
+    <int:chain input-channel="datasetInboundChannel" output-channel="datasetTransformedChannel">
+
+        <int:enricher request-channel="invDatasetRequestChannel">
+            <int:property name="invDataset" expression="payload"/>
+        </int:enricher>
+
+        <int:transformer ref="threddsDatasetTransformer"/>
+
+        <int:filter ref="datasetOfDatacenterFilter"/>
+
+    </int:chain>
+
+    <int-jms:channel id="datasetTransformedChannel" queue="datasetTransformedQueue"
+                     connection-factory="jmsConnectionFactory" error-handler="eolCatalogErrorHandler"/>
+
+    <int:service-activator input-channel="datasetTransformedChannel" ref="datasetLoadService" method="load"/>
+
+</beans>

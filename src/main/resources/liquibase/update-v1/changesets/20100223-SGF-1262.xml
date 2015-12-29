@@ -1,0 +1,18 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100223-SGF-1262.xml">
+
+    <!-- Include the changes sets for this particular release -->
+    <changeSet author="ejn" id="20100223-SGF-1262">
+        <!-- add new Taxonomy type REALM -->
+        <insert schemaName="metadata" tableName="taxonomy">
+            <column name="id" value="4" />
+            <column name="name" value="REALM" />
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>
+

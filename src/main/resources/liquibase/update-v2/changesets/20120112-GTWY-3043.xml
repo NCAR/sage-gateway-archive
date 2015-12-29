@@ -1,0 +1,36 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   logicalFilePath="/Liquibase/update-v2/changesets/20120112-GTWY-3043.xml">
+
+    <changeSet id="20120112-GTWY-3043" author="sgf">
+
+        <sql>
+            CREATE TABLE metadata.replica
+            (
+            id uuid NOT NULL,
+            version bigint NOT NULL DEFAULT 0,
+            dataset_version_id uuid NOT NULL,
+            source_catalog_uri text NOT NULL,
+            date_created timestamp with time zone NOT NULL DEFAULT default_timestamp(),
+            CONSTRAINT pkey_replica PRIMARY KEY (id),
+            CONSTRAINT fkey_replica_dataset_version FOREIGN KEY (dataset_version_id)
+            REFERENCES metadata.dataset_version (id) MATCH SIMPLE
+            ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
+            CONSTRAINT unq_replica_source_catalog_uri UNIQUE (source_catalog_uri)
+            )
+            WITH (
+            OIDS=FALSE
+            );
+        </sql>
+
+        <sql>
+            ALTER TABLE metadata.replica OWNER TO "${database.role.admin}";
+            REVOKE ALL ON TABLE metadata.replica FROM public;
+            GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE metadata.replica TO "${database.role.user}";
+            GRANT SELECT ON TABLE metadata.replica TO "${database.role.read_only}";
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

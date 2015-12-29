@@ -1,0 +1,42 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   logicalFilePath="/Liquibase/update-v3/changesets/20140630-GTWY-3963.xml">
+
+	<changeSet id="20140630-GTWY-3963.0" author="sgf">
+
+		<addColumn schemaName="metadata" tableName="award">
+			<column name="dataset_id" type="uuid"/>
+		</addColumn>
+
+		<addForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="award" baseColumnNames="dataset_id"
+								 referencedTableSchemaName="metadata" referencedTableName="dataset" referencedColumnNames="id"
+								 constraintName="fkey_dataset_award" deferrable="true" initiallyDeferred="true"
+								 onDelete="CASCADE" onUpdate="CASCADE"/>
+	
+	</changeSet>
+
+	<changeSet id="20140630-GTWY-3963.1" author="sgf">
+
+		<sql>
+			UPDATE metadata.award AS a
+			SET dataset_id = p.dataset_id
+			FROM metadata.project AS p
+			WHERE p.id = a.project_id
+		</sql>
+
+	</changeSet>
+
+	<changeSet id="20140630-GTWY-3963.2" author="sgf">
+
+		<addNotNullConstraint schemaName="metadata" tableName="award" columnName="dataset_id"/>
+
+        <dropPrimaryKey schemaName="metadata" tableName="award" constraintName="pkey_award"/>
+        
+        <addPrimaryKey schemaName="metadata" tableName="award" columnNames="dataset_id, award_number" constraintName="pkey_award"/>
+
+		<dropColumn schemaName="metadata" tableName="award" columnName="project_id"/>
+            
+	</changeSet>
+
+</databaseChangeLog>

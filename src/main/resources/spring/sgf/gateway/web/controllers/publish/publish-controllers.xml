@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="createNewDatasetController" class="sgf.gateway.web.controllers.publish.CreateNewDatasetController">
+        <constructor-arg index="0" ref="datasetFactory"/>
+        <constructor-arg index="1" ref="softwarePropertiesFactory"/>
+        <constructor-arg index="2" ref="datasetRepository"/>
+        <constructor-arg index="3" ref="activityRepository"/>
+        <constructor-arg index="4" ref="metadataService"/>
+        <constructor-arg index="5" ref="accountService"/>
+        <constructor-arg index="6" ref="authorizationUtils"/>
+        <constructor-arg index="7" ref="runtimeUserService"/>
+    </bean>
+
+
+    <bean id="editDatasetMetadataController" class="sgf.gateway.web.controllers.publish.EditDatasetMetadataController">
+        <constructor-arg index="0" ref="datasetRepository"/>
+        <constructor-arg index="1" ref="activityRepository"/>
+        <constructor-arg index="2" ref="groupRepository"/>
+        <constructor-arg index="3" ref="projectRepository"/>
+        <constructor-arg index="4" ref="metadataService"/>
+        <constructor-arg index="5" ref="authorizationUtils"/>
+    </bean>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+
+        <!-- one of the properties available; the maximum file size in bytes (1048576 bytes = 1 megabyte) 100000 b = 97.7 kb-->
+        <!--<property name="maxUploadSize" value="100000" />-->
+    </bean>
+
+</beans>

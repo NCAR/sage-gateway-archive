@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="datasetClass" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod">
+            <value>java.lang.Class.forName</value>
+        </property>
+        <property name="arguments">
+            <list>
+                <value>sgf.gateway.model.metadata.Dataset</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="datasetIndexQualifier"
+          class="sgf.gateway.search.service.indexer.qualifier.SearchIndexQualifierDatasetPublished"/>
+
+    <bean id="datasetSearchIndexer" name="datasetSearchIndexer searchIndexer"
+          class="sgf.gateway.search.service.indexer.SearchIndexerChain">
+        <constructor-arg index="0" ref="datasetClass"/>
+        <constructor-arg index="1" ref="searchIndex"/>
+        <constructor-arg index="2" ref="datasetSearchDocumentExtractor"/>
+        <constructor-arg index="3" ref="datasetSearchDocumentExtractorDeletion"/>
+        <constructor-arg index="4" ref="datasetIndexQualifier"/>
+        <constructor-arg index="5" ref="remoteIndexableSearchIndexer"/>
+    </bean>
+
+    <bean id="remoteIndexableClass" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod">
+            <value>java.lang.Class.forName</value>
+        </property>
+        <property name="arguments">
+            <list>
+                <value>sgf.gateway.search.api.RemoteIndexable</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="remoteIndexableIndexQualifier"
+          class="sgf.gateway.search.service.indexer.qualifier.SearchIndexQualifierPass"/>
+
+    <bean id="remoteIndexableSearchIndexer" name="remoteIndexableSearchIndexer"
+          class="sgf.gateway.search.service.indexer.SearchIndexerImpl">
+        <constructor-arg index="0" ref="remoteIndexableClass"/>
+        <constructor-arg index="1" ref="searchIndex"/>
+        <constructor-arg index="2" ref="remoteIndexableSearchDocumentExtractor"/>
+        <constructor-arg index="3" ref="remoteIndexableSearchDocumentExtractor"/>
+        <constructor-arg index="4" ref="remoteIndexableIndexQualifier"/>
+    </bean>
+
+</beans>

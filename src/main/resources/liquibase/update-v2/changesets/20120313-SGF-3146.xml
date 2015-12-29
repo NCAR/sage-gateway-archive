@@ -1,0 +1,79 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20120313-SGF-3146.xml">
+
+    <changeSet id="20120313-SGF-3146.0" author="sgf" >
+
+        <sql>
+
+            ALTER TABLE metadata.project ADD COLUMN northern_latitude DOUBLE PRECISION;
+            ALTER TABLE metadata.project ADD COLUMN southern_latitude DOUBLE PRECISION;
+            ALTER TABLE metadata.project ADD COLUMN western_longitude DOUBLE PRECISION;
+            ALTER TABLE metadata.project ADD COLUMN eastern_longitude DOUBLE PRECISION;
+        </sql>
+
+    </changeSet>
+
+
+    <changeSet id="20120313-SGF-3146.1" author="sgf" >
+
+        <sql>
+            UPDATE metadata.project project
+            SET northern_latitude =
+            (select end_range
+            FROM
+            metadata.coordinate_axis axis,
+            metadata.project project2,
+            metadata.geospatial_coordinate_axis geo_axis
+            WHERE
+            axis.geophysical_properties_id = project2.dataset_id
+            and axis.id = geo_axis.id
+            and axis.coordinate_type_id = 0
+            and project2.id = project.id
+            )
+            , southern_latitude =
+            (select start_range
+            FROM
+            metadata.coordinate_axis axis,
+            metadata.project project2,
+            metadata.geospatial_coordinate_axis geo_axis
+            WHERE
+            axis.geophysical_properties_id = project2.dataset_id
+            and axis.id = geo_axis.id
+            and axis.coordinate_type_id = 0
+            and project2.id = project.id
+            )
+            , eastern_longitude =
+            (select end_range
+            FROM
+            metadata.coordinate_axis axis,
+            metadata.project project2,
+            metadata.geospatial_coordinate_axis geo_axis
+            WHERE
+            axis.geophysical_properties_id = project2.dataset_id
+            and axis.id = geo_axis.id
+            and axis.coordinate_type_id = 1
+            and project2.id = project.id
+            )
+            , western_longitude =
+            (select start_range
+            FROM
+            metadata.coordinate_axis axis,
+            metadata.project project2,
+            metadata.geospatial_coordinate_axis geo_axis
+            WHERE
+            axis.geophysical_properties_id = project2.dataset_id
+            and axis.id = geo_axis.id
+            and axis.coordinate_type_id = 1
+            and project2.id = project.id
+            )
+            ;
+
+        </sql>
+
+    </changeSet>
+
+
+</databaseChangeLog>

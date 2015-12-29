@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-file="http://www.springframework.org/schema/integration/file"
+       xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                           http://www.springframework.org/schema/integration
+                           http://www.springframework.org/schema/integration/spring-integration-2.1.xsd
+                           http://www.springframework.org/schema/integration/file
+                           http://www.springframework.org/schema/integration/file/spring-integration-file.xsd
+                           http://www.springframework.org/schema/integration/jms
+                           http://www.springframework.org/schema/integration/jms/spring-integration-jms-2.0.xsd">
+
+    <bean id="gridFTPMetricsLogFileQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="queue.metrics.gridftp.logfile"/>
+    </bean>
+
+    <bean id="gridFTPMetricsLogFileEntryQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="queue.metrics.gridftp.logfileentry"/>
+    </bean>
+
+    <bean id="gridFTPMetricsFileDownloadPayloadQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="queue.metrics.gridftp.filedownloadpayload"/>
+    </bean>
+
+    <bean id="gridFTPMetricsLogFileFilter"
+          class="org.springframework.integration.file.filters.RegexPatternFileListFilter">
+        <constructor-arg name="pattern" value="GRIDFTP_USAGELOG\..+\.txt"/>
+    </bean>
+
+    <int-file:inbound-channel-adapter channel="gridFTPMetricsLogFileChannel"
+                                      directory="${integration.gridftp.metrics.incoming}"
+                                      filter="gridFTPMetricsLogFileFilter">
+        <!-- careful setting max-messages-per-poll to -1 as it could create an infinite loop if the move to processing fails for some reason -->
+        <int:poller cron="0 */10 * * * ?" max-messages-per-poll="10"/>
+    </int-file:inbound-channel-adapter>
+
+    <int:channel id="gridFTPMetricsLogFileChannel"/>
+
+    <int:service-activator input-channel="gridFTPMetricsLogFileChannel"
+                           output-channel="gridFTPMetricsLogFileReaderChannel">
+        <bean class="sgf.gateway.integration.service.FileMoveService">
+            <constructor-arg name="destination" value="${integration.gridftp.metrics.processing}"/>
+        </bean>
+    </int:service-activator>
+
+    <int-jms:channel id="gridFTPMetricsLogFileReaderChannel" queue="gridFTPMetricsLogFileQueue"
+                     connection-factory="jmsConnectionFactory" error-handler="gridFTPMetricsErrorHandler"/>
+
+    <int:service-activator input-channel="gridFTPMetricsLogFileReaderChannel"
+                           output-channel="gridFTPMetricsLogFileArchiveChannel">
+        <bean class="sgf.gateway.integration.service.FileLineReaderService">
+            <constructor-arg name="outputChannel" ref="gridFTPMetricsLogFileLineChannel"/>
+        </bean>
+    </int:service-activator>
+
+    <int:channel id="gridFTPMetricsLogFileArchiveChannel"/>
+
+    <int:service-activator input-channel="gridFTPMetricsLogFileArchiveChannel" output-channel="nullChannel">
+        <bean class="sgf.gateway.integration.service.FileMoveService">
+            <constructor-arg name="destination" value="${integration.gridftp.metrics.archive}"/>
+        </bean>
+    </int:service-activator>
+
+    <int:channel id="gridFTPMetricsLogFileLineChannel"/>
+
+    <int:chain input-channel="gridFTPMetricsLogFileLineChannel" output-channel="gridFTPMetricsLogFileEntryChannel">
+
+        <int:transformer ref="stringTrimTransformer"/>
+
+        <int:filter ref="stringWhitespaceFilter"/>
+
+        <int:filter ref="stringCommentFilter"/>
+
+        <int:filter ref="gridFTPMetricsFilter"/>
+
+        <int:transformer ref="gridFTPMetricsHostnameTransformer"/>
+
+    </int:chain>
+
+    <int-jms:channel id="gridFTPMetricsLogFileEntryChannel" queue="gridFTPMetricsLogFileEntryQueue"
+                     connection-factory="jmsConnectionFactory" error-handler="gridFTPMetricsErrorHandler"/>
+
+    <int:chain input-channel="gridFTPMetricsLogFileEntryChannel"
+               output-channel="gridFTPMetricsFileDownloadPayloadChannel">
+
+        <int:transformer ref="gridFTPMetricsTransformer"/>
+
+        <int:filter ref="gridFTPMetricsFileFilter"/>
+
+    </int:chain>
+
+    <int-jms:channel id="gridFTPMetricsFileDownloadPayloadChannel" queue="gridFTPMetricsFileDownloadPayloadQueue"
+                     connection-factory="jmsConnectionFactory" error-handler="gridFTPMetricsErrorHandler"/>
+
+    <int:service-activator input-channel="gridFTPMetricsFileDownloadPayloadChannel" ref="metricsDownloadService"
+                           method="saveFileDownload"/>
+
+</beans>

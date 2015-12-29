@@ -1,0 +1,16 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100506-SGF-877.xml">
+
+    <changeSet id="20100506-SGF-877" author="hannah">
+        <comment>Adding back link to create a doubly linked list of continuing projects.</comment>
+
+        <addColumn tableName="cadis_project" schemaName="metadata">
+            <column name="continuation_of_project_id" type="uuid" />
+        </addColumn>
+
+    </changeSet>
+
+</databaseChangeLog>

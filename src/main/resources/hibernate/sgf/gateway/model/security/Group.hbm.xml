@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <joined-subclass name="sgf.gateway.model.security.Group" extends="sgf.gateway.model.security.Principal"
+                     table="group" schema="security">
+
+        <key column="id"/>
+
+        <property name="name" column="name" type="string" not-null="true" unique="true"/>
+        <property name="description" column="description" type="text" not-null="true"/>
+        <property name="visible" column="visible" type="boolean" not-null="true"/>
+        <property name="automaticApproval" column="automatic_approval" type="boolean" not-null="true"/>
+
+        <!-- NOTE: group default roles are NOT lazy loaded -->
+        <set name="defaultRoles" table="group_default_role" schema="security" lazy="false">
+            <key column="group_id"/>
+            <many-to-many class="sgf.gateway.model.security.Role" column="role_id"/>
+        </set>
+
+        <set name="memberships" inverse="true" lazy="true" cascade="all-delete-orphan">
+            <cache usage="read-write"/>
+            <key column="group_id"/>
+            <one-to-many class="sgf.gateway.model.security.Membership"/>
+        </set>
+
+        <map name="groupData" table="group_group_data_xref" schema="security" lazy="true" cascade="all">
+            <key column="group_id"/>
+            <index-many-to-many class="sgf.gateway.model.security.GroupData" column="group_data_id"/>
+            <element column="required" type="boolean" not-null="true"/>
+        </map>
+
+    </joined-subclass>
+
+    <query name="findGroupsByGroupData" cacheable="true">
+        <![CDATA[
+            select ggroup from Group ggroup, GroupData gdata where gdata = :groupData and gdata in indices(ggroup.groupData)
+        ]]>
+    </query>
+
+</hibernate-mapping>

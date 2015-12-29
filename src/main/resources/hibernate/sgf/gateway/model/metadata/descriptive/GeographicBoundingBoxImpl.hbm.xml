@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.metadata.descriptive.GeographicBoundingBoxImpl"
+           table="dataset_geographic_bounding_box" schema="metadata">
+
+        <id name="identifier" column="id" access="field" type="sgf.gateway.utils.hibernate.UUIDUserType">
+            <generator class="foreign">
+                <param name="property">parent</param>
+            </generator>
+        </id>
+
+        <one-to-one name="parent" class="sgf.gateway.model.metadata.descriptive.DescriptiveMetadataImpl"
+                    constrained="true" access="field"/>
+
+        <property name="westBoundLongitude" column="west_bound_longitude" not-null="true"/>
+        <property name="eastBoundLongitude" column="east_bound_longitude" not-null="true"/>
+        <property name="southBoundLatitude" column="south_bound_latitude" not-null="true"/>
+        <property name="northBoundLatitude" column="north_bound_latitude" not-null="true"/>
+
+    </class>
+
+</hibernate-mapping>

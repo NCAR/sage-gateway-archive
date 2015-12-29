@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd"
+       profile="esg">
+
+    <bean id="esgHomePageController" class="sgf.gateway.web.controllers.HomePageController">
+        <constructor-arg index="0" value="esg/home-ncar"/>
+        <constructor-arg index="1" ref="openIdConfiguration"/>
+    </bean>
+
+    <bean id="contactUsController" class="sgf.gateway.web.controllers.contactUs.ContactUsController">
+        <constructor-arg index="0" ref="gateway"/>
+    </bean>
+
+</beans>

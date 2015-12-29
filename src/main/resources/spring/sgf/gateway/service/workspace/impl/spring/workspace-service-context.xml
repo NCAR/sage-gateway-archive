@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <!-- bean setup for mock storage control - used for development purposes, not used for deployed gateways -->
+
+    <bean id="mockStorageResourceControl" class="sgf.gateway.service.workspace.impl.spring.MockStorageResourceControl"
+          scope="singleton">
+        <property name="accessCapability" value="file"/>
+        <property name="accessPathInfo" value="/datazone/esg/esgcache/bestman/data/cache/shared/"/>
+    </bean>
+
+    <bean id="srmStorageResourceControlStub"
+          class="sgf.gateway.service.workspace.impl.spring.SRMStorageResourceControlStub" scope="singleton">
+    </bean>
+
+    <!-- bean setup for system call out storage control - used for deployed gateways -->
+    <bean id="systemExecStorageResourceControl"
+          class="sgf.gateway.service.workspace.impl.spring.SystemExecStorageResourceControl" scope="singleton">
+        <property name="serviceURL" value="${gateway.srm.serviceURL}"/>
+        <property name="temporaryDirectory" value="${gateway.srm.temporaryDirectory}"/>
+        <property name="workingDirectory" value="${gateway.srm.temporaryDirectory}"/>
+        <property name="srmCopyCommandPath" value="${gateway.srm.srmCopyCommandPath}"/>
+        <property name="srmStatusCommandPath" value="${gateway.srm.srmStatusCommandPath}"/>
+        <property name="srmFileStatusCommandPath" value="${gateway.srm.srmFileStatusCommandPath}"/>
+        <property name="transferBaseURI" value="${gateway.srm.transferBaseURI}"/>
+        <property name="accessCapability" value="file"/>
+        <property name="storageInfoMap">
+            <map>
+                <entry key="HRMatNCAR" value=""/>
+                <entry key="HRMatNERSC" value=""/>
+                <entry key="HRMatORNL" value=""/>
+            </map>
+        </property>
+    </bean>
+
+    <alias name="${eske.service.workspace.impl.SubsystemResourceFactory.SRMControl}"
+           alias="storageResourceManagerControl"/>
+
+    <bean id="subsystemResourceFactory" class="sgf.gateway.service.workspace.impl.spring.SubsystemResourceFactory"
+          scope="singleton">
+        <property name="storageControlMap">
+            <map>
+                <entry key="SRM" value-ref="storageResourceManagerControl"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="dataTransferMonitorJob" class="sgf.gateway.service.workspace.impl.spring.DataTransferMonitorJob">
+        <constructor-arg index="0" value="${eske.service.workspace.impl.DataTransferMonitorJob.enabled}"/>
+        <property name="dataTransferService" ref="dataTransferService"/>
+    </bean>
+
+    <bean id="dataTransferService" class="sgf.gateway.service.workspace.impl.spring.DataTransferServiceImpl">
+        <constructor-arg index="0" ref="dataTransferRepository"/>
+        <constructor-arg index="1" ref="metadataService"/>
+        <constructor-arg index="2" ref="mailService"/>
+    </bean>
+
+</beans>

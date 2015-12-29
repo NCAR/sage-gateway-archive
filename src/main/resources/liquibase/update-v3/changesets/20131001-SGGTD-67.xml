@@ -1,0 +1,12 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20130926-GTWY-3729.xml">
+
+	<changeSet id="20131001-SGGTD-67" author="sgf">
+		
+		<dropColumn schemaName="metadata" tableName="activity" columnName="rdf_identifier"/>
+		
+	</changeSet>
+	
+</databaseChangeLog>

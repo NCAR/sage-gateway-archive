@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="searchService" class="sgf.gateway.search.service.SearchServiceImpl">
+        <constructor-arg index="0" ref="searchIndexer"/>
+        <constructor-arg index="1">
+            <list>
+                <bean class="sgf.gateway.search.service.ReindexDatasetSource">
+                    <constructor-arg ref="datasetRepository"/>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="searchDeletionService" class="sgf.gateway.search.service.DeletionServiceImpl">
+        <constructor-arg index="0" ref="searchService"/>
+        <constructor-arg index="1" ref="typeField"/>
+        <constructor-arg index="2" ref="idField"/>
+        <constructor-arg index="3" ref="shortNameField"/>
+        <constructor-arg index="4" ref="dataCenterField"/>
+    </bean>
+
+    <bean id="moreLikeThisService" class="sgf.gateway.search.service.MoreLikeThisServiceImpl">
+        <constructor-arg name="mltDatasetQuery" ref="moreLikeThisDatasetSearchQuery"/>
+        <constructor-arg name="idFieldName" value="id"/>
+    </bean>
+
+    <bean id="datasetStoredListener" class="sgf.gateway.search.listener.HierarchyAwareDatasetStoredListener">
+        <constructor-arg name="searchService" ref="searchService"/>
+        <constructor-arg name="datasetRepository" ref="datasetRepository"/>
+    </bean>
+
+    <bean id="datasetDeletedListener" class="sgf.gateway.search.listener.DatasetDeletedListener">
+        <constructor-arg index="0" ref="searchDeletionService"/>
+    </bean>
+
+    <bean id="searchReindexer" class="sgf.gateway.search.service.SearchReindexer">
+        <constructor-arg name="searchService" ref="searchService"/>
+        <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    </bean>
+
+    <bean id="searchIndexBootstrap" class="sgf.gateway.search.listener.SearchIndexBootstrap">
+        <constructor-arg name="searchQuery" ref="bootSearchQuery"/>
+        <constructor-arg name="searchReindexer" ref="searchReindexer"/>
+    </bean>
+
+</beans>

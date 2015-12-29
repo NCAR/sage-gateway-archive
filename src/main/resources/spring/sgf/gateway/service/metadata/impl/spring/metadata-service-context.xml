@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="localFileDirectoryStrategy"
+          class="sgf.gateway.service.publishing.dataset.file.LocalFileDirectoryStrategy">
+        <constructor-arg name="baseDataDirectory" value="${dataset.directory.data}"/>
+    </bean>
+
+    <bean id="transferFileProcessor" class="sgf.gateway.service.publishing.dataset.file.TransferFileProcessor">
+        <constructor-arg name="directoryStrategy" ref="localFileDirectoryStrategy"/>
+        <constructor-arg name="datasetRepository" ref="datasetRepository"/>
+        <constructor-arg name="logicalFileRepository" ref="logicalFileRepository"/>
+        <constructor-arg name="logicalFileFactory" ref="logicalFileFactory"/>
+    </bean>
+
+    <bean id="cadisDatasetService" class="sgf.gateway.service.metadata.impl.spring.CadisDatasetServiceImpl">
+        <constructor-arg name="datasetFactory" ref="datasetFactory"/>
+        <constructor-arg name="linkFactory" ref="linkFactory"/>
+        <constructor-arg name="datasetRepository" ref="datasetRepository"/>
+        <constructor-arg name="topicRepository" ref="topicRepository"/>
+        <constructor-arg name="metadataRepository" ref="metadataRepository"/>
+        <constructor-arg name="platformTypeRepository" ref="platformTypeRepository"/>
+        <constructor-arg name="instrumentKeywordRepository" ref="instrumentKeywordRepository"/>
+        <constructor-arg name="accountService" ref="accountService"/>
+        <constructor-arg name="runtimeUserService" ref="runtimeUserService"/>
+        <constructor-arg name="dataCenterRepository" ref="dataCenterRepository"/>
+        <constructor-arg name="responsiblePartyFactory" ref="responsiblePartyFactory"/>
+    </bean>
+
+    <bean id="metadataService" class="sgf.gateway.service.metadata.impl.spring.MetadataServiceImpl">
+        <constructor-arg index="0" ref="metadataRepository"/>
+        <constructor-arg index="1" ref="datasetRepository"/>
+    </bean>
+
+    <bean id="projectService" class="sgf.gateway.service.metadata.impl.spring.ProjectServiceImpl">
+        <constructor-arg index="0" ref="projectRepository"/>
+        <constructor-arg index="1" ref="projectFactory"/>
+    </bean>
+
+    <bean id="cadisProjectService" class="sgf.gateway.service.metadata.impl.spring.CadisProjectServiceImpl">
+        <constructor-arg index="0" ref="datasetRepository"/>
+        <constructor-arg index="1" ref="datasetFactory"/>
+        <constructor-arg index="2" ref="groupRepository"/>
+        <constructor-arg index="3" ref="fileNameAndURIRenameStrategy"/>
+        <constructor-arg index="4" ref="dataCenterRepository"/>
+    </bean>
+
+    <bean id="platformTypeService" class="sgf.gateway.service.metadata.impl.spring.PlatformTypeServiceImpl">
+        <constructor-arg index="0" ref="platformTypeRepository"/>
+        <constructor-arg index="1" ref="platformTypeFactory"/>
+    </bean>
+
+    <bean id="broadcastMessageService" class="sgf.gateway.service.metadata.impl.spring.BroadcastMessageServiceImpl">
+        <constructor-arg index="0" ref="broadcastMessageRepository"/>
+    </bean>
+
+    <bean id="logicalFileService" class="sgf.gateway.service.metadata.impl.spring.LogicalFileServiceImpl">
+        <constructor-arg index="0" ref="datasetRepository"/>
+        <constructor-arg index="1" ref="transferFileProcessor"/>
+    </bean>
+
+    <bean id="checksumService" class="sgf.gateway.service.metadata.impl.spring.ChecksumServiceImpl">
+        <constructor-arg index="0" ref="logicalFileRepository"/>
+        <constructor-arg index="1">
+            <bean class="sgf.gateway.utils.file.stream.impl.LocalFileInputStreamStrategy"/>
+        </constructor-arg>
+        <constructor-arg index="2">
+            <bean class="sgf.gateway.service.factory.impl.MessageDigestFactoryImpl"/>
+        </constructor-arg>
+        <constructor-arg index="3" ref="exceptionHandlingService"/>
+    </bean>
+
+    <bean id="datasetAuditService" class="sgf.gateway.service.metadata.impl.spring.DatasetAuditServiceImpl">
+        <constructor-arg name="gateway" ref="gateway"/>
+        <constructor-arg name="datasetRepository" ref="datasetRepository"/>
+        <constructor-arg name="restTemplate" ref="auditRestTemplate"/>
+
+        <property name="enabled" value="${brokered.dataset.audit.enabled}"/>
+    </bean>
+
+    <bean id="auditHttpClient4Factory" class="sgf.gateway.utils.httpclient.impl.HttpClient4FactoryImpl">
+        <constructor-arg name="connectTimeout" value="60000"/>
+        <constructor-arg name="readTimeout" value="60000"/>
+    </bean>
+
+    <bean id="auditHttpClient4" factory-method="create" factory-bean="auditHttpClient4Factory">
+    </bean>
+
+    <bean id="auditHttpComponentsClientHttpRequestFactory"
+          class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
+        <constructor-arg index="0" ref="auditHttpClient4"/>
+    </bean>
+
+    <bean name="auditRestTemplate" class="org.springframework.web.client.RestTemplate">
+        <property name="requestFactory" ref="auditHttpComponentsClientHttpRequestFactory"/>
+    </bean>
+
+    <bean name="auditReportMailMediator" class="sgf.gateway.service.metadata.AuditReportMailMediator">
+        <constructor-arg name="mailService" ref="mailService"/>
+        <constructor-arg name="notificationAddresses">
+            <set>
+                <value>${exception.notification.email}</value>
+            </set>
+        </constructor-arg>
+    </bean>
+
+    <bean id="relatedLinkService" class="sgf.gateway.service.metadata.impl.spring.RelatedLinkServiceImpl">
+        <constructor-arg name="linkFactory" ref="linkFactory"/>
+    </bean>
+
+</beans>

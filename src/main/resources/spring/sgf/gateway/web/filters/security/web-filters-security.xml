@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Spring configuration file containing general security infrastructure -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                           http://www.springframework.org/schema/security
+                           http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+
+
+    <!-- Ignore any sort of security on the following urls -->
+    <security:http pattern="/images/**" create-session="stateless" security="none"/>
+    <security:http pattern="/js/**" create-session="stateless" security="none"/>
+    <security:http pattern="/themes/**" create-session="stateless" security="none"/>
+    <security:http pattern="/webstart/**" create-session="stateless" security="none"/>
+
+    <!-- We require basic http authentication for all our restful api urls -->
+    <security:http pattern="/api/**" create-session="stateless" access-decision-manager-ref="unanimousBased"
+                   entry-point-ref="authenticationEntryPoint">
+        <security:intercept-url pattern="/api/**"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_User_role_default')"/>
+        <security:custom-filter ref="basicAuthenticationFilter" after="BASIC_AUTH_FILTER"/>
+        <!-- Disabling springs Cross-Site Request Forgery (csrf) protections for now.
+             This is important to turn on again when we have the time to change our logout links from http get
+             requests to http post requests.
+             http://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#csrf -->
+        <security:csrf disabled="true" request-matcher-ref="csrfSecurityRequestMatcher"/>
+    </security:http>
+
+    <bean id="basicAuthenticationFilter"
+          class="org.springframework.security.web.authentication.www.BasicAuthenticationFilter">
+        <constructor-arg index="0" ref="authenticationManager"/>
+        <constructor-arg index="1" ref="authenticationEntryPoint"/>
+    </bean>
+
+    <bean id="authenticationEntryPoint"
+          class="org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint">
+        <property name="realmName" value="api"/>
+    </bean>
+
+    <!-- Security settings for the main part of the web application. -->
+    <security:http access-decision-manager-ref="unanimousBased" security-context-repository-ref="securityContextRepository" >
+
+        <!-- The user needs to be Fully Authenticated (which is different then Anonymous, Remember Me, or Authenticated) and have a specific Authority/Role.
+             Please see the spring reference on Common Built-In Expressions for more information:
+             http://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#overview -->
+        <security:intercept-url pattern="/ac/root/**"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_Root_role_admin')"/>
+        <security:intercept-url pattern="/cadis/root/**"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_Root_role_admin')"/>
+        <security:intercept-url pattern="/project.html"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_Root_role_admin')"
+                                method="POST"/>
+        <security:intercept-url pattern="/project/form.html"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_User_role_default')"/>
+        <security:intercept-url pattern="/project/*.html"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_User_role_default')"
+                                method="POST"/>
+        <security:intercept-url pattern="/project/*/form.html"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_User_role_default')"/>
+        <security:intercept-url pattern="/project/*/awardeditor**"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_Root_role_admin')"/>
+        <security:intercept-url pattern="/project/*/addExistingContactEditor**"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_Root_role_admin')"/>
+        <security:intercept-url pattern="/contacts**/**"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_Root_role_admin')"/>
+        <security:intercept-url pattern="/observing/**"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_Root_role_admin')"/>
+        <security:intercept-url pattern="/administration/broadcastMessage**"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_Root_role_admin')"/>
+        <security:intercept-url pattern="/harvest/root/**"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_Root_role_admin')"/>
+        <security:intercept-url pattern="/root/**"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_Root_role_admin')"/>
+        <security:intercept-url pattern="/ac/accessDenied.html"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_User_role_default')"/>
+        <security:intercept-url pattern="/ac/admin/**"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_User_role_default')"/>
+        <security:intercept-url pattern="/ac/user/**"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_User_role_default')"/>
+        <security:intercept-url pattern="/account/**"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_User_role_default')"/>
+        <security:intercept-url pattern="/admin/**"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_User_role_default')"/>
+        <security:intercept-url pattern="/dataset/*/createDatasetForm**"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_User_role_default')"/>
+        <security:intercept-url pattern="/dataset/*/editDatasetForm**"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_User_role_default')"/>
+        <security:intercept-url pattern="/dataset/*/form/confirmDelete**"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_Root_role_admin')"/>
+        <security:intercept-url pattern="/publish/**"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_User_role_default')"/>
+        <security:intercept-url pattern="/remote/secure/client-cert/hessian/publishingService*"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_User_role_default')"/>
+        <security:intercept-url pattern="/user/**"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_User_role_default')"/>
+        <security:intercept-url pattern="/download/datasets*"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_User_role_default')"/>
+        <security:intercept-url pattern="/workspace/**"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_User_role_default')"/>
+        <security:intercept-url pattern="/togglz/**"
+                                access="isFullyAuthenticated() and hasAnyAuthority('group_Root_role_admin')"/>
+
+        <!-- The insecure channel must appear after all the secure channels.  Spring handles urls in the order listed here. -->
+        <security:intercept-url pattern="/**" access="isAnonymous() or isFullyAuthenticated()"
+                                requires-channel="https"/>
+
+        <!-- allowing ssl certificate based authentication
+             The original/default value was subject-principal-regex="CN=(.*?)," -->
+        <security:x509 user-service-ref="chainX509UserDetailsService" subject-principal-regex="(.*)"/>
+        <security:form-login authentication-failure-url="${web.filter.login.admin.form}"
+                             login-page="${web.filter.login.form}"/>
+        <security:custom-filter after="FORM_LOGIN_FILTER" ref="openIDAuthenticationFilter"/>
+        <security:anonymous username="guest"/>
+        <security:access-denied-handler error-page="/ac/accessDenied.html"/>
+        <security:logout logout-success-url="/" invalidate-session="true" delete-cookies="JSESSIONID"/>
+        <!-- Disabling springs Cross-Site Request Forgery (csrf) protections for now.
+             This is important to turn on again when we have the time to change our logout links from http get
+             requests to http post requests.
+             http://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#csrf -->
+        <security:csrf disabled="true" request-matcher-ref="csrfSecurityRequestMatcher"/>
+    </security:http>
+
+    <!-- We only want some of the urls NOT to have csrf protections once spring's csrf is turned on.
+         The LogoutRequestMatcher is created differently because of the fact that a user might not have a
+         session at the time they decide to click the logout button. -->
+    <bean id="csrfSecurityRequestMatcher" class="org.springframework.web.util.matcher.CsrfSecurityRequestMatcher">
+        <constructor-arg index="0" ref="chainRequestMatcher"/>
+    </bean>
+
+    <bean id="chainRequestMatcher" class="org.springframework.web.util.matcher.ChainRequestMatcher">
+        <constructor-arg index="0">
+            <list>
+                <bean class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
+                    <constructor-arg index="0" value="/api/**"/>
+                </bean>
+                <bean class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
+                    <constructor-arg index="0" value="/openid/provider.html"/>
+                </bean>
+                <bean class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
+                    <constructor-arg index="0" value="/login/openid"/>
+                </bean>
+                <bean class="org.springframework.web.util.matcher.LogoutRequestMatcher">
+                    <constructor-arg index="0" ref="runtimeUserService"/>
+                    <constructor-arg index="1">
+                        <bean class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
+                            <constructor-arg index="0" value="/logout"/>
+                        </bean>
+                    </constructor-arg>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="unanimousBased" class="org.springframework.security.access.vote.UnanimousBased">
+        <constructor-arg index="0">
+            <list>
+                <ref bean="roleVoter"/>
+                <ref bean="authenticatedVoter"/>
+                <bean class="org.springframework.security.web.access.expression.WebExpressionVoter"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="roleVoter" class="org.springframework.security.access.vote.RoleVoter">
+        <property name="rolePrefix" value="group_"/>
+    </bean>
+
+    <bean id="authenticatedVoter" class="org.springframework.security.access.vote.AuthenticatedVoter"/>
+
+
+    <security:authentication-manager alias="authenticationManager">
+        <security:authentication-provider ref="daoAuthenticationProvider"/>
+        <security:authentication-provider ref="openIDAuthenticationProvider"/>
+    </security:authentication-manager>
+
+    <bean id="daoAuthenticationProvider"
+          class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <property name="userDetailsService" ref="usernameUserDetailsService"/>
+        <property name="passwordEncoder" ref="freeBSDCryptPasswordEncoder"/>
+    </bean>
+
+    <bean id="usernameUserDetailsService"
+          class="sgf.gateway.service.security.impl.acegi.UsernameUserDetailsServiceImpl">
+        <constructor-arg index="0" ref="userRepository"/>
+    </bean>
+
+    <bean id="freeBSDCryptPasswordEncoder" class="sgf.gateway.service.security.impl.acegi.FreeBSDCryptPasswordEncoder"/>
+
+    <bean id="openIDAuthenticationProvider" class="org.springframework.security.openid.OpenIDAuthenticationProvider">
+        <property name="userDetailsService" ref="openidAuthenticationUserDetailsService"/>
+    </bean>
+
+
+    <bean id="chainX509UserDetailsService" class="sgf.gateway.service.security.impl.acegi.ChainX509UserDetailsService">
+        <constructor-arg index="0">
+            <list>
+                <ref bean="openidAuthenticationUserDetailsServiceRegexWrapper"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="openidAuthenticationUserDetailsServiceRegexWrapper"
+          class="sgf.gateway.service.security.impl.acegi.OpenidAuthenticationUserDetailsServiceRegexWrapper">
+        <constructor-arg index="0" value="CN=(.*?),"/>
+        <constructor-arg index="1" ref="openidAuthenticationUserDetailsService"/>
+    </bean>
+
+    <bean id="openidAuthenticationUserDetailsService"
+          class="sgf.gateway.service.security.impl.acegi.OpenidAuthenticationUserDetailsService">
+        <constructor-arg index="0" ref="userRepository"/>
+    </bean>
+
+    <!-- Used to redirect a user back to a requested url that is secured by a group.  The id name might not be completely correct for the above
+         security:form-login to pick this value up auto-majically. -->
+    <bean id="authenticationSuccessHandler"
+          class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler"/>
+
+
+    <!-- Openid Filter Definition -->
+
+    <bean id="openIDAuthenticationFilter" class="org.springframework.security.openid.OpenIDAuthenticationFilter">
+        <property name="consumer" ref="openid4JavaConsumer"/>
+        <property name="authenticationSuccessHandler" ref="acegiUserDetailsAuthenticationSuccessHandler"/>
+        <property name="authenticationManager" ref="org.springframework.security.authenticationManager"/>
+        <property name="authenticationFailureHandler" ref="openidAuthenticationFailureHandler"/>
+    </bean>
+
+    <!-- The contents of these success handlers is a bit of a mess.
+         The openid AuthenticationSuccessHandlers are built in a pseudo chain pattern.  However, due to the Spring API
+         it was difficult to build an actual chain. -->
+    <bean id="acegiUserDetailsAuthenticationSuccessHandler"
+          class="sgf.gateway.service.security.impl.acegi.handler.AcegiUserDetailsAuthenticationSuccessHandler">
+        <constructor-arg index="0" ref="openidNewUserDetailsWithAttributesAuthenticationSuccessHandler"/>
+    </bean>
+
+    <bean id="openidNewUserDetailsWithAttributesAuthenticationSuccessHandler"
+          class="sgf.gateway.service.security.impl.acegi.handler.OpenidNewUserDetailsWithAttributesAuthenticationSuccessHandler">
+        <constructor-arg index="0" ref="openidNewUserDetailsWithOutAttributesAuthenticationSuccessHandler"/>
+        <constructor-arg index="1" ref="userFactory"/>
+        <constructor-arg index="2" ref="accountService"/>
+    </bean>
+
+    <bean id="openidNewUserDetailsWithOutAttributesAuthenticationSuccessHandler"
+          class="sgf.gateway.service.security.impl.acegi.handler.OpenidNewUserDetailsWithOutAttributesAuthenticationSuccessHandler">
+        <constructor-arg index="0" ref="userRepository"/>
+    </bean>
+
+    <bean id="openidAuthenticationFailureHandler"
+          class="sgf.gateway.service.security.impl.acegi.OpenIDAuthenticationFailureHandler">
+        <constructor-arg index="0" ref="openidAuthenticationExceptionHandler"/>
+    </bean>
+
+    <bean id="openidAuthenticationExceptionHandler"
+          class="sgf.gateway.service.security.impl.acegi.handler.ChainHandler">
+        <constructor-arg index="0">
+            <list>
+                <bean class="sgf.gateway.service.security.impl.acegi.handler.InvalidOpenidAsEmailHandler">
+                    <constructor-arg index="0" ref="userRepository"/>
+                    <constructor-arg index="1" value="${web.filter.login.form}"/>
+                </bean>
+                <bean class="sgf.gateway.service.security.impl.acegi.handler.InvalidOpenidAsConfirmationLinkHandler">
+                    <constructor-arg index="0" ref="userRepository"/>
+                    <constructor-arg index="1" value="${web.filter.login.form}"/>
+                </bean>
+                <bean class="sgf.gateway.service.security.impl.acegi.handler.InvalidOpenidHandler">
+                    <constructor-arg index="0" value="${web.filter.login.form}"/>
+                </bean>
+                <bean class="sgf.gateway.service.security.impl.acegi.handler.UnsupportedIDPExceptionHandler">
+                    <constructor-arg index="0" value="${web.filter.login.form}"/>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="openid4JavaConsumer" class="org.springframework.security.openid.TrimOpenID4JavaConsumer">
+        <constructor-arg index="0" ref="validatingConsumerManager"/>
+        <constructor-arg index="1" ref="defaultAxFetchListFactory"/>
+    </bean>
+
+    <bean id="defaultAxFetchListFactory" class="org.springframework.security.openid.DefaultAxFetchListFactory">
+        <constructor-arg index="0">
+            <list>
+                <bean class="org.springframework.security.openid.OpenIDAttribute">
+                    <constructor-arg index="0" value="openid_email"/>
+                    <constructor-arg index="1" value="http://openid.net/schema/contact/email"/>
+                </bean>
+                <bean class="org.springframework.security.openid.OpenIDAttribute">
+                    <constructor-arg index="0" value="openid_firstName"/>
+                    <constructor-arg index="1" value="http://openid.net/schema/namePerson/first"/>
+                </bean>
+                <bean class="org.springframework.security.openid.OpenIDAttribute">
+                    <constructor-arg index="0" value="openid_lastName"/>
+                    <constructor-arg index="1" value="http://openid.net/schema/namePerson/last"/>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="validatingConsumerManager" class="org.openid4java.consumer.ValidatingConsumerManager">
+        <constructor-arg index="0" ref="idpValidator"/>
+        <constructor-arg index="1" value="${openid.idpvalidation.enforce}"/>
+
+        <!-- Connection time in miliseconds.  Default is 10000 (ten seconds), but increased the time due to some providers not being able to reply with a yadis document in 10 seconds. -->
+        <property name="connectTimeout" value="15000"/>
+        <property name="socketTimeout" value="15000"/>
+    </bean>
+
+    <bean id="idpValidator" class="org.openid4java.consumer.validation.impl.SecureSchemeValidator">
+        <property name="enabled" value="${openid.idpvalidation.securechannel.enforce}"/>
+    </bean>
+
+    <bean id="securityContextRepository" class="sgf.gateway.service.security.impl.spring.ReloadUserPerRequestHttpSessionSecurityContextRepository" >
+        <constructor-arg index="0" ref="userRepository"/>
+    </bean>
+
+</beans>

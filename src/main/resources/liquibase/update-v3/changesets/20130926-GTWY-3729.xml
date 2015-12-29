@@ -1,0 +1,15 @@
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20130926-GTWY-3729.xml">
+
+	<changeSet id="20130926-GTWY-3729" author="sgf">
+		<sql>
+			CREATE TRIGGER logical_file_update_timestamps BEFORE UPDATE on metadata.logical_file
+			FOR EACH ROW
+			EXECUTE PROCEDURE metadata.persistent_object_update_timestamps();
+		</sql>
+	</changeSet>
+	
+</databaseChangeLog>

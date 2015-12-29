@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.metadata.DataProductTypeImpl" table="data_product_type" schema="metadata"
+           lazy="false">
+
+        <id name="identifier" column="id" access="field" type="sgf.gateway.utils.hibernate.UUIDUserType"/>
+        <version name="version" column="version" unsaved-value="null" access="field"/>
+        <property name="name" column="name" type="string" length="128"/>
+        <property name="description" column="description" type="string"/>
+
+    </class>
+
+    <query name="findDataProductTypes" cacheable="true">
+        <![CDATA[
+            from DataProductTypeImpl dpt order by dpt.name
+        ]]>
+    </query>
+
+    <query name="findDataProductTypeByName" cacheable="false">
+        <![CDATA[
+            from DataProductTypeImpl dpt where lower(dpt.name) = lower(:name)
+        ]]>
+    </query>
+
+
+</hibernate-mapping>

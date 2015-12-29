@@ -1,0 +1,198 @@
+<configuration>
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--  APPLICATION LOGGER(S)  -->
+    <logger name="sgf.gateway" level="WARN" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="sgf.gateway.integration.publishing.service.ThreddsPublishingIntegrationService" level="DEBUG"
+            additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="sgf.gateway.integration.publishing.service.impl.ThreddsPublishingFailureIntegrationExceptionServiceImplLogger"
+            level="DEBUG" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="sgf.gateway.mail.impl.LoggingMailServerImpl" level="INFO" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="sgf.gateway.publishing.thredds" level="DEBUG" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="sgf.gateway.search.filter.persistence.DatasetLoader" level="WARN" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="sgf.gateway.web.controllers.oai.RepositoryController" level="INFO" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="exceptionLogger" level="WARN" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="org.springframework" level="WARN" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="sgf.spring.extensions.LoggingPropertyPlaceholderConfigurer" level="INFO" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="org.springframework.security" level="WARN" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="org.springframework.orm.hibernate4.HibernateTransactionManager" level="WARN" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="org.springframework.transaction" level="WARN" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="liquibase" level="INFO" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="org.hibernate.SQL" level="WARN" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="org.hibernate.type" level="WARN" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="org.hibernate" level="WARN" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="org.openid4java" level="DEBUG" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="org.apache" level="WARN" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="exception-log" level="ERROR" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="org.apache.http.impl.client" level="DEBUG" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="org.apache.http.wire" level="DEBUG" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="org.apache.http.headers" level="DEBUG" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <!-- Spring integration and eol catalog harvesting loggers -->
+    <logger name="org.apache.activemq" level="ERROR" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="sgf.gateway.integration.ade.opensearch.receiver.Receiver" level="INFO" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="sgf.gateway.integration.service.RemoteIndexableLoadService" level="INFO" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="sgf.gateway.search.service.SearchService" level="INFO" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="org.apache.activemq.broker.BrokerService" level="ERROR" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="org.springframework.jms.listener.DefaultMessageListenerContainer" level="ERROR" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="sgf.gateway.integration.message.SprIntMessagingExceptionLogger" level="ERROR" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="sgf.gateway.integration.message.SprIntDeadLetterLogger" level="ERROR" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="sgf.gateway.integration.thredds.enricher.InvDatasetEnricher" level="INFO" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="sgf.gateway.integration.node.Node" level="INFO" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="sgf.gateway.integration.thredds.service.ProjectLoadService" level="WARN" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="sgf.gateway.integration.service.DatasetLoadService" level="WARN" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="sgf.gateway.integration.activemq.ActiveMQShutdown" level="INFO" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="sgf.gateway.integration.ade.opensearch.receiver.Receiver" level="INFO" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="sgf.gateway.integration.service.RemoteIndexableLoadService" level="WARN" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="esg.saml.authz.service" level="WARN" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="sgf.gateway.saml.attr.service" level="WARN" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <root level="WARN">
+        <appender-ref ref="stdout"/>
+    </root>
+
+    <!--integration loggers-->
+    <appender name="tdsMetrics" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="tdsMetricsErrorLog" level="ERROR" additivity="false">
+        <appender-ref ref="tdsMetrics"/>
+    </logger>
+
+    <appender name="gridFTPMetrics" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="gridFTPMetricsErrorLog" level="ERROR" additivity="false">
+        <appender-ref ref="gridFTPMetrics"/>
+    </logger>
+
+</configuration>

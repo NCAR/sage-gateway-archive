@@ -1,0 +1,20 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="/Liquibase/update-v2/changesets/20110712-GTWY-2564.xml">
+
+    <changeSet id="20110712-GTWY-2564" author="sgf">
+
+        <sql>
+            ALTER TABLE "security"."group" DROP CONSTRAINT fkey_group_gateway_id;
+
+            ALTER TABLE "security"."group"
+            ADD CONSTRAINT fkey_group_gateway_id FOREIGN KEY (gateway_id)
+            REFERENCES metadata.gateway (id) MATCH SIMPLE
+            ON UPDATE NO ACTION ON DELETE NO ACTION DEFERRABLE INITIALLY DEFERRED;;
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

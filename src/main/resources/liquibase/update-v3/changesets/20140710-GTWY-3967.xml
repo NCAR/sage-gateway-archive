@@ -1,0 +1,64 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   logicalFilePath="/Liquibase/update-v3/changesets/20140710-GTWY-3967.xml">
+
+	<changeSet id="20140710-GTWY-3967.0" author="sgf">
+
+		<sql>
+INSERT INTO metadata.award (dataset_id, award_number, idx_order) (
+  SELECT q.dataset_id, q.nsf_award_number, q.start_index - 1 + (row_number() OVER (PARTITION BY q.dataset_id ORDER BY q.nsf_award_number)) AS idx
+    FROM (
+      SELECT DISTINCT pro.dataset_id, con.nsf_award_number, si.start_index
+        FROM metadata.project AS pro
+        JOIN metadata.cadis_project_typed_contact AS con ON pro.id = con.cadis_project_id
+        LEFT JOIN metadata.award AS awa ON (pro.dataset_id = awa.dataset_id AND con.nsf_award_number = awa.award_number)
+        JOIN (
+          SELECT psi.id, CASE WHEN MAX(asi.idx_order) IS NULL THEN 0
+                         ELSE MAX(asi.idx_order) + 1
+                         END AS start_index
+            FROM metadata.project AS psi
+            LEFT JOIN metadata.award AS asi ON psi.dataset_id = asi.dataset_id
+           GROUP BY psi.id
+        ) AS si ON pro.id = si.id
+       WHERE awa.award_number IS NULL
+    ) AS q
+  ORDER BY q.dataset_id, q.nsf_award_number
+);
+		</sql>
+
+	</changeSet>
+
+	<changeSet id="20140710-GTWY-3967.1" author="sgf">
+
+		<sql>
+DELETE FROM metadata.responsible_party
+WHERE id in (
+  SELECT r.id
+    FROM metadata.project p
+    JOIN metadata.responsible_party r on p.dataset_id = r.descriptive_metadata_id
+);
+
+INSERT INTO metadata.responsible_party (id, version, descriptive_metadata_id, individual_name, role, idx_order) (
+  SELECT uuid_generate_v1() AS id, 0 AS version, q.dataset_id, q.individual_name, q.role_code, (row_number() OVER (PARTITION BY q.dataset_id)) - 1 AS idx
+    FROM (
+      SELECT pro.dataset_id,
+             trim(con.first_name) || ' ' || trim(con.last_name) AS individual_name,
+             CASE cty.name
+             WHEN 'Lead Principal Investigator' THEN 'principalInvestigator'
+             WHEN 'CO Principal Investigator' THEN 'coPrincipalInvestigator'
+             WHEN 'Collaborating Principle Investigator' THEN 'collaboratingPrincipalInvestigator'
+             ELSE 'pointOfContact'
+             END AS role_code
+        FROM metadata.project AS pro
+        JOIN metadata.cadis_project_typed_contact AS ptc ON pro.id = ptc.cadis_project_id
+        JOIN metadata.contact AS con ON ptc.contact_id = con.id
+        JOIN metadata.contact_type AS cty ON ptc.contact_type_id = cty.id
+    ) AS q
+   ORDER BY q.dataset_id
+);
+		</sql>
+
+	</changeSet>
+
+</databaseChangeLog>

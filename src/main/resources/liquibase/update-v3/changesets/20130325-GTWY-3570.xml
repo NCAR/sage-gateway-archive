@@ -1,0 +1,27 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20130325-GTWY-3570.xml">
+
+	<changeSet id="20130325-GTWY-3570.0" author="sgf">
+		<sql>
+		ALTER TABLE metadata.dataset ADD COLUMN name CHARACTER VARYING(512);
+		</sql>
+	</changeSet>
+	
+	<changeSet id="20130325-GTWY-3570.1" author="sgf">
+		<sql>
+		UPDATE metadata.dataset d 
+		SET name = r.name from metadata.resource r
+		WHERE r.id = d.id;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="20130325-GTWY-3570.2" author="sgf">
+		<sql>
+		ALTER TABLE metadata.resource DROP COLUMN name;
+		</sql>
+	</changeSet>
+	
+</databaseChangeLog>
+

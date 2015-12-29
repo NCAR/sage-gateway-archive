@@ -1,0 +1,14 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20101026-SGF-1737.xml">
+
+    <changeSet id="20101026-SGF-1737" author="hannah" context="core">
+        <comment>Add institute field to dataset.</comment>
+        <addColumn tableName="dataset" schemaName="metadata">
+            <column name="institution_id" type="UUID"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

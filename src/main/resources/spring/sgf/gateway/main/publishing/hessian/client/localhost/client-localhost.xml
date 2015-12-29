@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="clientCertRemotePublishingServiceProxy"
+          class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+        <property name="serviceUrl">
+            <value>https://localhost:8443/remote/secure/client-cert/hessian/publishingService</value>
+        </property>
+        <property name="serviceInterface">
+            <value>sgf.gateway.service.publishing.api.RemotePublishingService</value>
+        </property>
+    </bean>
+
+</beans>

@@ -1,0 +1,15 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100112-SGF-1124.xml">
+
+    <!-- Include the changes sets for this particular release -->
+    <changeSet author="nch" id="20101025-SGF-1822">
+        <update schemaName="security" tableName="user" >
+            <column name="openid" value="Data Migration User OpenID"/>
+            <where>id='65e4d7f9-ecad-4d16-a4bb-e668abeeb5fe'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>
+

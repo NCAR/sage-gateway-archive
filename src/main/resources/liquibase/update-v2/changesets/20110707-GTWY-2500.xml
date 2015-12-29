@@ -1,0 +1,25 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="/Liquibase/update-v2/changesets/20110707-GTWY-2500.xml">
+
+    <changeSet id="20110707-GTWY-2500.0" author="sgf">
+        <addColumn schemaName="metadata" tableName="dataset">
+            <column name="persistent_identifier" type="varchar(512)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="20110707-GTWY-2500.1" author="sgf">
+        <sql>
+            UPDATE metadata.dataset SET persistent_identifier=persistent_identifier.identifier
+            FROM metadata.persistent_identifier
+            WHERE dataset.id=persistent_identifier.resource_id;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20110707-GTWY-2500.2" author="sgf">
+        <addNotNullConstraint schemaName="metadata" tableName="dataset" columnName="persistent_identifier" />
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,24 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20130221-GTWY-3466.xml">
+
+	<changeSet id="20130221-GTWY-3466.0" author="sgf">
+		<sql>
+		ALTER TABLE metadata.logical_file ADD COLUMN disk_location text;
+		</sql>
+	</changeSet>
+	
+	<changeSet id="20130221-GTWY-3466.1" author="sgf">
+		<sql>
+		UPDATE metadata.logical_file lf 
+		SET disk_location = regexp_replace (fap.full_access_url, '^file:/+', '/' )  
+		FROM metadata.file_access_point fap
+		WHERE fap.logical_file_id = lf.id
+		AND fap.full_access_url like ('file:/%');
+		</sql>
+		
+	</changeSet>
+	
+</databaseChangeLog>
+

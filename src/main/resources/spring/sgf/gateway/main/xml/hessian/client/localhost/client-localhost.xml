@@ -1,0 +1,15 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="nonSecureRemoteMetadataServiceProxy" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+        <property name="serviceUrl">
+            <value>http://localhost:8080/remote/hessian/guest/remoteMetadataService</value>
+        </property>
+        <property name="serviceInterface">
+            <value>sgf.gateway.service.xml.api.RemoteMetadataService</value>
+        </property>
+    </bean>
+
+</beans>

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="freemarkerConfiguration" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
+        <property name="freemarkerSettings">
+            <props>
+                <prop key="template_exception_handler">rethrow</prop>
+            </props>
+        </property>
+        <property name="templateLoaderPaths">
+            <list>
+                <value>classpath:conf/${spring.profiles.active}/templates/email/</value>
+                <value>classpath:sgf/gateway/templates/email/</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="simpleMailMessage" class="sgf.gateway.mail.impl.SimpleMailMessage" scope="prototype">
+        <constructor-arg index="0" ref="freemarkerConfiguration"/>
+        <constructor-arg index="1" ref="gateway"/>
+        <constructor-arg index="2" value="common/common-subject.ftl"/>
+        <constructor-arg index="3" value="common/common-text.ftl"/>
+        <constructor-arg index="4" value="basic/basic-subject.ftl"/>
+        <constructor-arg index="5" value="basic/basic-text.ftl"/>
+    </bean>
+
+    <bean id="dataTransferCompleteMailMessage" class="sgf.gateway.mail.impl.DataTransferCompleteMailMessage"
+          scope="prototype">
+        <constructor-arg index="0" ref="freemarkerConfiguration"/>
+        <constructor-arg index="1" ref="gateway"/>
+        <constructor-arg index="2" value="datatransfer/data-transfer-completed-subject.ftl"/>
+        <constructor-arg index="3" value="datatransfer/data-transfer-completed-text.ftl"/>
+    </bean>
+
+    <bean id="unhandledExceptionMailMessage" class="sgf.gateway.mail.impl.UnhandledExceptionMailMessage"
+          scope="prototype">
+        <constructor-arg index="0" ref="freemarkerConfiguration"/>
+        <constructor-arg index="1" ref="gateway"/>
+        <constructor-arg index="2" value="common/common-subject.ftl"/>
+        <constructor-arg index="3" value="common/common-text.ftl"/>
+        <constructor-arg index="4" value="unhandledexception/unhandled-exception-subject.ftl"/>
+        <constructor-arg index="5" value="unhandledexception/unhandled-exception-text.ftl"/>
+    </bean>
+
+    <bean id="accountConfirmationMailMessage" class="sgf.gateway.mail.impl.AccountInfoMailMessage" scope="prototype">
+        <constructor-arg index="0" ref="freemarkerConfiguration"/>
+        <constructor-arg index="1" ref="gateway"/>
+        <constructor-arg index="2" value="account/account-confirmation-subject.ftl"/>
+        <constructor-arg index="3" value="account/account-confirmation-text.ftl"/>
+    </bean>
+
+    <bean id="accountConfirmedMailMessage" class="sgf.gateway.mail.impl.AccountInfoMailMessage" scope="prototype">
+        <constructor-arg index="0" ref="freemarkerConfiguration"/>
+        <constructor-arg index="1" ref="gateway"/>
+        <constructor-arg index="2" value="account/account-confirmed-subject.ftl"/>
+        <constructor-arg index="3" value="account/account-confirmed-text.ftl"/>
+    </bean>
+
+    <bean id="adminRegistrationMailMessage" class="sgf.gateway.mail.impl.AdminRegistrationMailMessage"
+          scope="prototype">
+        <constructor-arg index="0" ref="freemarkerConfiguration"/>
+        <constructor-arg index="1" ref="gateway"/>
+        <constructor-arg index="2" value="account/admin-registration-subject.ftl"/>
+        <constructor-arg index="3" value="account/admin-registration-text.ftl"/>
+    </bean>
+
+    <bean id="adminGroupRegistrationMailMessage" class="sgf.gateway.mail.impl.AdminGroupRegistrationMailMessage"
+          scope="prototype">
+        <constructor-arg index="0" ref="freemarkerConfiguration"/>
+        <constructor-arg index="1" ref="gateway"/>
+        <constructor-arg index="2" value="account/admin-group-registration-subject.ftl"/>
+        <constructor-arg index="3" value="account/admin-group-registration-text.ftl"/>
+    </bean>
+
+    <bean id="adminGroupRoleUpdateMailMessage" class="sgf.gateway.mail.impl.AdminGroupRoleUpdateMailMessage"
+          scope="prototype">
+        <constructor-arg index="0" ref="freemarkerConfiguration"/>
+        <constructor-arg index="1" ref="gateway"/>
+        <constructor-arg index="2" value="account/admin-group-role-update-subject.ftl"/>
+        <constructor-arg index="3" value="account/admin-group-role-update-text.ftl"/>
+    </bean>
+
+    <bean id="userGroupUpdateMailMessage" class="sgf.gateway.mail.impl.UserGroupUpdateMailMessage" scope="prototype">
+        <constructor-arg index="0" ref="freemarkerConfiguration"/>
+        <constructor-arg index="1" ref="gateway"/>
+        <constructor-arg index="2" value="account/user-group-update-subject.ftl"/>
+        <constructor-arg index="3" value="account/user-group-update-text.ftl"/>
+    </bean>
+
+    <bean id="userGroupRejectionMailMessage" class="sgf.gateway.mail.impl.UserGroupRejectionMailMessage"
+          scope="prototype">
+        <constructor-arg index="0" ref="freemarkerConfiguration"/>
+        <constructor-arg index="1" ref="gateway"/>
+        <constructor-arg index="2" value="account/user-group-rejection-subject.ftl"/>
+        <constructor-arg index="3" value="account/user-group-rejection-text.ftl"/>
+    </bean>
+
+    <bean id="userOpenidReminderMailMessage" class="sgf.gateway.mail.impl.UserOpenidReminderMailMessage"
+          scope="prototype">
+        <constructor-arg index="0" ref="freemarkerConfiguration"/>
+        <constructor-arg index="1" ref="gateway"/>
+        <constructor-arg index="2" value="account/user-openid-reminder-subject.ftl"/>
+        <constructor-arg index="3" value="account/user-openid-reminder-text.ftl"/>
+    </bean>
+
+    <!-- Reuse AccountConfirmationMailMessage java class as its the same info -->
+    <bean id="userUsernameReminderMailMessage" class="sgf.gateway.mail.impl.AccountInfoMailMessage" scope="prototype">
+        <constructor-arg index="0" ref="freemarkerConfiguration"/>
+        <constructor-arg index="1" ref="gateway"/>
+        <constructor-arg index="2" value="account/user-username-reminder-subject.ftl"/>
+        <constructor-arg index="3" value="account/user-username-reminder-text.ftl"/>
+    </bean>
+
+    <bean id="userPasswordReminderMailMessage" class="sgf.gateway.mail.impl.AccountInfoMailMessage" scope="prototype">
+        <constructor-arg index="0" ref="freemarkerConfiguration"/>
+        <constructor-arg index="1" ref="gateway"/>
+        <constructor-arg index="2" value="account/user-password-reminder-subject.ftl"/>
+        <constructor-arg index="3" value="account/user-password-reminder-text.ftl"/>
+    </bean>
+
+    <bean id="brokeredDatasetsAuditReportFailureMailMessage"
+          class="sgf.gateway.mail.impl.BrokeredDatasetsAuditReportFailureMailMessage" scope="prototype">
+        <constructor-arg index="0" ref="freemarkerConfiguration"/>
+        <constructor-arg index="1" ref="gateway"/>
+        <constructor-arg index="2" value="common/common-subject.ftl"/>
+        <constructor-arg index="3" value="common/common-text.ftl"/>
+        <constructor-arg index="4" value="datasets/brokered-datasets-audit-report-failure-subject.ftl"/>
+        <constructor-arg index="5" value="datasets/brokered-datasets-audit-report-failure-text.ftl"/>
+    </bean>
+
+    <bean id="brokeredDatasetsAuditReportSuccessMailMessage" class="sgf.gateway.mail.impl.FreeMarkerCommonMailMessage"
+          scope="prototype">
+        <constructor-arg index="0" ref="freemarkerConfiguration"/>
+        <constructor-arg index="1" ref="gateway"/>
+        <constructor-arg index="2" value="common/common-subject.ftl"/>
+        <constructor-arg index="3" value="common/common-text.ftl"/>
+        <constructor-arg index="4" value="datasets/brokered-datasets-audit-report-success-subject.ftl"/>
+        <constructor-arg index="5" value="datasets/brokered-datasets-audit-report-success-text.ftl"/>
+    </bean>
+
+    <bean id="publishingSuccessMailMessage" class="sgf.gateway.mail.impl.PublishingSuccessMailMessage"
+          scope="prototype">
+        <constructor-arg index="0" ref="freemarkerConfiguration"/>
+        <constructor-arg index="1" ref="gateway"/>
+        <constructor-arg index="2" value="publishing/publishing-success-subject.ftl"/>
+        <constructor-arg index="3" value="publishing/publishing-success-text.ftl"/>
+    </bean>
+
+    <bean id="publishingFailureMailMessage" class="sgf.gateway.mail.impl.PublishingFailureMailMessage"
+          scope="prototype">
+        <constructor-arg index="0" ref="freemarkerConfiguration"/>
+        <constructor-arg index="1" ref="gateway"/>
+        <constructor-arg index="2" value="publishing/publishing-failure-subject.ftl"/>
+        <constructor-arg index="3" value="publishing/publishing-failure-text.ftl"/>
+    </bean>
+
+    <bean id="feedbackReceivedResponseMailMessage" class="sgf.gateway.mail.impl.FeedbackReceivedResponseMailMessage"
+          scope="prototype">
+        <constructor-arg index="0" ref="freemarkerConfiguration"/>
+        <constructor-arg index="1" ref="gateway"/>
+        <constructor-arg index="2" value="feedback/feedback-received-response-subject.ftl"/>
+        <constructor-arg index="3" value="feedback/feedback-received-response-text.ftl"/>
+    </bean>
+
+    <bean id="feedbackReceivedMailMessage" class="sgf.gateway.mail.impl.FeedbackReceivedMailMessage" scope="prototype">
+        <constructor-arg index="0" ref="freemarkerConfiguration"/>
+        <constructor-arg index="1" ref="gateway"/>
+        <constructor-arg index="2" value="feedback/feedback-received-subject.ftl"/>
+        <constructor-arg index="3" value="feedback/feedback-received-text.ftl"/>
+    </bean>
+
+</beans>

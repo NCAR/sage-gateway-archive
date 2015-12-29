@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-event="http://www.springframework.org/schema/integration/event"
+       xmlns:int-file="http://www.springframework.org/schema/integration/file"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                           http://www.springframework.org/schema/integration
+                           http://www.springframework.org/schema/integration/spring-integration-2.1.xsd
+                           http://www.springframework.org/schema/integration/event
+                           http://www.springframework.org/schema/integration/event/spring-integration-event-2.1.xsd
+                           http://www.springframework.org/schema/integration/file
+                           http://www.springframework.org/schema/integration/file/spring-integration-file.xsd">
+
+    <bean id="eolCatalogFileResource" class="org.springframework.core.io.ClassPathResource">
+        <constructor-arg name="path"
+                         value="sgf/gateway/profile/cadis/integration/threddscatalog/EOLCatalogs/cadisProjectCatalogs.txt"/>
+    </bean>
+
+    <int:inbound-channel-adapter ref="eolCatalogFileResource" method="getFile" channel="eolCatalogPublishChannel">
+        <int:poller cron="0 0 2 * * ?" max-messages-per-poll="1"/>
+        <!-- 2am -->
+    </int:inbound-channel-adapter>
+
+    <int-event:inbound-channel-adapter event-types="sgf.gateway.integration.thredds.eolcatalogs.EOLCatalogPublishEvent"
+                                       channel="eolCatalogPublishEventChannel"/>
+
+    <int:channel id="eolCatalogPublishEventChannel"/>
+
+    <int:chain input-channel="eolCatalogPublishEventChannel" output-channel="eolCatalogPublishChannel">
+
+        <int:transformer>
+            <bean id="eolCatalogFilePayloadSwapper" class="sgf.gateway.integration.transformer.PayloadSwapTransformer">
+                <constructor-arg name="newPayload" ref="eolCatalogFileResource"/>
+            </bean>
+        </int:transformer>
+
+        <int:transformer expression="payload.file"/>
+
+    </int:chain>
+
+    <int:channel id="eolCatalogPublishChannel"/>
+
+    <int:chain input-channel="eolCatalogPublishChannel" output-channel="projectInboundChannel">
+
+        <int-file:file-to-string-transformer delete-files="false" charset="UTF-8"/>
+
+        <int:splitter ref="cleanLineSplitter"/>
+
+        <int:transformer ref="stringToURITransformer"/>
+
+        <int:transformer>
+            <bean class="sgf.gateway.integration.thredds.transformer.URIToThreddsDatasetPayloadTransformer">
+                <constructor-arg name="dataCenterName" value="${eol.datacenter.name}"/>
+            </bean>
+        </int:transformer>
+
+    </int:chain>
+
+</beans>

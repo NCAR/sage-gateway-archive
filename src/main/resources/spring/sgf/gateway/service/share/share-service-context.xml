@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+
+    <bean id="shareRequestFactory" class="sgf.gateway.service.share.ShareRequestFactory">
+        <constructor-arg name="gateway" ref="gateway"/>
+
+    </bean>
+
+    <bean id="remoteShareDataFacade" class="sgf.gateway.service.share.RemoteShareDataFacadeImpl">
+        <constructor-arg name="restTemplate" ref="remoteShareDataFacadeRestTemplate"/>
+        <constructor-arg name="shareAuthToken" value="${share.auth.token}"/>
+        <constructor-arg name="shareUrl" value="${share.url}"/>
+        <constructor-arg name="shareRequestFactory" ref="shareRequestFactory"/>
+    </bean>
+
+    <bean id="shareDataService" class="sgf.gateway.service.share.ShareDataServiceImpl">
+        <constructor-arg name="remoteFacade" ref="remoteShareDataFacade"/>
+        <constructor-arg name="datasetRepository" ref="datasetRepository"/>
+    </bean>
+
+
+    <bean id="remoteShareDataFacadeRestTemplate" class="org.springframework.web.client.RestTemplate">
+        <constructor-arg index="0" ref="shareDataHttpComponentsClientHttpRequestFactory"/>
+
+        <property name="messageConverters">
+            <list>
+                <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="shareDataHttpComponentsClientHttpRequestFactory"
+          class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
+        <constructor-arg index="0" ref="shareDataHttpClient4"/>
+    </bean>
+
+    <bean id="shareDataHttpClient4" factory-method="create" factory-bean="shareDataHttpClient4Factory"/>
+
+    <bean id="shareDataHttpClient4Factory" class="sgf.gateway.utils.httpclient.impl.HttpClient4FactoryImpl">
+        <constructor-arg name="connectTimeout" value="60000"/>
+        <constructor-arg name="readTimeout" value="60000"/>
+    </bean>
+
+</beans>

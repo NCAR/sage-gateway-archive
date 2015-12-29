@@ -1,0 +1,50 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100223-SGF-775.xml">
+
+    <!-- Include the changes sets for this particular release -->
+    <changeSet author="ncw" id="20100223-SGF-775">
+
+        <addColumn schemaName="metadata" tableName="file_access_point">
+            <column name="version" type="integer" />
+            <column name="path" type="character varying(1024)" />
+            <column name="full_access_url" type="text" />
+            <column name="data_access_capability_id" type="uuid" />
+        </addColumn>
+
+        <sql>
+            UPDATE metadata.file_access_point SET
+            version = (SELECT version FROM metadata.access_point where access_point.id = file_access_point.id),
+            path = (SELECT path FROM metadata.access_point where access_point.id = file_access_point.id),
+            full_access_url = (SELECT full_access_url FROM metadata.access_point where access_point.id = file_access_point.id),
+            data_access_capability_id = (SELECT data_access_capability_id FROM metadata.access_point where access_point.id = file_access_point.id);
+        </sql>
+
+        <addColumn schemaName="metadata" tableName="logical_file">
+            <column name="version" type="integer" />
+            <column name="name" type="character varying(512)" />
+            <column name="description" type="character varying(512)" />
+            <column name="date_created" type="timestamp with time zone" defaultValueDate="default_timestamp()" />
+            <column name="date_updated" type="timestamp with time zone" defaultValueDate="default_timestamp()" />
+        </addColumn>
+
+        <sql>
+            UPDATE metadata.logical_file SET
+            version = (SELECT version FROM metadata.resource where resource.id = logical_file.id),
+            name = (SELECT name FROM metadata.resource where resource.id = logical_file.id),
+            description = (SELECT description FROM metadata.resource where resource.id = logical_file.id),
+            date_created = (SELECT date_created FROM metadata.resource where resource.id = logical_file.id),
+            date_updated = (SELECT date_updated FROM metadata.resource where resource.id = logical_file.id);
+        </sql>
+
+        <dropForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="logical_file" constraintName="fkey_logical_file_resource_id"/>
+
+
+
+
+    </changeSet>
+
+</databaseChangeLog>
+

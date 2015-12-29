@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <joined-subclass name="sgf.gateway.model.metadata.activities.observing.CampaignImpl"
+                     extends="sgf.gateway.model.metadata.activities.ActivityImpl" table="campaign" schema="metadata">
+        <key column="id"/>
+    </joined-subclass>
+
+    <query name="findCampaignByName" cacheable="false">
+        <![CDATA[
+            from CampaignImpl campaign where campaign.name = :name
+        ]]>
+    </query>
+
+    <query name="findCampaignsForGateway" cacheable="false">
+        <![CDATA[
+            SELECT distinct campaign FROM CampaignImpl AS campaign
+            LEFT JOIN campaign.associatedDatasetsReference AS dataset
+            ORDER BY campaign.name ASC
+        ]]>
+    </query>
+
+</hibernate-mapping>

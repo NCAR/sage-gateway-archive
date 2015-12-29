@@ -1,0 +1,30 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20101028-SGF-1587.xml">
+
+    <changeSet id="20101028-SGF-1587" author="ncw" context="core">
+
+        <sql>
+            CREATE TABLE curator.cim_document_harvest_log
+            (
+            id text NOT NULL,
+            "version" bigint NOT NULL,
+            title text,
+            date_updated timestamp with time zone NOT NULL,
+            date_published timestamp with time zone NOT NULL,
+            document_content text,
+            CONSTRAINT pkey_cim_document_harvest_log PRIMARY KEY (id)
+            )
+            WITH (
+            OIDS=FALSE
+            );
+            ALTER TABLE curator.cim_document_harvest_log OWNER TO postgres;
+            GRANT ALL ON TABLE curator.cim_document_harvest_log TO postgres;
+            GRANT ALL ON TABLE curator.cim_document_harvest_log TO public;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
+

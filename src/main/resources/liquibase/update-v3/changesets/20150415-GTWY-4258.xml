@@ -1,0 +1,79 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+				   logicalFilePath="/Liquibase/update-v3/changesets/20150415-GTWY-4258">
+
+	<changeSet id="20150415-GTWY-4258.0" author="sgf">
+
+		<sql>
+			ALTER TABLE metadata.logical_file ADD COLUMN md5_checksum text; 
+			ALTER TABLE metadata.logical_file ADD COLUMN md5checksum_date_updated timestamp with time zone;
+		</sql>
+
+	</changeSet>
+
+	<changeSet id="20150415-GTWY-4258.1" author="sgf">
+
+		<sql>
+			update metadata.logical_file lf
+			set md5_checksum = 
+				(select value from metadata.checksum
+				 where logical_file_id = lf.id
+				);
+		</sql>
+
+		<sql>
+			update metadata.logical_file lf
+			set md5checksum_date_updated =
+				(select date_created from metadata.logical_file
+				where logical_file.id = lf.id
+				)
+			WHERE md5_checksum IS NOT NULL;
+		</sql>
+
+	</changeSet>
+
+	<changeSet id="20150415-GTWY-4258.2" author="sgf">
+
+		<sql>
+			ALTER TABLE audit.logical_file_aud DROP COLUMN checksums_mod;
+
+			ALTER TABLE audit.logical_file_aud ADD COLUMN md5_checksum text;
+			ALTER TABLE audit.logical_file_aud ADD COLUMN md5checksum_mod boolean;
+			ALTER TABLE audit.logical_file_aud ADD COLUMN md5checksum_date_updated timestamp with time zone;
+			ALTER TABLE audit.logical_file_aud ADD COLUMN md5checksumdateupdated_mod boolean;
+
+		</sql>
+
+	</changeSet>
+
+	<changeSet id="20150415-GTWY-4258.3" author="sgf">
+
+		<sql>
+			update audit.logical_file_aud lfa
+			set md5_checksum =
+				(select value from audit.checksum_aud
+				where logical_file_id = lfa.id
+				);
+		</sql>
+
+		<sql>
+			update audit.logical_file_aud lfa
+			set md5checksum_date_updated =
+				(select date_created from metadata.logical_file lf
+					where lf.id = lfa.id
+				)
+			WHERE md5_checksum IS NOT NULL;
+		</sql>
+
+	</changeSet>
+
+	<changeSet id="20150415-GTWY-4258.4" author="sgf">
+
+		<sql>
+			drop table metadata.checksum;
+		</sql>
+
+	</changeSet>
+
+</databaseChangeLog>

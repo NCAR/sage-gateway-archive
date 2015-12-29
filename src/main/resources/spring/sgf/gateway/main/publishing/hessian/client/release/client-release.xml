@@ -1,0 +1,51 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="nonSecureRemotePublishingServiceProxy"
+          class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+        <property name="serviceUrl">
+            <value>http://esg.ucar.edu/remote/hessian/guest/publish/publishingService</value>
+        </property>
+        <property name="serviceInterface">
+            <value>sgf.gateway.service.publishing.api.RemotePublishingService</value>
+        </property>
+    </bean>
+
+    <bean id="encryptedRemotePublishingServiceProxy"
+          class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+        <property name="serviceUrl">
+            <value>https://esg.ucar.edu/remote/secure/hessian/guest/publish/publishingService</value>
+        </property>
+        <property name="serviceInterface">
+            <value>sgf.gateway.service.publishing.api.RemotePublishingService</value>
+        </property>
+    </bean>
+
+    <bean id="clientCertRemotePublishingServiceProxy"
+          class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+        <property name="serviceUrl">
+            <value>https://esg.ucar.edu/remote/secure/client-cert/hessian/publishingService</value>
+        </property>
+        <property name="serviceInterface">
+            <value>sgf.gateway.service.publishing.api.RemotePublishingService</value>
+        </property>
+    </bean>
+
+    <bean id="basicRemotePublishingServiceProxy" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+        <property name="serviceUrl">
+            <value>https://esg.ucar.edu/remote/secure/basic/hessian/publishingService</value>
+        </property>
+        <property name="serviceInterface">
+            <value>sgf.gateway.service.publishing.api.RemotePublishingService</value>
+        </property>
+        <property name="username">
+            <value>testUser</value>
+        </property>
+        <property name="password">
+            <value>Password4Test</value>
+        </property>
+    </bean>
+
+</beans>

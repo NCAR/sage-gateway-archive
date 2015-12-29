@@ -1,0 +1,87 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" >
+
+    <!-- These changes should only be run against a schema with major version 2 -->
+    <preConditions onFailMessage="Major Version Precondition Not Met">
+        <sqlCheck expectedResult="3">
+            SELECT COALESCE(MAX(int4(id)),0)
+            FROM public.databasechangelog
+            WHERE author='MajorVersion'
+        </sqlCheck>
+    </preConditions>
+
+    <include file="changesets/20130221-GTWY-3466.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20130325-GTWY-3570.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20130404-GTWY-3615.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20130406-GTWY-3615.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20130418-GTWY-3630.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20130423-GTWY-TD-72.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20130423-GTWY-TD-73.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20130424-GTWY-3631.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20130426-GTWY-3641.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20130501-GTWY-3346.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20130505-GTWY-3647.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20130515-GTWY-3631.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20130522-SGGTD-78.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20130529-GTWY-3632.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20130605-GTWY-3668.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20130613-GTWY-3668.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20130619-GTWY-3648.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20130619-GTWY-3677.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20130702-SGGTD-24.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20130702-GTWY-3707.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20130709-SGGTD-79.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20130716-GTWY-3712.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20130926-GTWY-3729.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20131001-SGGTD-67.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20131018-GTWY-3550.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20131031-GTWY-3767.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20131205-GTWY-3801.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20131712-GTWY-3805.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20131220-GTWY-3814.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20131219-GTWY-3813.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20131220-GTWY-3815.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20140109-GTWY-3819.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20140123-GTWY-3831.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20140124-GTWY-3832.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20140127-GTWY-3834.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20140522-GTWY-3932.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20140616-GTWY-3940.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20140626-GTWY-3947.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20140630-GTWY-3963.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20140630-GTWY-3964.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20140701-GTWY-3958.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20140707-GTWY-3978.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20140702-GTWY-3966.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20140710-GTWY-3967.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20140725-GTWY-3994.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20140826-GTWY-3941.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20140829-GTWY-3982.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20140918-GTWY-4024.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20140923-GTWY-4034.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20141015-GTWY-4077.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20141019-GTWY-4072.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20141020-GTWY-4079.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20141020-GTWY-4082.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20141020-GTWY-4081.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20141121-GTWY-4096.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20141231-GTWY-4166.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20150127-GTWY-4192.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20150128-GTWY-4193.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20150129-GTWY-4197.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20150129-GTWY-4194.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20150324-GTWY-4250.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20150319-GTWY-4243.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20150324-GTWY-4160.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20150313-GTWY-4244.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20150402-GTWY-4256.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20150415-GTWY-4258.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20150622-GTWY-4301.xml" relativeToChangelogFile="true" />
+
+    <!-- Version marker, no changes after this have been inserted.  This should be the last change in this file. -->
+    <changeSet author="MajorVersion" id="4"></changeSet>
+
+</databaseChangeLog>
+

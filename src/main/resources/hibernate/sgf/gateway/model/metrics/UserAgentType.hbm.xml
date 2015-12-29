@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.metrics.UserAgentType" table="user_agent_type" schema="metrics">
+
+        <id name="identifier" column="id" access="field" type="java.lang.Long">
+            <generator class="native"/>
+        </id>
+
+        <property name="name" column="name" type="java.lang.String" length="256" not-null="true" access="field"/>
+    </class>
+</hibernate-mapping>

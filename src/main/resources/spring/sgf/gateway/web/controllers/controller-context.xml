@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <import resource="classpath:sgf/gateway/web/controllers/administration/admin-controllers.xml"/>
+    <import resource="classpath:sgf/gateway/web/controllers/api/api-controllers.xml"/>
+    <import resource="classpath:sgf/gateway/web/controllers/archive/archive-controllers.xml"/>
+    <import resource="classpath:sgf/gateway/web/controllers/browse/browse-controllers.xml"/>
+    <import resource="classpath:sgf/gateway/web/controllers/cadis/cadis-controller-context.xml"/>
+    <import resource="classpath:sgf/gateway/web/controllers/dataset/dataset-controllers.xml"/>
+    <import resource="classpath:sgf/gateway/web/controllers/download/download-controllers.xml"/>
+    <import resource="classpath:sgf/gateway/web/controllers/esg/esg-controller-context.xml"/>
+    <import resource="classpath:sgf/gateway/web/controllers/group/group-controllers.xml"/>
+    <import resource="classpath:sgf/gateway/web/controllers/metrics/metrics-controllers.xml"/>
+    <import resource="classpath:sgf/gateway/web/controllers/oai/oai-controllers.xml"/>
+    <import resource="classpath:sgf/gateway/web/controllers/project/project-controllers.xml"/>
+    <import resource="classpath:sgf/gateway/web/controllers/publish/publish-controllers.xml"/>
+    <import resource="classpath:sgf/gateway/web/controllers/publishing/publishing-controllers.xml"/>
+    <import resource="classpath:sgf/gateway/web/controllers/root/root-controllers.xml"/>
+    <import resource="classpath:sgf/gateway/web/controllers/search/search.xml"/>
+    <import resource="classpath:sgf/gateway/web/controllers/security/security-controllers.xml"/>
+    <import resource="classpath:sgf/gateway/web/controllers/topic/topic-controllers.xml"/>
+    <import resource="classpath:sgf/gateway/web/controllers/workspace/workspace-controllers.xml"/>
+    <import resource="classpath:sgf/gateway/web/controllers/webstart/webstart-controllers.xml"/>
+
+    <!-- URL-controller mappings -->
+    <bean id="generalUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="order" value="1"/>
+        <property name="mappings">
+            <props>
+                <prop key="/includes/header.htm">headerController</prop>
+                <prop key="/about/overview.htm">aboutController</prop>
+                <prop key="/legal/privacy_policy.htm">privacyPolicyController</prop>
+                <prop key="/legal/terms_of_use.htm">termsOfUseController</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- Gateway specific stuff -->
+    <bean id="headerController" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="${views.header}"/>
+    </bean>
+
+    <bean id="footerController" class="sgf.gateway.web.controllers.common.DefaultFooterController">
+        <constructor-arg index="0" ref="runtimeUserService"/>
+        <constructor-arg index="1" ref="gateway"/>
+        <constructor-arg index="2" value="${views.footer}"/>
+    </bean>
+
+    <bean id="aboutController" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="${views.about.overview}"/>
+    </bean>
+
+    <bean id="privacyPolicyController" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="${views.legal.privacy_policy}"/>
+    </bean>
+
+    <bean id="termsOfUseController" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="${views.legal.terms_of_use}"/>
+    </bean>
+
+    <bean id="feedbackController" class="sgf.gateway.web.controllers.FeedbackController">
+        <constructor-arg name="feedbackService" ref="feedbackService"/>
+    </bean>
+
+    <bean id="pingController" class="sgf.gateway.web.controllers.PingController">
+    </bean>
+
+
+</beans>

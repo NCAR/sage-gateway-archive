@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+
+    <!-- Support for annotation-based URL to controller mappings.
+         These mappings have the same order as any explicit XML configuration. -->
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.ExtendedRequestMappingHandlerMapping">
+        <property name="order" value="1"/>
+        <property name="interceptors">
+            <list>
+                <ref bean="apiFileUploadMappedInterceptor"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="apiFileUploadMappedInterceptor" class="org.springframework.web.servlet.handler.MappedInterceptor">
+        <constructor-arg index="0">
+            <list>
+                <value>/api/v*/dataset/**/file/**</value>
+            </list>
+        </constructor-arg>
+        <constructor-arg index="1" ref="apiFileUploadHandlerInterceptor"/>
+    </bean>
+
+    <bean id="apiFileUploadHandlerInterceptor"
+          class="sgf.gateway.web.controllers.api.dataset.file.ApiFileUploadHandlerInterceptor">
+        <constructor-arg index="0" ref="putServletFileUpload"/>
+    </bean>
+
+    <bean name="putServletFileUpload" class="sgf.gateway.web.controllers.api.dataset.file.PutServletFileUpload">
+        <constructor-arg index="0">
+            <bean class="org.apache.commons.fileupload.disk.DiskFileItemFactory"/>
+        </constructor-arg>
+    </bean>
+
+    <!-- Spring handler and controller to map an HTTP request URL directly to a view with a name equal to the URL path.
+         This handler is ordered last to allow the Spring dispatcher to invoke more specific controllers first. -->
+    <bean id="jspFilenameMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="order" value="1000"/>
+        <property name="mappings">
+            <props>
+                <prop key="/**/*.htm">urlFilenameViewController</prop>
+                <prop key="/**/*.html">urlFilenameViewController</prop>
+            </props>
+        </property>
+    </bean>
+    <bean id="urlFilenameViewController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController"/>
+
+    <!-- View resolvers -->
+    <!-- freemarker config -->
+    <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+
+        <property name="freemarkerSettings">
+            <props>
+                <prop key="template_exception_handler">rethrow</prop>
+            </props>
+        </property>
+
+        <property name="templateLoaderPaths">
+            <list>
+                <value>classpath:conf/${spring.profiles.active}/templates/</value>
+                <value>classpath:sgf/gateway/templates/</value>
+                <value>/WEB-INF/views/</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.springframework.http.MediaType.TEXT_HTML"
+          class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+
+    <bean id="oaiViewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+        <property name="order" value="10"/>
+        <property name="cache" value="false"/>
+        <property name="prefix" value="/oai/"/>
+        <property name="suffix" value=".ftl"/>
+        <property name="contentType" value="text/xml;charset=UTF-8"/>
+        <property name="exposeSpringMacroHelpers" value="true"/>
+    </bean>
+
+    <bean id="contentNegotiatingViewResolver"
+          class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="order" value="100"/>
+        <property name="favorPathExtension" value="true"/>
+        <property name="parameterName" value="rel"/>
+        <property name="defaultContentType" ref="org.springframework.http.MediaType.TEXT_HTML"/>
+        <property name="mediaTypes">
+            <map>
+                <entry key="rss" value="application/rss+xml"/>
+                <entry key="html" value="text/html"/>
+                <entry key="json" value="application/json"/>
+                <entry key="xml" value="text/xml"/>
+                <entry key="oaixml" value="text/oai+xml"/>
+                <entry key="oai-dc" value="text/oai-dc+xml"/>
+                <entry key="dif" value="text/dif+xml"/>
+                <entry key="txt" value="text/plain"/>
+                <entry key="iso19139" value="text/iso19139+xml"/>
+                <entry key="thredds" value="text/thredds+xml"/>
+                <entry key="atom" value="application/atom+xml"/>
+                <entry key="wget" value="application/wget"/>
+                <entry key="dml" value="application/dml"/>
+                <entry key="zip" value="application/zip"/>
+            </map>
+        </property>
+        <property name="defaultViews">
+            <list>
+                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
+            </list>
+        </property>
+        <property name="viewResolvers">
+            <list>
+                <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
+
+                <bean class="org.springframework.web.servlet.BeanAliasViewResolver">
+                    <constructor-arg index="0" value="dataset/files/viewFiles"/>
+                    <constructor-arg index="1" ref="zipFilesView"/>
+                </bean>
+
+                <bean id="wgetViewResolver"
+                      class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+                    <property name="contentType" value="application/wget"/>
+                    <property name="order" value="500"/>
+                    <property name="cache" value="false"/>
+                    <property name="prefix" value="/scripts/"/>
+                    <property name="suffix" value=".ftl"/>
+                    <property name="exposeSpringMacroHelpers" value="true"/>
+                </bean>
+
+                <bean id="dmlViewResolver"
+                      class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+                    <property name="contentType" value="application/dml"/>
+                    <property name="order" value="500"/>
+                    <property name="cache" value="false"/>
+                    <property name="prefix" value="/scripts/"/>
+                    <property name="suffix" value=".ftl"/>
+                    <property name="exposeSpringMacroHelpers" value="true"/>
+                </bean>
+
+                <bean id="oai-dcViewResolver"
+                      class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+                    <property name="contentType" value="text/oai-dc+xml"/>
+                    <property name="order" value="500"/>
+                    <property name="cache" value="false"/>
+                    <property name="prefix" value="/oai-dc/"/>
+                    <property name="suffix" value=".ftl"/>
+                    <property name="exposeSpringMacroHelpers" value="true"/>
+                </bean>
+
+                <bean id="difViewResolver"
+                      class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+                    <property name="contentType" value="text/dif+xml"/>
+                    <property name="order" value="500"/>
+                    <property name="cache" value="false"/>
+                    <property name="prefix" value="/dif/"/>
+                    <property name="suffix" value=".ftl"/>
+                    <property name="exposeSpringMacroHelpers" value="true"/>
+                </bean>
+
+                <bean id="txtViewResolver"
+                      class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+                    <property name="contentType" value="text/plain"/>
+                    <property name="order" value="500"/>
+                    <property name="cache" value="false"/>
+                    <property name="prefix" value="/txt/"/>
+                    <property name="suffix" value=".ftl"/>
+                    <property name="exposeSpringMacroHelpers" value="true"/>
+                </bean>
+
+                <bean id="iso19139ViewResolver"
+                      class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+                    <property name="contentType" value="text/iso19139+xml"/>
+                    <property name="order" value="500"/>
+                    <property name="cache" value="false"/>
+                    <property name="prefix" value="/iso19139/"/>
+                    <property name="suffix" value=".ftl"/>
+                    <property name="exposeSpringMacroHelpers" value="true"/>
+                </bean>
+
+                <bean id="atomViewResolver"
+                      class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+                    <property name="contentType" value="application/atom+xml"/>
+                    <property name="order" value="500"/>
+                    <property name="cache" value="false"/>
+                    <property name="prefix" value="/atom/"/>
+                    <property name="suffix" value=".ftl"/>
+                    <property name="exposeSpringMacroHelpers" value="true"/>
+                </bean>
+
+                <bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+                    <property name="order" value="500"/>
+                    <property name="cache" value="false"/>
+                    <property name="prefix" value="/freemarker/"/>
+                    <property name="suffix" value=".ftl"/>
+                    <property name="exposeSpringMacroHelpers" value="true"/>
+                </bean>
+
+                <!-- JSP view resolvers have to be last -->
+                <bean id="jspHtmlViewResourceResolver"
+                      class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+                    <property name="order" value="1000"/>
+                    <property name="prefix" value="/WEB-INF/views/html/"/>
+                    <property name="suffix" value=".jsp"/>
+                </bean>
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="resourceUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="order" value="1"/>
+        <property name="mappings">
+            <props>
+                <prop key="/robots.txt">robotsHandler</prop>
+                <prop key="/images/**">imagesHandler</prop>
+                <prop key="/js/**">jsHandler</prop>
+                <prop key="/themes/**">themesHandler</prop>
+                <prop key="/webstart/**">webstartHandler</prop>
+                <prop key="/media/**">mediaHandler</prop>
+                <prop key="/kml/**">kmlHandler</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="robotsHandler" class="org.springframework.web.servlet.resource.ResourceHttpRequestHandler">
+        <property name="locations">
+            <list>
+                <bean id="robotsLocation" class="org.springframework.core.io.ClassPathResource">
+                    <constructor-arg index="0" value="conf/${spring.profiles.active}/resources/"/>
+                </bean>
+                <value>/</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="imagesHandler" class="org.springframework.web.servlet.resource.ResourceHttpRequestHandler">
+        <property name="locations">
+            <list>
+                <bean id="imagesLocation" class="org.springframework.core.io.FileSystemResource">
+                    <constructor-arg index="0" value="${gateway.home}/resources/images/"/>
+                </bean>
+                <value>images/</value>
+            </list>
+        </property>
+        <property name="cacheSeconds" value="14400"/>
+    </bean>
+
+    <bean id="jsHandler" class="org.springframework.web.servlet.resource.ResourceHttpRequestHandler">
+        <property name="locations">
+            <list>
+                <bean id="jsLocation" class="org.springframework.core.io.ClassPathResource">
+                    <constructor-arg index="0" value="conf/${spring.profiles.active}/resources/js/"/>
+                </bean>
+                <value>js/</value>
+            </list>
+        </property>
+        <property name="cacheSeconds" value="14400"/>
+    </bean>
+
+    <bean id="themesHandler" class="org.springframework.web.servlet.resource.ResourceHttpRequestHandler">
+        <property name="locations">
+            <list>
+                <bean id="themeLocation" class="org.springframework.core.io.ClassPathResource">
+                    <constructor-arg index="0" value="conf/${spring.profiles.active}/resources/themes/"/>
+                </bean>
+                <value>themes/</value>
+            </list>
+        </property>
+        <property name="cacheSeconds" value="14400"/>
+    </bean>
+
+    <bean id="webstartHandler" class="org.springframework.web.servlet.resource.ResourceHttpRequestHandler">
+        <property name="locations">
+            <list>
+                <bean id="webstartLocation" class="org.springframework.core.io.ClassPathResource">
+                    <constructor-arg index="0" value="conf/${spring.profiles.active}/resources/webstart/"/>
+                </bean>
+                <value>webstart/</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="mediaHandler" class="org.springframework.web.servlet.resource.ResourceHttpRequestHandler">
+        <property name="locations">
+            <list>
+                <bean id="mediaLocation" class="org.springframework.core.io.ClassPathResource">
+                    <constructor-arg index="0" value="conf/${spring.profiles.active}/resources/media/"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="kmlHandler" class="org.springframework.web.servlet.resource.ResourceHttpRequestHandler">
+        <property name="locations">
+            <list>
+                <bean id="kmlLocation" class="org.springframework.core.io.FileSystemResource">
+                    <constructor-arg index="0" value="${gateway.home}/resources/kml/"/>
+                </bean>
+
+            </list>
+        </property>
+    </bean>
+
+    <!-- Tiles configuration -->
+    <bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+        <property name="useMutableTilesContainer" value="true"/>
+        <property name="definitions">
+            <list>
+                <value>/WEB-INF/tiles/tiles-definitions.xml</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Message resources -->
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>classpath:conf/${spring.profiles.active}/conf/messages</value>
+                <value>classpath:messages</value>
+            </list>
+        </property>
+    </bean>
+
+    <import resource="classpath:sgf/gateway/web/views/dataset/dataset-views.xml"/>
+    <import resource="classpath:sgf/gateway/web/views/project/project-views.xml"/>
+
+</beans>

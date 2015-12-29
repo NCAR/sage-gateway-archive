@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <!-- NOTE: All validators defined in this file should use scope="prototype" since the interface for javax.validation.ConstraintValidator is inherently NOT thread safe. -->
+
+    <bean class="sgf.gateway.validation.persistence.AssertUniquePlatformTypeValidator" scope="prototype">
+        <constructor-arg index="0" ref="platformTypeRepository"/>
+    </bean>
+
+    <bean class="sgf.gateway.validation.persistence.AssertUniqueShortNameValidator" scope="prototype">
+        <constructor-arg index="0" ref="datasetRepository"/>
+    </bean>
+
+    <bean class="sgf.gateway.validation.persistence.AssertUniqueGroupNameValidator" scope="prototype">
+        <constructor-arg index="0" ref="groupRepository"/>
+    </bean>
+
+    <bean class="sgf.gateway.validation.persistence.FileUploadFormDatabaseFileExistsValidator" scope="prototype">
+        <constructor-arg index="0" ref="logicalFileRepository"/>
+    </bean>
+
+    <bean class="sgf.gateway.validation.data.FileUploadFormFileSystemValidator" scope="prototype">
+        <constructor-arg name="baseDataDirectory" value="${dataset.directory.data}"/>
+        <constructor-arg name="fileSystemFileExistsChecker" ref="fileSystemFileExistsChecker"/>
+    </bean>
+
+    <bean class="sgf.gateway.validation.required.GroupRegistrationFieldsRequiredValidator" scope="prototype">
+        <constructor-arg name="groupRepository" ref="groupRepository"/>
+    </bean>
+
+    <bean class="sgf.gateway.validation.persistence.PasswordCorrectValidator" scope="prototype">
+        <constructor-arg name="runtimeUserService" ref="runtimeUserService"/>
+        <constructor-arg name="cryptoService" ref="cryptoService"/>
+    </bean>
+
+    <bean class="sgf.gateway.validation.persistence.ShortNameAvailableValidator" scope="prototype">
+        <constructor-arg name="datasetRepository" ref="datasetRepository"/>
+    </bean>
+
+    <bean class="sgf.gateway.validation.persistence.ShortNameExistsValidator" scope="prototype">
+        <constructor-arg name="datasetRepository" ref="datasetRepository"/>
+    </bean>
+
+    <bean class="sgf.gateway.validation.persistence.FileUploadDatabaseFileExistsValidator" scope="prototype">
+        <constructor-arg index="0" ref="logicalFileRepository"/>
+    </bean>
+
+    <bean id="fileSystemFileExistsChecker" class="sgf.gateway.validation.data.FileSystemFileExistsChecker"/>
+
+    <bean id="fileNameCharacterChecker" class="sgf.gateway.validation.data.FileNameCharacterChecker"/>
+
+    <bean class="sgf.gateway.validation.data.FileUploadFileExistsFileSystemAnyCaseValidator" scope="prototype">
+        <constructor-arg name="baseDataDirectory" value="${dataset.directory.data}"/>
+        <constructor-arg name="fileSystemFileExistsChecker" ref="fileSystemFileExistsChecker"/>
+    </bean>
+
+    <bean class="sgf.gateway.validation.data.RegexFileUploadFormFilenamesValidator" scope="prototype">
+        <constructor-arg name="fileNameCharacterChecker" ref="fileNameCharacterChecker"/>
+    </bean>
+
+    <bean class="sgf.gateway.validation.data.RegexFileUploadFilenameValidator" scope="prototype">
+        <constructor-arg name="fileNameCharacterChecker" ref="fileNameCharacterChecker"/>
+    </bean>
+
+    <bean class="sgf.gateway.validation.persistence.AssertUniqueTitleValidator" scope="prototype">
+        <constructor-arg index="0" ref="datasetRepository"/>
+    </bean>
+
+    <bean class="sgf.gateway.validation.persistence.AssertUniqueGroupDataNameValidator" scope="prototype">
+        <constructor-arg index="0" ref="groupRepository"/>
+    </bean>
+
+    <bean class="sgf.gateway.validation.persistence.ActivityProjectNameUniqueValidator" scope="prototype">
+        <constructor-arg index="0" ref="projectRepository"/>
+    </bean>
+
+</beans>

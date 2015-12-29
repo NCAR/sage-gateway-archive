@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.metrics.SummaryStatistics" table="summary_statistics" schema="metrics">
+
+
+        <id name="identifier" column="id" type="java.lang.Long"/>
+        <property name="totalDatasets" column="total_datasets" type="java.lang.Long"/>
+        <property name="totalFiles" column="total_files" type="java.lang.Long"/>
+        <property name="totalBytes" column="total_bytes" type="java.lang.Long"/>
+
+    </class>
+
+</hibernate-mapping>

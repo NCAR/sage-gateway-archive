@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.security.AuthorizationToken" table="authorization_token" schema="security">
+
+        <id name="identifier" column="id" access="field">
+            <type name="sgf.gateway.utils.hibernate.UUIDUserType"/>
+        </id>
+
+        <property name="uri" column="uri" type="sgf.gateway.utils.hibernate.URIUserType" not-null="true"/>
+
+        <property name="date" column="date" type="timestamp" not-null="true"/>
+        <property name="expires" column="expires" type="timestamp" not-null="true"/>
+
+        <many-to-one name="user" class="sgf.gateway.model.security.User" column="user_id" cascade="none"/>
+
+    </class>
+
+    <query name="deleteAuthorizationToken" cacheable="false">
+        <![CDATA[
+            delete from AuthorizationToken authorizationToken where authorizationToken.identifier = :identifier
+        ]]>
+    </query>
+</hibernate-mapping>

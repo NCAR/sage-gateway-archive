@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <!-- Configuration of Web MVC common infrastructure (views, tiles etc.) -->
+    <import resource="classpath:sgf/gateway/default-servlet-context.xml"/>
+
+    <!-- Configuration of web application controllers -->
+    <import resource="classpath:sgf/gateway/web/controllers/controller-context.xml"/>
+
+    <!-- Configuration of exception handling -->
+    <import resource="classpath:sgf/gateway/j2ee-exception-context.xml"/>
+
+    <!-- Configuration of job schedulers -->
+    <import resource="classpath:sgf/gateway/jobs-context.xml"/>
+
+    <!-- Configuration of web application filters -->
+    <import resource="classpath:sgf/gateway/web/filters/web-filters.xml"/>
+
+    <!-- Configuration of remoting services -->
+    <import resource="classpath:sgf/gateway/web/remoting/remoting-context.xml"/>
+
+</beans>

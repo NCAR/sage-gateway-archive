@@ -1,0 +1,26 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" >
+
+    <changeSet id="20101227-SGF-1628" author="sgf">
+        <comment>Deleting the gateway publisher application.</comment>
+        <delete schemaName="metadata" tableName="data_access_application">
+            <where>id='336c0b5b-1516-4acc-9b91-4a375b06abed'</where>
+        </delete>
+
+        <delete schemaName="metadata" tableName="data_access_application_protocol_xref">
+            <where>data_access_application_ref='336c0b5b-1516-4acc-9b91-4a375b06abed'</where>
+        </delete>
+
+        <delete schemaName="metadata" tableName="data_access_capability_application_xref">
+            <where>data_access_application_ref='336c0b5b-1516-4acc-9b91-4a375b06abed'</where>
+        </delete>
+
+        <comment>Deleting the ISO metadata format</comment>
+        <delete schemaName="oai" tableName="metadata_format">
+            <where>id='4'</where>
+        </delete>
+
+    </changeSet>
+
+</databaseChangeLog>

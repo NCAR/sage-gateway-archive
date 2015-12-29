@@ -1,0 +1,30 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100413-SGF-877.xml">
+
+    <changeSet id="20100413-SGF-877" author="danielle">
+        <comment>Moving all the nsf award numbers from cadis descriptive metadata to
+            cadis project typed contact</comment>
+
+        <dropColumn tableName="cadis_project_typed_contact" schemaName="metadata" columnName="idx_order"/>
+
+        <sql>
+            INSERT INTO metadata.cadis_project SELECT project.id
+            FROM metadata.project AS project;
+
+            INSERT INTO metadata.cadis_project_typed_contact SELECT project.id,
+            dataset_typed_contact.contact_id, dataset_typed_contact.contact_type_id,
+            cadis_descriptive_metadata.grant_number
+            FROM metadata.project AS project
+            JOIN metadata.cadis_descriptive_metadata AS cadis_descriptive_metadata ON project.dataset_id = cadis_descriptive_metadata.id
+            JOIN metadata.dataset_typed_contact AS dataset_typed_contact ON project.dataset_id = dataset_typed_contact.dataset_id
+            WHERE project.id IS NOT NULL
+            AND dataset_typed_contact.contact_type_id = 3
+            AND cadis_descriptive_metadata.grant_number IS NOT NULL;
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

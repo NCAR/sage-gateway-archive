@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="embeddedSolrServerFactory" class="sgf.gateway.search.provider.solr.EmbeddedSolrServerFactory"
+          destroy-method="shutDownContainer">
+        <constructor-arg name="homeResource">
+            <bean class="org.springframework.core.io.ClassPathResource">
+                <constructor-arg name="path" value="sgf/gateway/profile/esg/search/solr"/>
+            </bean>
+        </constructor-arg>
+        <constructor-arg name="dataPath" value="${gateway.home}/data/solr"/>
+    </bean>
+
+    <bean id="solrServer" factory-method="get" factory-bean="embeddedSolrServerFactory"/>
+
+    <bean id="searchIndex" class="sgf.gateway.search.index.SearchIndexSolr">
+        <constructor-arg index="0" ref="solrServer"/>
+    </bean>
+
+    <bean id="textFilterChain" class="sgf.gateway.search.filter.TextFilterChain">
+        <constructor-arg index="0">
+            <list>
+                <bean class="sgf.gateway.search.filter.text.UpperCaseConditionalsFilter"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="solrQueryResultSetConfigurer"
+          class="sgf.gateway.search.provider.solr.query.configurer.SolrQueryResultSetConfigurer"/>
+
+    <bean id="solrQueryNoResultSetConfigurer"
+          class="sgf.gateway.search.provider.solr.query.configurer.SolrQueryNoResultSetConfigurer"/>
+
+    <bean id="solrQueryFacetConfigurer"
+          class="sgf.gateway.search.provider.solr.query.configurer.SolrQueryFacetConfigurer">
+        <constructor-arg name="facetFields" ref="facetFields"/>
+    </bean>
+
+    <bean id="solrQuerySortOptionConfigurer"
+          class="sgf.gateway.search.provider.solr.query.configurer.SolrQuerySortOptionConfigurer">
+        <constructor-arg name="sortTargets" ref="sortTargets"/>
+    </bean>
+
+    <bean id="sortTargets" class="sgf.gateway.search.core.SortTargetsImpl">
+        <constructor-arg type="java.util.Map">
+            <map>
+                <entry>
+                    <key>
+                        <value>Score</value>
+                    </key>
+                    <value>score</value>
+                </entry>
+                <entry>
+                    <key>
+                        <value>Name</value>
+                    </key>
+                    <value>name_sortable</value>
+                </entry>
+                <entry>
+                    <key>
+                        <value>Date</value>
+                    </key>
+                    <value>timestamp</value>
+                </entry>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="ANDOperation" class="sgf.gateway.search.api.Operation" factory-method="valueOf">
+        <constructor-arg type="java.lang.String" value="AND"/>
+    </bean>
+    <bean id="OROperation" class="sgf.gateway.search.api.Operation" factory-method="valueOf">
+        <constructor-arg type="java.lang.String" value="OR"/>
+    </bean>
+
+    <bean id="solrQueryFilterConfigurer"
+          class="sgf.gateway.search.provider.solr.query.configurer.SolrQueryFilterConfigurer">
+        <constructor-arg name="filterBuilders">
+            <list>
+                <bean class="sgf.gateway.search.provider.solr.query.configurer.SolrQueryFacetFilterBuilder">
+                    <constructor-arg name="fieldMap" ref="facetFieldMap"/>
+                    <constructor-arg name="filterOperation" ref="ANDOperation"/>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="solrQueryFreeTextConfigurer"
+          class="sgf.gateway.search.provider.solr.query.configurer.SolrQueryTextConfigurer">
+        <constructor-arg name="freeTextQueryStrategy">
+            <bean class="sgf.gateway.search.provider.solr.query.BucketOrTextIdFreeTextQueryStrategy">
+                <constructor-arg name="searchTermFilter" ref="textFilterChain"/>
+                <constructor-arg name="textIdField" ref="textIdField"/>
+                <constructor-arg name="bucketField" ref="bucketField"/>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <bean id="solrQueryNoTextConfigurer"
+          class="sgf.gateway.search.provider.solr.query.configurer.SolrQueryTextConfigurer">
+        <constructor-arg name="freeTextQueryStrategy">
+            <bean class="sgf.gateway.search.provider.solr.query.NoFreeTextQueryStrategy"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="solrQuerySearchParameterConfigurer"
+          class="sgf.gateway.search.provider.solr.query.configurer.SolrQuerySearchParameterConfigurer">
+        <constructor-arg name="operation" ref="ANDOperation"/>
+    </bean>
+
+    <bean id="solrQueryFactory" class="sgf.gateway.search.provider.solr.query.SolrQueryFactoryImpl">
+        <constructor-arg name="configurers">
+            <list>
+                <ref bean="solrQueryResultSetConfigurer"/>
+                <ref bean="solrQueryFacetConfigurer"/>
+                <ref bean="solrQuerySortOptionConfigurer"/>
+                <ref bean="solrQueryFilterConfigurer"/>
+                <ref bean="solrQueryFreeTextConfigurer"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="solrFacetFactory" class="sgf.gateway.search.provider.solr.facets.SolrFacetFactoryImpl">
+        <constructor-arg index="0" ref="fieldFacetMap"/>
+    </bean>
+
+    <bean id="solrResultsFactory" class="sgf.gateway.search.provider.solr.SolrResultsFactoryImpl">
+        <constructor-arg index="0" ref="solrFacetFactory"/>
+        <constructor-arg index="1" ref="idField"/>
+        <constructor-arg index="2" ref="typeField"/>
+        <constructor-arg index="3" ref="nameField"/>
+        <constructor-arg index="4" ref="descriptionField"/>
+        <constructor-arg index="5" ref="shortNameField"/>
+        <constructor-arg index="6" ref="authoritativeSourceURIField"/>
+        <constructor-arg index="7" ref="detailsURIField"/>
+        <constructor-arg index="8" ref="remoteIndexableDocumentType"/>
+        <constructor-arg index="9">
+            <set>
+            </set>
+        </constructor-arg>
+    </bean>
+
+    <bean id="userSearchQuery" class="sgf.gateway.search.filter.metrics.SearchMetricsFilter">
+        <constructor-arg index="0">
+            <bean class="sgf.gateway.search.provider.solr.query.SolrSearchQuery">
+                <constructor-arg index="0" ref="solrServer"/>
+                <constructor-arg index="1" ref="solrQueryFactory"/>
+                <constructor-arg index="2" ref="solrResultsFactory"/>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="1" ref="userMetricsService"/>
+        <constructor-arg index="2" ref="runtimeUserService"/>
+    </bean>
+
+    <bean id="datasetLoader" class="sgf.gateway.search.filter.persistence.DatasetLoader">
+        <constructor-arg index="0" ref="datasetDocumentType"/>
+        <constructor-arg index="1" ref="datasetRepository"/>
+    </bean>
+
+    <bean id="softwareLoader" class="sgf.gateway.search.filter.persistence.NullLoader">
+        <constructor-arg index="0" ref="softwareDocumentType"/>
+    </bean>
+
+    <bean id="facetOnlySearchQuery" class="sgf.gateway.search.provider.solr.query.SolrSearchQuery">
+        <constructor-arg name="solrServer" ref="solrServer"/>
+        <constructor-arg name="solrQueryFactory">
+            <bean class="sgf.gateway.search.provider.solr.query.SolrQueryFactoryImpl">
+                <constructor-arg name="configurers">
+                    <list>
+                        <ref bean="solrQueryNoResultSetConfigurer"/>
+                        <ref bean="solrQueryFacetConfigurer"/>
+                        <ref bean="solrQueryNoTextConfigurer"/>
+                    </list>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg name="solrResultsFactory" ref="solrResultsFactory"/>
+    </bean>
+
+    <bean id="bootSearchQuery" class="sgf.gateway.search.provider.solr.query.SolrSearchQuery">
+        <constructor-arg name="solrServer" ref="solrServer"/>
+        <constructor-arg name="solrQueryFactory">
+            <bean class="sgf.gateway.search.provider.solr.query.SolrQueryFactoryImpl">
+                <constructor-arg name="configurers">
+                    <list>
+                        <ref bean="solrQueryNoResultSetConfigurer"/>
+                        <ref bean="solrQueryNoTextConfigurer"/>
+                    </list>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg name="solrResultsFactory" ref="solrResultsFactory"/>
+    </bean>
+
+    <bean id="moreLikeThisDatasetSearchQuery" class="sgf.gateway.search.filter.EmptySearchQuery"/>
+
+    <bean id="analyticalSearchQuery" class="sgf.gateway.search.provider.solr.query.SolrSearchQuery">
+        <constructor-arg index="0" ref="solrServer"/>
+        <constructor-arg index="1">
+            <bean class="sgf.gateway.search.provider.solr.query.SolrQueryFactoryImpl">
+                <constructor-arg name="configurers">
+                    <list>
+                        <ref bean="solrQueryResultSetConfigurer"/>
+                        <ref bean="solrQuerySortOptionConfigurer"/>
+                        <bean class="sgf.gateway.search.provider.solr.query.configurer.SolrQueryTextConfigurer">
+                            <constructor-arg name="freeTextQueryStrategy">
+                                <bean class="sgf.gateway.search.provider.solr.query.PassFreeTextQueryStrategy"/>
+                            </constructor-arg>
+                        </bean>
+                    </list>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg index="2" ref="solrResultsFactory"/>
+    </bean>
+
+</beans>

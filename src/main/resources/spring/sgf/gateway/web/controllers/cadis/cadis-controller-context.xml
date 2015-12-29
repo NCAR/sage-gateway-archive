@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd"
+       profile="cadis">
+
+    <bean id="cadisUrlMappings" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="order" value="1"/>
+        <property name="mappings">
+            <props>
+                <prop key="/contactUs.htm">contactController</prop>
+                <prop key="/about/atmosphericDataSources.htm">aboutAtmosDataSourcesController</prop>
+                <prop key="/about/oceanAndSeaIceDataSources.htm">aboutOceanDataSourcesController</prop>
+                <prop key="/about/hydrologyAndSeaIceDataSources.htm">aboutHydroDataSourcesController</prop>
+                <prop key="/about/terrestrialEcosystemsDataSources.htm">aboutEcoDataSourcesController</prop>
+                <prop key="/about/humanDimensionsDataSources.htm">aboutHumanDataSourcesController</prop>
+                <prop key="/about/paleoenvironmentDataSources.htm">aboutPaleoDataSourcesController</prop>
+                <prop key="/about/dataAndInformationManagement.htm">aboutDataAndInformationManagementController</prop>
+                <prop key="/about/cooperatingProjects.htm">aboutCooperatingProjectsController</prop>
+                <prop key="/about/ipyDataCenters.htm">ipyDataCentersController</prop>
+                <prop key="/help/UserGuide.htm">userGuide</prop>
+                <prop key="/help/UserGuide.html">userGuide</prop>
+                <prop key="/about/aon-projects.htm">aonProjectsController</prop>
+                <prop key="/about/cadis/netcdf-conversions.htm">netcdfConversionsController</prop>
+                <prop key="/about/cadis/realtime.htm">realtimeController</prop>
+                <prop key="/about/cadis/questionnaire.htm">questionnaireController</prop>
+                <prop key="/about/cadis/qresults.htm">qresultsController</prop>
+                <prop key="/about/cadis/aon-meetings.htm">aon-meetingsController</prop>
+                <prop key="/about/cadis/cadis-2007.htm">cadis-2007Controller</prop>
+                <prop key="/about/cadis/aon-presentations.htm">aonPresentationsController</prop>
+                <prop key="/about/cadis/aon-contacts.htm">aonContactsController</prop>
+                <prop key="/about/cadis/related-links.htm">relatedLinksController</prop>
+                <prop key="/about/aboutUs.htm">aboutUsController</prop>
+            </props>
+        </property>
+    </bean>
+
+
+    <bean id="aonProjectsController" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="cadis/about/aon-projects"/>
+    </bean>
+
+    <bean id="netcdfConversionsController" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="cadis/about/netcdf-conversions"/>
+    </bean>
+
+    <bean id="realtimeController" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="cadis/about/realtime"/>
+    </bean>
+
+    <bean id="questionnaireController" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="cadis/about/questionnaire"/>
+    </bean>
+
+    <bean id="qresultsController" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="cadis/about/qresults"/>
+    </bean>
+
+    <bean id="aon-meetingsController" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="cadis/about/aon-meetings"/>
+    </bean>
+
+    <bean id="cadis-2007Controller" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="cadis/about/cadis-2007"/>
+    </bean>
+
+    <bean id="aonPresentationsController" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="cadis/about/aon-presentations"/>
+    </bean>
+
+    <bean id="aonContactsController" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="cadis/about/aon-contacts"/>
+    </bean>
+
+    <bean id="relatedLinksController" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="cadis/about/related-links"/>
+    </bean>
+
+    <bean id="cadisHomePageController" class="sgf.gateway.web.controllers.cadis.HomePageController">
+        <constructor-arg index="0" ref="metadataRepository"/>
+    </bean>
+
+    <bean id="howToContributeController" class="sgf.gateway.web.controllers.cadis.HowToContributeController">
+    </bean>
+
+    <bean id="viewProjectsGeographicallyController"
+          class="sgf.gateway.web.controllers.cadis.ViewProjectsGeographicallyController">
+        <constructor-arg name="viewName" value="cadis/viewProjectsGeographically"/>
+    </bean>
+
+    <bean id="aboutUsController" class="sgf.gateway.web.controllers.cadis.AboutUsController">
+        <constructor-arg name="viewName" value="about/aboutUs"/>
+    </bean>
+
+    <bean id="searchOptionsController" class="sgf.gateway.web.controllers.cadis.SearchOptionsController">
+        <constructor-arg name="viewName" value="cadis/searchOptions"/>
+    </bean>
+
+    <bean id="createCadisDataset" class="sgf.gateway.web.controllers.cadis.publish.NewCadisDatasetController">
+        <constructor-arg name="cadisDatasetService" ref="cadisDatasetService"/>
+        <constructor-arg name="topicRepository" ref="topicRepository"/>
+        <constructor-arg name="metadataRepository" ref="metadataRepository"/>
+        <constructor-arg name="authorizationUtils" ref="authorizationUtils"/>
+        <constructor-arg name="datasetRepository" ref="datasetRepository"/>
+        <constructor-arg name="platformTypeRepository" ref="platformTypeRepository"/>
+        <constructor-arg name="instrumentKeywordRepository" ref="instrumentKeywordRepository"/>
+        <constructor-arg name="datasetToCommandConverter">
+            <bean class="sgf.gateway.web.controllers.cadis.publish.command.TemplateDatasetToCommandConverter"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="editCadisDataset" class="sgf.gateway.web.controllers.cadis.publish.EditCadisDatasetController">
+        <constructor-arg name="cadisDatasetService" ref="cadisDatasetService"/>
+        <constructor-arg name="topicRepository" ref="topicRepository"/>
+        <constructor-arg name="metadataRepository" ref="metadataRepository"/>
+        <constructor-arg name="datasetRepository" ref="datasetRepository"/>
+        <constructor-arg name="platformTypeRepository" ref="platformTypeRepository"/>
+        <constructor-arg name="instrumentKeywordRepository" ref="instrumentKeywordRepository"/>
+        <constructor-arg name="authorizationUtils" ref="authorizationUtils"/>
+        <constructor-arg name="datasetToCommandConverter">
+            <bean class="sgf.gateway.web.controllers.cadis.publish.command.DatasetToCommandConverter"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="createCadisDatasetWizard" class="sgf.gateway.web.controllers.cadis.publish.CadisDatasetWizardController">
+        <constructor-arg name="authorizationUtils" ref="authorizationUtils"/>
+    </bean>
+
+    <bean id="cadisMoveDataset" class="sgf.gateway.web.controllers.cadis.publish.CadisMoveDatasetController">
+        <constructor-arg name="authorizationUtils" ref="authorizationUtils"/>
+        <constructor-arg name="cadisDatasetService" ref="cadisDatasetService"/>
+    </bean>
+
+    <bean id="userGuide" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="cadis/publish/UserGuide"/>
+    </bean>
+
+    <!-- deprecated -->
+    <bean id="listPermissableProjectsController"
+          class="sgf.gateway.web.controllers.cadis.publish.ListPermissableTopLevelDatasetsController">
+        <constructor-arg index="0" ref="metadataService"/>
+        <constructor-arg index="1" ref="runtimeUserService"/>
+    </bean>
+
+    <bean id="contributeDataController" class="sgf.gateway.web.controllers.cadis.publish.ContributeDataController">
+        <constructor-arg index="0" ref="metadataService"/>
+        <constructor-arg index="1" ref="runtimeUserService"/>
+    </bean>
+
+    <bean id="contactController" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="cadis/contact/contact-us"/>
+    </bean>
+
+    <bean id="aboutAtmosDataSourcesController"
+          class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="cadis/about/atmosphere-data-sources"/>
+    </bean>
+
+    <bean id="aboutOceanDataSourcesController"
+          class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="cadis/about/ocean-data-sources"/>
+    </bean>
+
+    <bean id="aboutHydroDataSourcesController"
+          class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="cadis/about/hydrology-data-sources"/>
+    </bean>
+
+    <bean id="aboutEcoDataSourcesController" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="cadis/about/ecosystems-data-sources"/>
+    </bean>
+
+    <bean id="aboutHumanDataSourcesController"
+          class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="cadis/about/human-dimensions-data-sources"/>
+    </bean>
+
+    <bean id="aboutPaleoDataSourcesController"
+          class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="cadis/about/paleoenvironment-data-sources"/>
+    </bean>
+
+    <bean id="aboutDataAndInformationManagementController"
+          class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="cadis/about/data-and-information-management"/>
+    </bean>
+
+    <bean id="aboutCooperatingProjectsController"
+          class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="cadis/about/cooperating-projects"/>
+    </bean>
+
+    <bean id="ipyDataCentersController" class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+        <property name="viewName" value="cadis/about/ipy-data-centers"/>
+    </bean>
+
+    <bean id="cadisDatasetPermissionsController"
+          class="sgf.gateway.web.controllers.cadis.administration.CadisDatasetPermissionsController">
+        <constructor-arg index="0" ref="groupRepository"/>
+        <constructor-arg index="1" ref="runtimeUserService"/>
+        <constructor-arg index="2" ref="datasetRepository"/>
+        <constructor-arg index="3" ref="metadataService"/>
+    </bean>
+
+    <bean id="summaryStatisticsController" class="sgf.gateway.web.controllers.metrics.SummaryStatisticsController">
+        <constructor-arg index="0" ref="summaryStatisticsRepository"/>
+    </bean>
+
+    <bean id="dashboardController" class="sgf.gateway.web.controllers.metrics.DashboardController">
+    </bean>
+
+</beans>

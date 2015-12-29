@@ -1,0 +1,46 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   logicalFilePath="/Liquibase/update-v2/changesets/20120503-GTWY-2753.xml">
+
+    <changeSet id="20120503-GTWY-2753" author="sgf">
+
+        <sql>
+            CREATE TABLE metadata.broadcast_message
+            (
+            id bigint NOT NULL,
+            message_text text NOT NULL,
+            CONSTRAINT pkey_broadcast_message PRIMARY KEY (id)
+            )
+            WITH (
+            OIDS=FALSE
+            );
+        </sql>
+
+        <sql>
+            ALTER TABLE metadata.broadcast_message OWNER TO "${database.role.admin}";
+            REVOKE ALL ON TABLE metadata.broadcast_message FROM public;
+            GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE metadata.broadcast_message TO "${database.role.user}";
+            GRANT SELECT ON TABLE metadata.broadcast_message TO "${database.role.read_only}";
+        </sql>
+
+        <sql>
+            CREATE SEQUENCE metadata.broadcast_message_sequence
+            INCREMENT 1
+            MINVALUE 1
+            MAXVALUE 9223372036854775807
+            START 1
+            CACHE 1;
+        </sql>
+
+        <sql>
+            ALTER TABLE metadata.broadcast_message_sequence OWNER TO "${database.role.admin}";
+            REVOKE ALL ON TABLE metadata.broadcast_message_sequence FROM public;
+            GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE metadata.broadcast_message_sequence TO "${database.role.user}";
+            GRANT SELECT ON TABLE metadata.broadcast_message_sequence TO "${database.role.read_only}";
+
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

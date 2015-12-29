@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="remoteIndexableTypeFieldExtractor" class="sgf.gateway.search.extract.ConfiguredValueFieldExtractor">
+        <constructor-arg ref="remoteIndexableDocumentType"/>
+    </bean>
+    <bean id="remoteIndexableTitleFieldExtractor"
+          class="sgf.gateway.search.extract.remoteindexable.RemoteIndexableTitleFieldExtractor"/>
+    <bean id="remoteIndexableDescriptionFieldExtractor"
+          class="sgf.gateway.search.extract.remoteindexable.RemoteIndexableDescriptionFieldExtractor"/>
+    <bean id="remoteIndexableDataCenterFieldExtractor"
+          class="sgf.gateway.search.extract.remoteindexable.RemoteIndexableDataCenterFieldExtractor"/>
+    <bean id="remoteIndexableAuthoritativeSourceURIFieldExtractor"
+          class="sgf.gateway.search.extract.remoteindexable.RemoteIndexableAuthoritativeSourceURIFieldExtractor"/>
+    <bean id="remoteIndexableDetailsURIFieldExtractor"
+          class="sgf.gateway.search.extract.remoteindexable.RemoteIndexableDetailsURIFieldExtractor"/>
+
+    <bean id="remoteIndexableSearchDocumentExtractor" class="sgf.gateway.search.extract.SearchDocumentExtractorImpl">
+        <constructor-arg>
+            <list>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="idField"/>
+                    <constructor-arg index="1" ref="remoteIndexableAuthoritativeSourceURIFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="typeField"/>
+                    <constructor-arg index="1" ref="remoteIndexableTypeFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="nameField"/>
+                    <constructor-arg index="1" ref="remoteIndexableTitleFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="descriptionField"/>
+                    <constructor-arg index="1" ref="remoteIndexableDescriptionFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="dataCenterField"/>
+                    <constructor-arg index="1" ref="remoteIndexableDataCenterFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="authoritativeSourceURIField"/>
+                    <constructor-arg index="1" ref="remoteIndexableAuthoritativeSourceURIFieldExtractor"/>
+                </bean>
+                <bean class="sgf.gateway.search.extract.SearchFieldExtractorImpl">
+                    <constructor-arg index="0" ref="detailsURIField"/>
+                    <constructor-arg index="1" ref="remoteIndexableDetailsURIFieldExtractor"/>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+</beans>

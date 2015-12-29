@@ -1,0 +1,23 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100910-SGF-1717.xml">
+
+    <changeSet id="20100910-SGF-1717" author="ncw" >
+
+        <sql>
+            CREATE OR REPLACE VIEW "security".myproxy_user AS
+            SELECT "user".username, "user".password
+            FROM security."user"
+            WHERE "user".password IS NOT NULL AND "user".password::text != ''::text;
+
+            ALTER TABLE "security".myproxy_user OWNER TO postgres;
+            GRANT ALL ON TABLE "security".myproxy_user TO postgres;
+            GRANT SELECT, REFERENCES ON TABLE "security".myproxy_user TO public;
+        </sql>
+
+
+    </changeSet>
+
+</databaseChangeLog>

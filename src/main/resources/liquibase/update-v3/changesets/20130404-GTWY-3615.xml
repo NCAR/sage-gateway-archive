@@ -1,0 +1,57 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20130404-GTWY-3615.xml">
+
+	<changeSet id="20130404-GTWY-3615.0" author="sgf">
+
+		<sql>
+			CREATE TABLE metadata.data_center
+			(
+				id uuid NOT NULL,
+				name text NOT NULL,
+				version bigint NOT NULL DEFAULT 0,
+				
+				CONSTRAINT pkey_data_center PRIMARY KEY (id)
+			)
+			WITH (OIDS=FALSE);
+		</sql>
+
+		<sql>
+			ALTER TABLE metadata.data_center OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE metadata.data_center FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE metadata.data_center TO "${database.role.user}";
+			GRANT SELECT ON TABLE metadata.data_center TO "${database.role.read_only}";
+		</sql>
+
+	</changeSet >
+	
+	<changeSet id="20130404-GTWY-3615.1" author="sgf">
+	<sql>
+		INSERT INTO metadata.data_center (id, name) values ('0bdd2d39-3493-4fa2-98f9-6766596bdc50', 'Temporary');
+	</sql>
+	
+	</changeSet>
+	
+	<changeSet id="20130404-GTWY-3615.2" author="sgf">
+	<sql>
+		ALTER TABLE metadata.dataset ADD COLUMN data_center_id uuid;
+	
+		UPDATE metadata.dataset SET data_center_id = '0bdd2d39-3493-4fa2-98f9-6766596bdc50';
+	</sql>
+
+	</changeSet>
+	
+	<changeSet id="20130404-GTWY-3615.3" author="sgf">
+	
+	<sql>
+		ALTER TABLE metadata.dataset ALTER COLUMN data_center_id SET NOT NULL;
+		
+		ALTER TABLE metadata.dataset ADD CONSTRAINT fkey_dataset_data_center_id FOREIGN KEY (data_center_id) 
+				REFERENCES metadata.data_center (id) MATCH SIMPLE
+				ON UPDATE NO ACTION ON DELETE NO ACTION DEFERRABLE INITIALLY DEFERRED; 
+	</sql>
+	
+	</changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="datasetTransformerAggregator"
+          class="sgf.gateway.publishing.thredds.transform.impl.DatasetTransformerAggregator">
+        <constructor-arg name="transformers">
+            <list>
+                <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetDescriptionTransformer"/>
+                <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetTitleTransformer"/>
+                <bean class="sgf.gateway.publishing.thredds.transform.impl.ThreddsDatasetTopicTransformerAggregator">
+                    <constructor-arg name="transformers">
+                        <list>
+                            <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetTopicTransformer">
+                                <constructor-arg name="topicBuilder" ref="topicBuilder"/>
+                            </bean>
+                            <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetRealmTransformer">
+                                <constructor-arg name="topicBuilder" ref="topicBuilder"/>
+                            </bean>
+                        </list>
+                    </constructor-arg>
+                </bean>
+                <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetInstituteTransformer">
+                    <constructor-arg name="institutionBuilder" ref="institutionBuilder"/>
+                </bean>
+                <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetActivityTransformer">
+                    <constructor-arg name="transformer">
+                        <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetTransformerAggregator">
+                            <constructor-arg name="transformers">
+                                <list>
+                                    <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetProjectTransformer">
+                                        <constructor-arg name="projectBuilder" ref="projectBuilder"/>
+                                    </bean>
+                                    <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetEnsembleTransformer">
+                                        <constructor-arg name="ensembleBuilder" ref="ensembleBuilder"/>
+                                    </bean>
+                                    <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetExperimentTransformer">
+                                        <constructor-arg name="experimentBuilder" ref="experimentBuilder"/>
+                                    </bean>
+                                </list>
+                            </constructor-arg>
+                        </bean>
+                    </constructor-arg>
+                </bean>
+                <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetFormatTransformer">
+                    <constructor-arg name="builder" ref="dataFormatBuilder"/>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="descriptiveMetadataTransformerAggregator"
+          class="sgf.gateway.publishing.thredds.transform.impl.DescriptiveMetadataTransformerAggregator">
+        <constructor-arg name="transformers">
+            <list>
+                <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetMetadataGeospatialCoverageTransformer"/>
+                <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetTimeCoverageTransformer"/>
+                <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetTimeFrequencyTransformer">
+                    <constructor-arg name="timeFrequencyBuilder" ref="timeFrequencyBuilder"/>
+                </bean>
+                <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetDataProductTypeTransformer">
+                    <constructor-arg name="dataProductTypeBuilder" ref="dataProductTypeBuilder"/>
+                </bean>
+                <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetLanguageTransformer"/>
+
+                <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetRelatedLinkTransformer">
+                    <constructor-arg name="linkFactory" ref="linkFactory"/>
+                </bean>
+                <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetDataTypeTransformer"/>
+                <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetLocationTransformer">
+                    <constructor-arg name="locationBuilder" ref="locationBuilder"/>
+                </bean>
+                <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetProgressTransformer"/>
+                <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetModelTransformer"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="datasetVersionTransformerAggregator"
+          class="sgf.gateway.publishing.thredds.transform.impl.DatasetVersionTransformerAggregator">
+        <constructor-arg name="transformers">
+            <list>
+                <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetVersionVariableTransformer">
+                    <constructor-arg name="datasetRepository" ref="datasetRepository"/>
+                    <constructor-arg name="variableBuilder" ref="newVariableBuilder"/>
+                    <constructor-arg name="standardNameFactory" ref="standardNameFactory"/>
+                </bean>
+                <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetVersionFilesTransformer">
+                    <constructor-arg name="logicalFileRepository" ref="logicalFileRepository"/>
+                    <constructor-arg name="logicalFileFactory" ref="logicalFileFactory"/>
+                    <constructor-arg name="threddsLogicalFileTransformer" ref="logicalFileTransformerAggregator"/>
+                </bean>
+                <bean class="sgf.gateway.publishing.thredds.transform.impl.DatasetVersionPublishedStateTransformer"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="newVariableBuilder" class="sgf.gateway.model.metadata.inventory.builder.impl.VariableBuilderImpl">
+        <constructor-arg index="0" ref="variableFactory"/>
+        <property name="unitBuilder" ref="newUnitBuilder"/>
+    </bean>
+
+    <bean id="newUnitBuilder" class="sgf.gateway.model.metadata.inventory.builder.impl.UnitBuilderImpl">
+        <constructor-arg index="0" ref="datasetRepository"/>
+        <constructor-arg index="1" ref="unitFactory"/>
+    </bean>
+
+    <bean id="logicalFileTransformerAggregator"
+          class="sgf.gateway.publishing.thredds.transform.impl.LogicalFileTransformerAggregator">
+        <constructor-arg name="transformers">
+            <list>
+                <bean class="sgf.gateway.publishing.thredds.transform.impl.LogicalFileEndpointTransformer">
+                    <constructor-arg name="fileAccessPointFactory" ref="fileAccessPointFactory"/>
+                </bean>
+                <bean class="sgf.gateway.publishing.thredds.transform.impl.LogicalFileDataFormatTransformer">
+                    <constructor-arg name="datasetRepository" ref="datasetRepository"/>
+                    <constructor-arg name="dataFormatFactory" ref="dataFormatFactory"/>
+                </bean>
+                <bean class="sgf.gateway.publishing.thredds.transform.impl.LogicalFileChecksumTransformer"/>
+                <bean class="sgf.gateway.publishing.thredds.transform.impl.LogicalFileVariableTransformer">
+                    <constructor-arg name="datasetRepository" ref="datasetRepository"/>
+                    <constructor-arg name="variableBuilder" ref="newVariableBuilder"/>
+                    <constructor-arg name="standardNameFactory" ref="standardNameFactory"/>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="threddsDataServer" class="sgf.gateway.publishing.thredds.impl.ThreddsDataServerImpl"/>
+
+    <bean id="threddsPublishingService" class="sgf.gateway.publishing.thredds.impl.ThreddsPublishingServiceImpl">
+        <constructor-arg name="userRepository" ref="userRepository"/>
+        <constructor-arg name="datasetRepository" ref="datasetRepository"/>
+        <constructor-arg name="datasetFactory" ref="datasetFactory"/>
+        <constructor-arg name="datasetVersionFactory" ref="datasetVersionFactory"/>
+        <constructor-arg name="threddsDatasetTransformer" ref="datasetTransformerAggregator"/>
+        <constructor-arg name="threddsDescriptiveMetadataTransformer" ref="descriptiveMetadataTransformerAggregator"/>
+        <constructor-arg name="threddsDatasetVersionTransformer" ref="datasetVersionTransformerAggregator"/>
+        <constructor-arg name="threddsDataServer" ref="threddsDataServer"/>
+        <constructor-arg name="dateStrategy" ref="dateStrategy"/>
+        <constructor-arg name="identifierRenameStrategy" ref="fileNameAndURIRenameStrategy"/>
+    </bean>
+
+    <bean name="threddsPublishingMailService"
+          class="sgf.gateway.publishing.thredds.impl.ThreddsPublishingMailServiceImpl">
+        <constructor-arg name="userRepository" ref="userRepository"/>
+        <constructor-arg name="datasetRepository" ref="datasetRepository"/>
+        <constructor-arg name="mailService" ref="mailService"/>
+        <constructor-arg name="failureNotificationAddresses">
+            <set>
+                <value>${exception.notification.email}</value>
+            </set>
+        </constructor-arg>
+        <constructor-arg name="successNotificationAddresses">
+            <set>
+            </set>
+        </constructor-arg>
+    </bean>
+
+    <bean id="dataFormatBuilder" class="sgf.gateway.model.metadata.builder.impl.DataFormatBuilderImpl">
+        <constructor-arg name="datasetRepository" ref="datasetRepository"/>
+        <constructor-arg name="dataFormatFactory" ref="dataFormatFactory"/>
+    </bean>
+
+</beans>

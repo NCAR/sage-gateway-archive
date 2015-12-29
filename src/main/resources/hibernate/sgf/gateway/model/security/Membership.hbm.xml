@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.security.Membership" table="membership" schema="security">
+
+        <id name="identifier" column="id" access="field">
+            <type name="sgf.gateway.utils.hibernate.UUIDUserType"/>
+        </id>
+        <version name="version" column="version" unsaved-value="null" access="field"/>
+
+        <many-to-one name="user" class="sgf.gateway.model.security.User" column="user_id" not-null="true"
+                     cascade="none"/>
+        <many-to-one name="group" class="sgf.gateway.model.security.Group" column="group_id" not-null="true"
+                     cascade="none"/>
+        <many-to-one name="role" class="sgf.gateway.model.security.Role" column="role_id" not-null="true"
+                     cascade="none"/>
+
+        <property name="status" column="status_id">
+            <type name="sgf.gateway.utils.hibernate.EnumUserType">
+                <param name="enumClassName">sgf.gateway.model.security.Status</param>
+                <param name="columnType">INTEGER</param>
+            </type>
+        </property>
+
+    </class>
+
+</hibernate-mapping>

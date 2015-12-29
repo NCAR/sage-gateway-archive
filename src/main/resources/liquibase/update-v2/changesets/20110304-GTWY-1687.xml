@@ -1,0 +1,23 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet id="20110304-GTWY-1687" author="sgf" >
+
+        <dropNotNullConstraint schemaName="metrics" tableName="clickstream" columnName="users_id" />
+
+        <dropForeignKeyConstraint baseTableSchemaName="metrics" baseTableName="clickstream" constraintName="fkey_clickstream_1" />
+
+        <renameColumn schemaName="metrics" tableName="clickstream" oldColumnName="users_id" newColumnName="user_id" />
+
+        <addForeignKeyConstraint baseTableSchemaName="metrics" baseTableName="clickstream" baseColumnNames="user_id" referencedTableSchemaName="security" referencedTableName="user" referencedColumnNames="id" constraintName="fkey_clickstream_1" onUpdate="CASCADE" onDelete="CASCADE"  initiallyDeferred="true" />
+
+        <dropForeignKeyConstraint baseTableSchemaName="metrics" baseTableName="clickstream" constraintName="fkey_clickstream_2" />
+
+        <addForeignKeyConstraint baseTableSchemaName="metrics" baseTableName="clickstream" baseColumnNames="user_agent_id" referencedTableSchemaName="metrics" referencedTableName="user_agent" referencedColumnNames="id" constraintName="fkey_clickstream_2" onUpdate="CASCADE" onDelete="SET NULL"  initiallyDeferred="true" />
+
+    </changeSet>
+
+</databaseChangeLog>
+

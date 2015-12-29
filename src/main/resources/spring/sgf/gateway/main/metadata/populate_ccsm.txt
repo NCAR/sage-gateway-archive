@@ -1,0 +1,24 @@
+# CCSM THREDDS demo catalogs
+-perm CCSM READ ucar.cgd.ccsm.output http://datagrid.ucar.edu/metadata/cgd/ccsm/thredds_new/ucar.cgd.ccsm.b30.004/ucar.cgd.ccsm.b30.004.thredds
+# -perm CCSM READ ucar.cgd.ccsm.b30.004.atm http://datagrid.ucar.edu/metadata/cgd/ccsm/thredds_new/ucar.cgd.ccsm.b30.004/ucar.cgd.ccsm.b30.004.atm.thredds
+# -perm CCSM READ ucar.cgd.ccsm.b30.004.lnd http://datagrid.ucar.edu/metadata/cgd/ccsm/thredds_new/ucar.cgd.ccsm.b30.004/ucar.cgd.ccsm.b30.004.lnd.thredds
+# -perm CCSM READ ucar.cgd.ccsm.b30.004.ice http://datagrid.ucar.edu/metadata/cgd/ccsm/thredds_new/ucar.cgd.ccsm.b30.004/ucar.cgd.ccsm.b30.004.ice.thredds
+# -perm CCSM READ ucar.cgd.ccsm.b30.004.ocn http://datagrid.ucar.edu/metadata/cgd/ccsm/thredds_new/ucar.cgd.ccsm.b30.004/ucar.cgd.ccsm.b30.004.ocn.thredds
+-perm CCSM READ ucar.cgd.ccsm.output http://datagrid.ucar.edu/metadata/cgd/ccsm/thredds_new/ucar.cgd.ccsm.b30.009/ucar.cgd.ccsm.b30.009.thredds
+# -perm CCSM READ ucar.cgd.ccsm.b30.009.atm http://datagrid.ucar.edu/metadata/cgd/ccsm/thredds_new/ucar.cgd.ccsm.b30.009/ucar.cgd.ccsm.b30.009.atm.thredds
+# -perm CCSM READ ucar.cgd.ccsm.b30.009.lnd http://datagrid.ucar.edu/metadata/cgd/ccsm/thredds_new/ucar.cgd.ccsm.b30.009/ucar.cgd.ccsm.b30.009.lnd.thredds
+# -perm CCSM READ ucar.cgd.ccsm.b30.009.ice http://datagrid.ucar.edu/metadata/cgd/ccsm/thredds_new/ucar.cgd.ccsm.b30.009/ucar.cgd.ccsm.b30.009.ice.thredds
+# -perm CCSM READ ucar.cgd.ccsm.b30.009.ocn http://datagrid.ucar.edu/metadata/cgd/ccsm/thredds_new/ucar.cgd.ccsm.b30.009/ucar.cgd.ccsm.b30.009.ocn.thredds
+# b30.030a and b30.030b were added to demonstrate volcano forcings.
+# Note: These catalogs contain original services and accesses that may not work.
+-perm CCSM READ ucar.cgd.ccsm.output http://datagrid.ucar.edu/metadata/cgd/ccsm/thredds_new/ucar.cgd.ccsm.b30.030a/ucar.cgd.ccsm.b30.030a.thredds
+# -perm CCSM READ ucar.cgd.ccsm.b30.030a.atm http://datagrid.ucar.edu/metadata/cgd/ccsm/thredds_new/ucar.cgd.ccsm.b30.030a/ucar.cgd.ccsm.b30.030a.atm.thredds
+# -perm CCSM READ ucar.cgd.ccsm.b30.030a.ice http://datagrid.ucar.edu/metadata/cgd/ccsm/thredds_new/ucar.cgd.ccsm.b30.030a/ucar.cgd.ccsm.b30.030a.ice.thredds
+# -perm CCSM READ ucar.cgd.ccsm.b30.030a.lnd http://datagrid.ucar.edu/metadata/cgd/ccsm/thredds_new/ucar.cgd.ccsm.b30.030a/ucar.cgd.ccsm.b30.030a.lnd.thredds
+# -perm CCSM READ ucar.cgd.ccsm.b30.030a.ocn http://datagrid.ucar.edu/metadata/cgd/ccsm/thredds_new/ucar.cgd.ccsm.b30.030a/ucar.cgd.ccsm.b30.030a.ocn.thredds
+# -perm CCSM READ ucar.cgd.ccsm.output http://datagrid.ucar.edu/metadata/cgd/ccsm/thredds_new/ucar.cgd.ccsm.b30.030b/ucar.cgd.ccsm.b30.030b.thredds 2 0
+# -perm CCSM READ ucar.cgd.ccsm.b30.030b.atm http://datagrid.ucar.edu/metadata/cgd/ccsm/thredds_new/ucar.cgd.ccsm.b30.030b/ucar.cgd.ccsm.b30.030b.atm.thredds
+# -perm CCSM READ ucar.cgd.ccsm.b30.030b.ice http://datagrid.ucar.edu/metadata/cgd/ccsm/thredds_new/ucar.cgd.ccsm.b30.030b/ucar.cgd.ccsm.b30.030b.ice.thredds
+# -perm CCSM READ ucar.cgd.ccsm.b30.030b.lnd http://datagrid.ucar.edu/metadata/cgd/ccsm/thredds_new/ucar.cgd.ccsm.b30.030b/ucar.cgd.ccsm.b30.030b.lnd.thredds
+# -perm CCSM READ ucar.cgd.ccsm.b30.030b.ocn http://datagrid.ucar.edu/metadata/cgd/ccsm/thredds_new/ucar.cgd.ccsm.b30.030b/ucar.cgd.ccsm.b30.030b.ocn.thredds
+# -perm CCSM READ -p http://datagrid.ucar.edu/metadata/cgd/ccsm/thredds_new/ucar.cgd.ccsm.b30.004-009.thredds

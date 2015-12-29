@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <!-- NOTE: disabled lazy-loading for Gateway object since if proxied it creates problems in the Access Control left menu -->
+    <!-- <class name="sgf.gateway.model.Gateway" table="gateway" schema="metadata" lazy="false" mutable="false" > -->
+    <class name="sgf.gateway.model.GatewayImpl" table="gateway" schema="metadata" lazy="false">
+
+        <id name="identifier" column="id" type="sgf.gateway.utils.hibernate.UUIDUserType" access="field"/>
+
+        <version name="version" column="version" unsaved-value="null" access="field"/>
+
+        <property name="name" column="name" type="string" access="field"/>
+        <property name="description" column="description" type="string" access="field"/>
+        <property name="systemMessage" column="system_message" type="string" access="field"/>
+        <property name="baseURL" column="base_url" type="sgf.gateway.utils.hibernate.URIUserType" access="field"/>
+        <property name="baseSecureURL" column="base_secure_url" type="sgf.gateway.utils.hibernate.URIUserType"
+                  access="field"/>
+        <property name="attributesServiceURL" column="attributes_service_url"
+                  type="sgf.gateway.utils.hibernate.URIUserType" access="field"/>
+        <property name="oaiRepositoryURL" column="oai_repository_url" type="sgf.gateway.utils.hibernate.URIUserType"
+                  access="field"/>
+        <property name="defaultProjectViewHandlerName" column="project_view_handler_name" type="string" access="field"/>
+        <property name="defaultCollectionViewHandlerName" column="collection_view_handler_name" type="string"
+                  length="1024" access="field"/>
+        <property name="identity" column="identity" type="string" access="field"/>
+        <property name="administratorPersonal" column="administrator_personal" type="string" access="field"/>
+        <property name="administratorEmail" column="administrator_email" type="string" access="field"/>
+        <property name="myProxyEndpoint" column="myproxy_endpoint" type="string" access="field"/>
+        <property name="idpEndpoint" column="idp_endpoint" type="string" access="field"/>
+
+    </class>
+
+    <query name="findGatewayByName" cacheable="false">
+        <![CDATA[
+            from GatewayImpl gateway where gateway.name = :name
+        ]]>
+    </query>
+
+    <query name="findGatewayByIdpEndpoint" cacheable="false">
+        <![CDATA[
+            from GatewayImpl gateway where gateway.idpEndpoint = :endpoint
+        ]]>
+    </query>
+
+    <query name="findGateways" cacheable="true">
+        <![CDATA[
+            from GatewayImpl gateway
+        ]]>
+    </query>
+
+</hibernate-mapping>

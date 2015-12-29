@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <typedef name="DataTransferRequestStatus" class="sgf.gateway.utils.hibernate.EnumUserType">
+        <param name="enumClassName">sgf.gateway.model.workspace.DataTransferRequestStatus</param>
+        <param name="columnType">INTEGER</param>
+    </typedef>
+
+    <class name="sgf.gateway.model.workspace.DataTransferRequest" table="data_transfer_request" schema="workspace">
+
+        <id name="identifier" column="id" access="field" type="sgf.gateway.utils.hibernate.UUIDUserType"/>
+
+        <version name="version" column="version" unsaved-value="null" access="field"/>
+
+        <many-to-one name="user" column="user_id" class="sgf.gateway.model.security.User" lazy="no-proxy"
+                     not-found="exception"/>
+        <many-to-one name="dataset" column="dataset_id" class="sgf.gateway.model.metadata.DatasetImpl" lazy="no-proxy"
+                     not-found="exception"/>
+
+        <property name="name" column="name" type="string" length="255"/>
+        <property name="requestNumber" column="request_number" type="int"/>
+        <property name="errorCount" column="error_count" type="int"/>
+        <property name="totalSize" column="total_size" type="long"/>
+        <property name="startTime" column="date_created" type="timestamp"/>
+        <property name="stopTime" column="date_completed" type="timestamp"/>
+        <property name="lastUpdate" column="date_updated" type="timestamp"/>
+        <property name="message" column="message" type="string"/>
+        <property name="subsystemId" column="subsystem_id" type="string" length="255"/>
+        <property name="status" column="status_id" type="DataTransferRequestStatus"/>
+
+        <set name="items" table="data_transfer_item" schema="workspace" inverse="true" cascade="all" lazy="extra">
+            <key column="request_id"/>
+            <one-to-many class="sgf.gateway.model.workspace.DataTransferItem"/>
+        </set>
+
+    </class>
+
+    <query name="findDataTransferRequests" cacheable="false">
+        <![CDATA[
+            from DataTransferRequest dataTransferRequest
+            where (dataTransferRequest.user.id = :userId)
+            order by dataTransferRequest.startTime desc
+        ]]>
+    </query>
+
+    <query name="getMaxRequestNumber" cacheable="false">
+        <![CDATA[
+            select max(dataTransferRequest.requestNumber)
+            from DataTransferRequest dataTransferRequest
+            where (dataTransferRequest.user.id = :userId)
+        ]]>
+    </query>
+
+    <!--  TODO remove explicit status values from in clause ! -->
+    <query name="findUserPastDataTransferRequests" cacheable="false">
+        <![CDATA[
+            from DataTransferRequest dataTransferRequest
+            where (dataTransferRequest.user.id = :userId) and
+                (dataTransferRequest.status IN (4,5))
+            order by dataTransferRequest.startTime desc
+        ]]>
+    </query>
+
+    <query name="findDataTransferRequestsByStatus" cacheable="false">
+        <![CDATA[
+            from DataTransferRequest dataTransferRequest
+            where (dataTransferRequest.user.id = :userId) and
+                (dataTransferRequest.status = :status)
+            order by dataTransferRequest.startTime desc
+        ]]>
+    </query>
+
+    <query name="findAllDataTransferRequestsByStatus" cacheable="false">
+        <![CDATA[
+            from DataTransferRequest dataTransferRequest
+            where (dataTransferRequest.status = :status)
+        ]]>
+    </query>
+
+</hibernate-mapping>

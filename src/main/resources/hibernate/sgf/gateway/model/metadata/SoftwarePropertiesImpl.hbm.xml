@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.metadata.SoftwarePropertiesImpl" table="software_properties" schema="metadata">
+
+        <id name="identifier" column="id" type="sgf.gateway.utils.hibernate.UUIDUserType" access="field">
+            <generator class="foreign">
+                <param name="property">parent</param>
+            </generator>
+        </id>
+
+        <one-to-one name="parent" class="sgf.gateway.model.metadata.DatasetImpl" constrained="true" access="field"/>
+
+        <property name="softwareVersion" column="software_version" type="string" access="field"/>
+
+    </class>
+
+</hibernate-mapping>

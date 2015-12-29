@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="threddsProjectTransformer" class="sgf.gateway.integration.transformer.NodeTransformer">
+        <constructor-arg name="transformNode">
+            <bean class="sgf.gateway.integration.node.NodeAggregator">
+                <constructor-arg name="nodes">
+                    <list>
+                        <bean class="sgf.gateway.integration.thredds.transform.NodeDatasetShortName">
+                            <constructor-arg ref="fileNameAndURIRenameStrategy"/>
+                        </bean>
+                        <bean class="sgf.gateway.integration.thredds.transform.NodeDatasetAuthoritativeIdentifier"/>
+                        <bean class="sgf.gateway.integration.thredds.transform.NodeDatasetAuthoritativeSourceDateCreated"/>
+                        <bean class="sgf.gateway.integration.thredds.transform.NodeDatasetTitle"/>
+                        <bean class="sgf.gateway.integration.thredds.transform.NodeDatasetDescription"/>
+                        <bean class="sgf.gateway.integration.thredds.transform.NodeDatasetGeospatial"/>
+                        <bean class="sgf.gateway.integration.thredds.transform.NodeDatasetStartEndDate"/>
+                        <bean class="sgf.gateway.integration.thredds.transform.NodeDatasetThreddsDatasetURIs"/>
+                        <bean class="sgf.gateway.integration.thredds.transform.NodeDatasetNullifyInvDataset"/>
+                    </list>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <bean id="threddsDatasetTransformer" class="sgf.gateway.integration.transformer.NodeTransformer">
+        <constructor-arg name="transformNode">
+            <bean class="sgf.gateway.integration.node.NodeAggregator">
+                <constructor-arg name="nodes">
+                    <list>
+                        <bean class="sgf.gateway.integration.thredds.transform.NodeDatasetShortName">
+                            <constructor-arg ref="fileNameAndURIRenameStrategy"/>
+                        </bean>
+                        <bean class="sgf.gateway.integration.thredds.transform.NodeDatasetAuthoritativeIdentifier"/>
+                        <bean class="sgf.gateway.integration.thredds.transform.NodeDatasetAuthoritativeSourceDateCreated"/>
+                        <bean class="sgf.gateway.integration.thredds.transform.NodeDatasetTitle"/>
+                        <bean class="sgf.gateway.integration.thredds.transform.NodeDatasetDescription"/>
+                        <bean class="sgf.gateway.integration.thredds.transform.NodeDatasetStartEndDate"/>
+                        <bean class="sgf.gateway.integration.thredds.transform.NodeDatasetGeospatial"/>
+                        <bean class="sgf.gateway.integration.thredds.transform.NodeDatasetAccessUrl"/>
+                        <bean class="sgf.gateway.integration.thredds.transform.NodeDatasetDistributionURI"/>
+                        <bean class="sgf.gateway.integration.thredds.transform.NodeDatasetContacts">
+                            <constructor-arg name="responsiblePartyFactory" ref="responsiblePartyFactory"/>
+                        </bean>
+                        <bean class="sgf.gateway.integration.thredds.transform.NodeDatasetDoi"/>
+                        <bean class="sgf.gateway.integration.thredds.transform.NodeDatasetNullifyInvDataset"/>
+                    </list>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <bean id="projectLoadService" class="sgf.gateway.integration.thredds.service.ProjectLoadService">
+        <constructor-arg name="projectService" ref="cadisProjectService"/>
+    </bean>
+
+</beans>

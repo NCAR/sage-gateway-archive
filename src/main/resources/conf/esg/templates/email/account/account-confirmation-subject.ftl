@@ -1,0 +1,1 @@
+Confirm your New Account at ${gateway.name}

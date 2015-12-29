@@ -1,0 +1,25 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100405-SGF-877.xml">
+
+    <changeSet id="20100405-SGF-877" author="danielle">
+        <comment>Inserting the new PI contact types</comment>
+
+        <insert tableName="contact_type" schemaName="metadata">
+            <column name="id" value="5"/>
+            <column name="name" value="Lead Principal Investigator"/>
+        </insert>
+        <insert tableName="contact_type" schemaName="metadata">
+            <column name="id" value="6"/>
+            <column name="name" value="CO Principal Investigator"/>
+        </insert>
+        <insert tableName="contact_type" schemaName="metadata">
+            <column name="id" value="7"/>
+            <column name="name" value="Collaborating Principle Investigator"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

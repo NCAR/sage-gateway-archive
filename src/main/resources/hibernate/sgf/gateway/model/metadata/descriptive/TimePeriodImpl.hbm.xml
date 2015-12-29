@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.metadata.descriptive.TimePeriodImpl" table="dataset_time_period" schema="metadata">
+
+        <id name="identifier" column="id" access="field" type="sgf.gateway.utils.hibernate.UUIDUserType">
+            <generator class="foreign">
+                <param name="property">parent</param>
+            </generator>
+        </id>
+
+        <one-to-one name="parent" class="sgf.gateway.model.metadata.descriptive.DescriptiveMetadataImpl"
+                    constrained="true" access="field"/>
+
+        <property name="begin" column="begin_date" not-null="true" type="java.util.Date"/>
+        <property name="end" column="end_date" not-null="true" type="java.util.Date"/>
+
+    </class>
+
+</hibernate-mapping>

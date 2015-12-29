@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <typedef name="ResponsiblePartyRole" class="sgf.gateway.utils.hibernate.EnumUserType">
+        <param name="enumClassName">sgf.gateway.model.metadata.citation.ResponsiblePartyRole</param>
+        <param name="columnType">STRING</param>
+    </typedef>
+
+    <class name="sgf.gateway.model.metadata.citation.ResponsiblePartyImpl" table="responsible_party" schema="metadata">
+
+        <id name="identifier" column="id" type="sgf.gateway.utils.hibernate.UUIDUserType" access="field"/>
+
+        <version name="version" column="version" unsaved-value="null" access="field"/>
+
+        <property name="dateCreated" column="date_created" type="timestamp" insert="false" update="false"
+                  access="field"/>
+
+        <property name="dateUpdated" column="date_updated" type="timestamp" insert="false" update="false"
+                  access="field"/>
+
+        <property name="individualName" column="individual_name" type="string"/>
+        <property name="organizationName" column="organization_name" type="string"/>
+        <property name="positionName" column="position_name" type="string"/>
+        <property name="email" column="email" type="string"/>
+
+        <property name="role" column="role" type="ResponsiblePartyRole" access="field"/>
+
+    </class>
+
+    <sql-query name="findAllPIsWithData" cacheable="false">
+        <return-scalar column="fullName" type="string"/>
+        <return-scalar column="lastName" type="string"/>
+        <return-scalar column="firstName" type="string"/>
+        <![CDATA[
+			SELECT DISTINCT responsible_party.individual_name as fullName,
+			SUBSTRING(individual_name, '([^[:space:]]+)(?:,|$)') as lastName,
+			REPLACE(individual_name, substring(individual_name, '([[:space:]][^[:space:]]+)(?:,|$)'), '') as firstName
+			FROM
+			metadata.dataset AS dataset
+			JOIN
+			metadata.descriptive_metadata AS descriptive_metadata ON dataset.id = descriptive_metadata.id
+			JOIN
+			metadata.responsible_party AS responsible_party ON descriptive_metadata.id = responsible_party.descriptive_metadata_id
+			WHERE
+			responsible_party.individual_name IS NOT NULL
+			AND
+			responsible_party.role IN ('collaboratingPrincipalInvestigator', 'coPrincipalInvestigator', 'principalInvestigator')
+			ORDER BY
+			lastName, firstName ASC;
+		]]>
+    </sql-query>
+
+    <sql-query name="findAllResponsiblePartiesOrdered" cacheable="false">
+        <return-scalar column="fullName" type="string"/>
+        <return-scalar column="lastName" type="string"/>
+        <return-scalar column="firstName" type="string"/>
+        <![CDATA[
+			SELECT DISTINCT responsible_party.individual_name as fullName,
+			SUBSTRING(individual_name, '([^[:space:]]+)(?:,|$)') as lastName,
+			REPLACE(individual_name, substring(individual_name, '([[:space:]][^[:space:]]+)(?:,|$)'), '') as firstName
+			FROM
+			metadata.responsible_party AS responsible_party
+			WHERE
+			responsible_party.individual_name IS NOT NULL
+			ORDER BY
+			lastName, firstName ASC;
+		]]>
+    </sql-query>
+
+</hibernate-mapping>

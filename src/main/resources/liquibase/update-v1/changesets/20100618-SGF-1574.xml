@@ -1,0 +1,25 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100618-SGF-1574.xml">
+
+    <changeSet author="nch" id="20100618-SGF-1574">
+
+        <renameColumn schemaName="metrics" tableName="file_download" oldColumnName="date_created" newColumnName="date_started" />
+
+        <addColumn schemaName="metrics" tableName="file_download">
+            <column name="date_completed" type="timestamp"  >
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+
+        <addColumn schemaName="metrics" tableName="file_download">
+            <column name="duration" type="integer"  >
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+
+    </changeSet>
+
+</databaseChangeLog>

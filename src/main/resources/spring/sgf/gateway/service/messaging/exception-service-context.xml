@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="freemarkerConfiguration2" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
+        <property name="templateLoaderPath"
+                  value="classpath:sgf/gateway/service/messaging/messages/templates/freemarker"/>
+    </bean>
+
+    <bean id="mailExceptionHandler" class="sgf.gateway.service.messaging.impl.handler.MailExceptionHandler">
+        <constructor-arg index="0" ref="mailService"/>
+        <constructor-arg index="1">
+            <set>
+                <value>${exception.notification.email}</value>
+            </set>
+        </constructor-arg>
+    </bean>
+
+    <bean id="loggingExceptionHandler" class="sgf.gateway.service.messaging.impl.handler.LoggingExceptionHandler"/>
+
+    <bean id="developmentExceptionStrategy"
+          class="sgf.gateway.service.messaging.impl.ConfigurableExceptionHandlingStrategy">
+        <constructor-arg index="0">
+            <list>
+                <ref bean="loggingExceptionHandler"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="whitelistExceptionHandlingStrategy"
+          class="sgf.gateway.service.messaging.impl.WhiteListExceptionHandlingStrategy">
+        <constructor-arg index="0" ref="${eske.messaging.exception.handling.strategy}"/>
+        <constructor-arg index="1">
+            <set>
+                <value>java.net.SocketException</value>
+                <value>sgf.gateway.service.security.impl.acegi.DatasetAccessDeniedException</value>
+            </set>
+        </constructor-arg>
+    </bean>
+
+    <bean id="deploymentExceptionStrategy"
+          class="sgf.gateway.service.messaging.impl.ConfigurableExceptionHandlingStrategy">
+        <constructor-arg index="0">
+            <list>
+                <ref bean="loggingExceptionHandler"/>
+                <ref bean="mailExceptionHandler"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean name="exceptionHandlingService" class="sgf.gateway.service.messaging.impl.ExceptionHandlingServiceImpl">
+        <constructor-arg index="0" ref="whitelistExceptionHandlingStrategy"/>
+    </bean>
+
+</beans>

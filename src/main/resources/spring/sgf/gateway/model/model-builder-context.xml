@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <!--  Domain model builders -->
+
+    <bean id="topicBuilder" class="sgf.gateway.model.metadata.builder.impl.TopicBuilderImpl">
+        <constructor-arg index="0" ref="topicRepository"/>
+    </bean>
+
+    <bean id="realmTopicBuilder" class="sgf.gateway.model.metadata.builder.impl.RealmTopicBuilderImpl">
+        <constructor-arg index="0" ref="topicRepository"/>
+        <constructor-arg index="1" ref="topicFactory"/>
+    </bean>
+
+    <bean id="dataProductTypeBuilder" class="sgf.gateway.model.metadata.builder.impl.DataProductTypeBuilderImpl">
+        <constructor-arg index="0" ref="metadataRepository"/>
+        <constructor-arg index="1" ref="dataProductTypeFactory"/>
+    </bean>
+
+    <bean id="projectBuilder" class="sgf.gateway.model.metadata.activities.project.builder.impl.ProjectBuilderImpl">
+        <constructor-arg index="0" ref="projectRepository"/>
+        <constructor-arg index="1" ref="projectFactory"/>
+    </bean>
+
+    <bean id="institutionBuilder" class="sgf.gateway.model.metadata.descriptive.builder.impl.InstitutionBuilderImpl">
+        <constructor-arg index="0" ref="datasetRepository"/>
+        <constructor-arg index="1" ref="institutionFactory"/>
+        <constructor-arg index="2" value="true"/>
+    </bean>
+
+    <bean id="experimentBuilder"
+          class="sgf.gateway.model.metadata.activities.modeling.builder.impl.ExperimentBuilderImpl">
+        <constructor-arg index="0" ref="datasetRepository"/>
+        <constructor-arg index="1" ref="experimentFactory"/>
+    </bean>
+
+    <bean id="ensembleBuilder" class="sgf.gateway.model.metadata.activities.modeling.builder.impl.EnsembleBuilderImpl">
+        <constructor-arg index="0" ref="datasetRepository"/>
+        <constructor-arg index="1" ref="ensembleFactory"/>
+    </bean>
+
+    <bean id="timeFrequencyBuilder" class="sgf.gateway.model.metadata.builder.impl.TimeFrequencyBuilderImpl">
+        <constructor-arg index="0" ref="datasetRepository"/>
+        <constructor-arg index="1" ref="timeFrequencyFactory"/>
+        <constructor-arg index="2" value="true"/>
+    </bean>
+
+    <bean id="physicalDomainBuilder" class="sgf.gateway.model.metadata.builder.impl.PhysicalDomainBuilderImpl">
+        <constructor-arg index="0" ref="datasetRepository"/>
+        <constructor-arg index="1" ref="physicalDomainFactory"/>
+        <constructor-arg index="2" value="true"/>
+    </bean>
+
+
+    <bean id="locationBuilder" class="sgf.gateway.model.metadata.builder.impl.LocationBuilderImpl">
+        <constructor-arg index="0" ref="datasetRepository"/>
+    </bean>
+
+    <bean id="variableBuilder" class="sgf.gateway.model.metadata.inventory.builder.impl.VariableBuilderImpl">
+        <constructor-arg index="0" ref="variableFactory"/>
+    </bean>
+
+</beans>

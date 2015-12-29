@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <import resource="classpath:sgf/gateway/profile/cadis/integration/common-context.xml"/>
+
+    <import resource="classpath:sgf/gateway/profile/cadis/integration/jms-context.xml"/>
+
+    <import resource="classpath:sgf/gateway/profile/cadis/integration/threddscatalog/integration-context.xml"/>
+
+    <import resource="classpath:sgf/gateway/profile/cadis/integration/ade/integration-context.xml"/>
+
+</beans>

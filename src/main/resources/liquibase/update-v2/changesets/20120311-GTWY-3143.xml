@@ -1,0 +1,11 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="/Liquibase/update-v2/changesets/20120311-GTWY-3143.xml">
+
+    <changeSet id="20120311-GTWY-3143" author="sgf">
+        <dropTable tableName="annotation" schemaName="metadata" />
+    </changeSet>
+
+</databaseChangeLog>

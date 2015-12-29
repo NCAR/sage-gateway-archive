@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="whoIsQuartzJob" class="sgf.gateway.service.whois.WhoIsQuartzJob">
+        <constructor-arg name="enabled" value="${filedownload.whois.service.enabled}"/>
+        <constructor-arg name="service" ref="whoIsService"/>
+        <constructor-arg name="exceptionHandlingService" ref="exceptionHandlingService"/>
+    </bean>
+
+    <bean id="whoIsService" class="sgf.gateway.service.whois.impl.ExceptionHandlingWhoIsServiceImpl">
+        <constructor-arg name="dao" ref="metricsDownloadDao"/>
+        <constructor-arg name="facade" ref="remoteWhoIsFacade"/>
+        <constructor-arg name="exceptionHandlingService" ref="exceptionHandlingService"/>
+    </bean>
+
+    <bean id="remoteWhoIsFacade" class="sgf.gateway.service.whois.impl.RemoteWhoIsFacadeImpl">
+        <constructor-arg name="restTemplate" ref="remoteWhoIsFacadeRestTemplate"/>
+    </bean>
+
+    <bean id="remoteWhoIsFacadeRestTemplate" class="org.springframework.web.client.RestTemplate">
+        <constructor-arg index="0" ref="whoisHttpComponentsClientHttpRequestFactory"/>
+
+        <property name="messageConverters">
+            <list>
+                <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="whoisHttpComponentsClientHttpRequestFactory"
+          class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
+        <constructor-arg index="0" ref="whoisHttpClient4"/>
+    </bean>
+
+    <bean id="whoisHttpClient4" factory-method="create" factory-bean="whoisHttpClient4Factory"/>
+
+    <bean id="whoisHttpClient4Factory" class="sgf.gateway.utils.httpclient.impl.HttpClient4FactoryImpl">
+        <constructor-arg name="connectTimeout" value="60000"/>
+        <constructor-arg name="readTimeout" value="60000"/>
+    </bean>
+
+</beans>

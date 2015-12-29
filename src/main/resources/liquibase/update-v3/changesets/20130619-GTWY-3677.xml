@@ -1,0 +1,13 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20130619-GTWY-3677.xml">
+
+	<changeSet id="20130619-GTWY-3677" author="sgf">
+		
+		<renameColumn schemaName="metadata" tableName="project" oldColumnName="is_remote" newColumnName="brokered"/>
+		<renameColumn schemaName="metadata" tableName="dataset" oldColumnName="is_remote" newColumnName="brokered"/>
+		
+	</changeSet>
+	
+</databaseChangeLog>

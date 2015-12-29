@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!-- enable the configuration of transactional behavior based on annotations -->
+    <tx:annotation-driven transaction-manager="transactionManager" mode="aspectj"/>
+
+    <!--  Hibernate Transactions -->
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="hibernateSessionFactory"/>
+        <property name="nestedTransactionAllowed" value="true"/>
+    </bean>
+
+    <bean id="fileNameAndURIRenameStrategy" class="sgf.gateway.utils.FileNameAndURIRenameStrategy"/>
+
+    <bean id="remoteMetadataService" class="sgf.gateway.service.xml.impl.RemoteMetadataServiceImpl">
+        <constructor-arg index="0" ref="metadataRepository"/>
+        <constructor-arg index="1" ref="datasetRepository"/>
+        <constructor-arg index="2" ref="remoteMetadataServiceFreemarkerConfig"/>
+    </bean>
+
+    <bean id="remoteMetadataServiceFreemarkerConfig"
+          class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
+        <property name="freemarkerSettings">
+            <props>
+                <prop key="template_exception_handler">rethrow</prop>
+            </props>
+        </property>
+        <property name="templateLoaderPaths">
+            <list>
+                <value>classpath:sgf/gateway/templates/remotemetadataservice/</value>
+            </list>
+        </property>
+        <property name="freemarkerVariables">
+            <map>
+                <entry key="gateway">
+                    <ref bean="gateway"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="internalOpenIdProviderConfiguration"
+          class="sgf.gateway.web.controllers.security.openid.InternalOpenIdProviderConfiguration">
+        <constructor-arg index="0" ref="gateway"/>
+    </bean>
+
+    <bean id="externalOpenIdProviderConfiguration"
+          class="sgf.gateway.web.controllers.security.openid.ExternalOpenIdProviderConfiguration">
+        <constructor-arg index="0" value="${openid.external-provider.registration.link}"/>
+    </bean>
+
+    <bean id="openIdConfigurationFactory"
+          class="sgf.gateway.web.controllers.security.openid.OpenIdConfigurationFactory">
+        <constructor-arg index="0" value="${openid.external-provider.enable}"/>
+        <constructor-arg index="1" ref="internalOpenIdProviderConfiguration"/>
+        <constructor-arg index="2" ref="externalOpenIdProviderConfiguration"/>
+    </bean>
+
+    <bean id="openIdConfiguration" factory-method="getConfiguration" factory-bean="openIdConfigurationFactory"/>
+
+    <bean id="yadisResolver" class="org.openid4java.discovery.yadis.YadisResolver">
+        <constructor-arg index="0">
+            <bean class="org.openid4java.util.HttpFetcherFactory"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="remoteYadisProxy" class="sgf.gateway.service.yadis.impl.RemoteYadisProxyImpl">
+        <constructor-arg index="0" ref="yadisResolver"/>
+    </bean>
+
+    <!-- Distinct services which cannot be run concurrently as jobs synchronize on this object -->
+    <bean id="jobSynchronizationLock" class="java.lang.Object"/>
+
+    <import resource="classpath:sgf/gateway/service/doi/impl/doi-service-context.xml"/>
+
+    <import resource="classpath:sgf/gateway/service/feedback/impl/feedback-service-context.xml"/>
+
+    <import resource="classpath:sgf/gateway/service/geocode/impl/geocode-service-context.xml"/>
+
+    <import resource="classpath:sgf/gateway/service/mail/impl/spring/mail-service-context.xml"/>
+
+    <import resource="classpath:sgf/gateway/service/messaging/exception-service-context.xml"/>
+
+    <import resource="classpath:sgf/gateway/service/metrics/impl/spring/metrics-service-context.xml"/>
+
+    <import resource="classpath:sgf/gateway/service/metadata/impl/spring/metadata-service-context.xml"/>
+
+    <import resource="classpath:sgf/gateway/service/publishing/impl/spring/publishing-service-context.xml"/>
+
+    <import resource="classpath:sgf/gateway/service/security/impl/security-services.xml"/>
+
+    <import resource="classpath:sgf/gateway/service/whois/impl/whois-service-context.xml"/>
+
+    <import resource="classpath:sgf/gateway/service/workspace/impl/spring/workspace-service-context.xml"/>
+
+    <import resource="classpath:sgf/gateway/model/model-builder-context.xml"/>
+
+    <import resource="classpath:sgf/gateway/script/services/impl/downloadscript-service-context.xml"/>
+
+    <import resource="classpath:sgf/gateway/service/share/share-service-context.xml"/>
+
+</beans>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                           http://www.springframework.org/schema/integration
+                           http://www.springframework.org/schema/integration/spring-integration-2.1.xsd
+                           http://www.springframework.org/schema/integration/jms
+                           http://www.springframework.org/schema/integration/jms/spring-integration-jms-2.0.xsd">
+
+    <bean id="datasetLoadService" class="sgf.gateway.integration.service.DatasetLoadService">
+        <constructor-arg name="datasetService" ref="cadisDatasetService"/>
+    </bean>
+
+    <bean id="datasetOfDatacenterFilter" class="sgf.gateway.integration.filter.DatasetOfDatacenterFilter">
+        <constructor-arg name="datasetRepository" ref="datasetRepository"/>
+    </bean>
+
+    <bean id="emailIntegrationExceptionService"
+          class="sgf.gateway.integration.service.impl.EmailIntegrationExceptionServiceImpl">
+        <constructor-arg name="exceptionService" ref="exceptionHandlingService"/>
+    </bean>
+
+    <bean id="stringTrimTransformer" class="sgf.gateway.integration.transformer.StringTrimTransformer"/>
+
+    <bean id="stringCommentFilter" class="sgf.gateway.integration.filter.StringCommentFilter"/>
+
+    <bean id="stringWhitespaceFilter" class="sgf.gateway.integration.filter.StringWhitespaceFilter"/>
+
+    <bean id="stringLineSplitter" class="sgf.gateway.integration.splitter.StringLineSplitter"/>
+
+    <bean id="cleanLineSplitter" class="sgf.gateway.integration.splitter.CleanLineSplitter">
+        <constructor-arg name="trimTransformer" ref="stringTrimTransformer"/>
+        <constructor-arg name="commentFilter" ref="stringCommentFilter"/>
+        <constructor-arg name="whitespaceFilter" ref="stringWhitespaceFilter"/>
+    </bean>
+
+    <bean id="stringToURITransformer" class="sgf.gateway.integration.transformer.StringToURITransformer"/>
+
+    <!-- default poller -->
+    <int:poller default="true" fixed-rate="1000"/>
+
+    <!-- listening to the default error channel provided by spring integration -->
+    <int:service-activator input-channel="errorChannel" ref="emailIntegrationExceptionService"/>
+
+    <!-- ActiveMQ.DLQ is the default name of the activemq dead letter queue -->
+    <int-jms:message-driven-channel-adapter channel="deadLetterChannel" destination-name="ActiveMQ.DLQ"
+                                            connection-factory="jmsConnectionFactory"/>
+
+    <int:channel id="deadLetterChannel"/>
+
+    <int:service-activator input-channel="deadLetterChannel">
+        <bean class="sgf.gateway.integration.message.SprIntDeadLetterLogger"/>
+    </int:service-activator>
+
+</beans>

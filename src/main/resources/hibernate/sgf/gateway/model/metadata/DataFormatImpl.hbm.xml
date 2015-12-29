@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.metadata.DataFormatImpl" table="data_format" schema="metadata" lazy="false">
+
+        <cache usage="read-write"/>
+
+        <id name="identifier" column="id" type="sgf.gateway.utils.hibernate.UUIDUserType" access="field"/>
+
+        <version name="version" column="version" unsaved-value="null" access="field"/>
+
+        <property name="name" column="name" type="string" access="field"/>
+        <property name="description" column="description" type="string" access="field"/>
+
+    </class>
+
+    <query name="findDataFormatByName" cacheable="true">
+        <![CDATA[
+            from DataFormatImpl df where lower(df.name) = lower(:name)
+        ]]>
+    </query>
+
+</hibernate-mapping>

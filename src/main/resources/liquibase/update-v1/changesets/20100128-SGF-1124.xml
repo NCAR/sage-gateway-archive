@@ -1,0 +1,54 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100128-SGF-1124.xml">
+
+    <!-- Include the changes sets for this particular release -->
+    <changeSet author="nch" id="20100124-SGF-1124">
+
+        <!-- Create user to associate the new versions to -->
+        <createTable schemaName="metadata" tableName="published_state">
+            <column name="id" type="integer" />
+            <column name="description" type="character varying(255)" />
+        </createTable>
+        <addPrimaryKey constraintName="pkey_published_state_id" schemaName="metadata" tableName="published_state" columnNames="id" />
+        <addNotNullConstraint schemaName="metadata" tableName="published_state" columnName="id" />
+        <addNotNullConstraint schemaName="metadata" tableName="published_state" columnName="description" />
+
+        <insert schemaName="metadata" tableName="published_state">
+            <column name="id" value="0" />
+            <column name="description" value="PRE-PUBLISHED" />
+        </insert>
+        <insert schemaName="metadata" tableName="published_state">
+            <column name="id" value="1" />
+            <column name="description" value="PUBLISHED" />
+        </insert>
+        <insert schemaName="metadata" tableName="published_state">
+            <column name="id" value="2" />
+            <column name="description" value="RETRACTED" />
+        </insert>
+        <insert schemaName="metadata" tableName="published_state">
+            <column name="id" value="3" />
+            <column name="description" value="DELETED" />
+        </insert>
+
+        <addColumn schemaName="metadata" tableName="dataset_version">
+            <column name="published_state_id" type="integer" />
+        </addColumn>
+        <addForeignKeyConstraint constraintName="fkey_dataset_published_state_id" referencedTableSchemaName="metadata" referencedTableName="published_state" referencedColumnNames="id" baseTableSchemaName="metadata" baseTableName="dataset_version" baseColumnNames="published_state_id" />
+
+        <update schemaName="metadata" tableName="dataset_version">
+            <column name="published_state_id" value="1" />
+        </update>
+
+        <addNotNullConstraint schemaName="metadata" tableName="dataset_version" columnName="published_state_id" />
+
+        <dropColumn schemaName="metadata" tableName="dataset" columnName="dataset_state_id" />
+
+        <dropTable schemaName="metadata" tableName="dataset_state" />
+
+    </changeSet>
+
+</databaseChangeLog>
+

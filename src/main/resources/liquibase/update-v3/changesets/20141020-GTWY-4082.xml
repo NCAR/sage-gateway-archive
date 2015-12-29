@@ -1,0 +1,15 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+				   logicalFilePath="/Liquibase/update-v3/changesets/20141020-GTWY-4082.xml">
+
+	<changeSet id="20141020-GTWY-4082.1" author="sgf">
+		<dropForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="descriptive_metadata_resolution_type_xref" constraintName="fkey_descriptive_metadata_resolution_type_xref" />
+	</changeSet>
+
+	<changeSet id="20141020-GTWY-4082.2" author="sgf">
+		<addForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="descriptive_metadata_resolution_type_xref" baseColumnNames="descriptive_metadata_id" constraintName="fkey_descriptive_metadata_resolution_type_xref" referencedTableSchemaName="metadata" referencedTableName="descriptive_metadata"
+								 referencedColumnNames="id" onUpdate="CASCADE" onDelete="CASCADE" />
+	</changeSet>
+
+</databaseChangeLog>

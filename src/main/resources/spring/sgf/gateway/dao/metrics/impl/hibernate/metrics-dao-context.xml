@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="metricsDownloadDao" class="sgf.gateway.dao.metrics.impl.hibernate.MetricsDownloadDAOImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    </bean>
+
+    <bean id="userAgentDao" class="sgf.gateway.dao.metrics.impl.hibernate.UserAgentDAOImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    </bean>
+
+    <bean id="userMetricsDao" class="sgf.gateway.dao.metrics.impl.hibernate.UserMetricsDAOImpl">
+        <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    </bean>
+
+    <bean id="summaryStatisticsRepository" class="sgf.gateway.dao.metrics.impl.hibernate.SummaryStatisticsRepository">
+        <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    </bean>
+
+</beans>

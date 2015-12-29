@@ -1,0 +1,842 @@
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+				   logicalFilePath="/Liquibase/update-v3/changesets/20150319-GTWY-4243">
+
+	<changeSet id="20150319-GTWY-4243" author="sgf">
+
+		<modifyDataType schemaName="metadata" tableName="software_properties" columnName="software_version" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="institution" columnName="name" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="unit" columnName="symbol" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="unit" columnName="name" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="unit" columnName="quantity" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="variable" columnName="name" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="standard_name" columnName="name" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="standard_name_type" columnName="description" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="time_frequency" columnName="name" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="taxonomy" columnName="name" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="software_properties" columnName="software_version" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="resolution_type" columnName="name" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="published_state" columnName="description" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="platform_type" columnName="short_name" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="physical_domain" columnName="name" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="model_type" columnName="name" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="logical_file" columnName="name" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="logical_file" columnName="description" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="location" columnName="name" newDataType="text" />
+		<dropDefaultValue schemaName="metadata" tableName="location" columnName="name" />
+		<modifyDataType schemaName="metadata" tableName="location" columnName="description" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="instrument_type" columnName="short_name" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="institution" columnName="name" newDataType="text" />
+		<addColumn schemaName="metadata" tableName="institution">
+			<column name="version" type="integer" value="0" />
+		</addColumn>
+		<modifyDataType schemaName="metadata" tableName="gateway" columnName="name" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="gateway" columnName="administrator_personal" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="gateway" columnName="administrator_email" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="forcing_type" columnName="description" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="forcing" columnName="value" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="forcing" columnName="name" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="dataset_progress" columnName="name" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="data_product_type" columnName="name" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="data_format" columnName="name" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="cadis_resolution_type" columnName="name" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="activity_type" columnName="description" newDataType="text" />
+		<modifyDataType schemaName="metadata" tableName="activity" columnName="name" newDataType="text" />
+
+	</changeSet>
+
+	<changeSet id="20150319-GTWY-4243.1" author="sgf">
+
+		<sql>
+			ALTER SCHEMA audit RENAME TO audit_old
+		</sql>
+
+		<sql>
+			CREATE SCHEMA audit
+			AUTHORIZATION ${database.role.admin};
+
+			REVOKE ALL ON SCHEMA audit FROM public;
+			GRANT ALL ON SCHEMA audit TO ${database.role.admin};
+			GRANT USAGE ON SCHEMA audit TO ${database.role.user};
+			GRANT USAGE ON SCHEMA audit TO ${database.role.read_only};
+		</sql>
+	</changeSet>
+
+	<changeSet id="20150319-GTWY-4243.2" author="sgf">
+
+		<sql>
+			CREATE TABLE audit.award_aud (
+			rev bigint NOT NULL,
+			revend bigint,
+			revtype smallint NOT NULL,
+			dataset_id uuid NOT NULL,
+			idx_order integer NOT NULL,
+			award_number text
+			);
+
+
+			ALTER TABLE audit.award_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.award_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.award_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.award_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.checksum_aud (
+			rev bigint NOT NULL,
+			revend bigint,
+			revtype smallint NOT NULL,
+			logical_file_id uuid NOT NULL,
+			setordinal integer NOT NULL,
+			value text,
+			algorithm text
+			);
+
+
+			ALTER TABLE audit.checksum_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.checksum_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.checksum_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.checksum_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.dataset_aud (
+			id uuid NOT NULL,
+			rev bigint NOT NULL,
+			revend bigint,
+			revtype smallint,
+			short_name text,
+			shortname_mod boolean,
+			brokered boolean,
+			brokered_mod boolean,
+			is_visible boolean,
+			isvisible_mod boolean,
+			author text,
+			author_mod boolean,
+			title text,
+			title_mod boolean,
+			description text,
+			description_mod boolean,
+			authoritative_id text,
+			authoritativeidentifier_mod boolean,
+			doi text,
+			doi_mod boolean,
+			container_type text,
+			containertype_mod boolean,
+			project_group text,
+			projectgroup_mod boolean,
+			predecessor_dataset_id uuid,
+			predecessorproject_mod boolean,
+			successor_dataset_id uuid,
+			successorproject_mod boolean,
+			institution_id uuid,
+			institution_mod boolean,
+			nesteddatasetsreference_mod boolean,
+			datasetversionsreference_mod boolean,
+			topicsreference_mod boolean,
+			dataformatsreference_mod boolean,
+			descriptivemetadata_mod boolean,
+			softwareproperties_mod boolean,
+			data_center_id uuid,
+			datacenter_mod boolean,
+			awards_mod boolean
+			);
+
+
+			ALTER TABLE audit.dataset_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.dataset_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.dataset_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.dataset_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.dataset_data_format_xref_aud (
+			rev bigint NOT NULL,
+			revend bigint,
+			dataset_id uuid NOT NULL,
+			data_format_id uuid NOT NULL,
+			revtype smallint
+			);
+
+
+			ALTER TABLE audit.dataset_data_format_xref_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.dataset_data_format_xref_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.dataset_data_format_xref_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.dataset_data_format_xref_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.dataset_geographic_bounding_box_aud (
+			id uuid NOT NULL,
+			rev bigint NOT NULL,
+			revend bigint,
+			revtype smallint,
+			west_bound_longitude double precision,
+			westboundlongitude_mod boolean,
+			east_bound_longitude double precision,
+			eastboundlongitude_mod boolean,
+			south_bound_latitude double precision,
+			southboundlatitude_mod boolean,
+			north_bound_latitude double precision,
+			northboundlatitude_mod boolean
+			);
+
+
+			ALTER TABLE audit.dataset_geographic_bounding_box_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.dataset_geographic_bounding_box_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.dataset_geographic_bounding_box_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.dataset_geographic_bounding_box_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.dataset_time_period_aud (
+			id uuid NOT NULL,
+			rev bigint NOT NULL,
+			revend bigint,
+			revtype smallint,
+			begin_date timestamp without time zone,
+			begin_mod boolean,
+			end_date timestamp without time zone,
+			end_mod boolean
+			);
+
+
+			ALTER TABLE audit.dataset_time_period_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.dataset_time_period_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.dataset_time_period_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.dataset_time_period_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.dataset_topic_xref_aud (
+			rev bigint NOT NULL,
+			revend bigint,
+			dataset_id uuid NOT NULL,
+			topic_id uuid NOT NULL,
+			revtype smallint
+			);
+
+
+			ALTER TABLE audit.dataset_topic_xref_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.dataset_topic_xref_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.dataset_topic_xref_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.dataset_topic_xref_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.dataset_version_aud (
+			id uuid NOT NULL,
+			rev bigint NOT NULL,
+			revend bigint,
+			revtype smallint,
+			version_id text,
+			versionidentifier_mod boolean,
+			comment text,
+			comment_mod boolean,
+			label text,
+			label_mod boolean,
+			published_state_id integer,
+			publishedstate_mod boolean,
+			authoritative_source_uri text,
+			authoritativesourceuri_mod boolean,
+			authoritative_source_date_created timestamp without time zone,
+			authoritativesourcedatecreated_mod boolean,
+			authoritative_source_date_modified timestamp without time zone,
+			authoritativesourcedatemodified_mod boolean,
+			publisher uuid,
+			publisher_mod boolean,
+			logicalfilesreference_mod boolean,
+			variablesreference_mod boolean
+			);
+
+
+			ALTER TABLE audit.dataset_version_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.dataset_version_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.dataset_version_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.dataset_version_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.dataset_version_variable_xref_aud (
+			rev bigint NOT NULL,
+			revend bigint,
+			dataset_version_id uuid NOT NULL,
+			variable_id uuid NOT NULL,
+			revtype smallint
+			);
+
+
+			ALTER TABLE audit.dataset_version_variable_xref_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.dataset_version_variable_xref_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.dataset_version_variable_xref_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.dataset_version_variable_xref_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.datasetimpl_datasetimpl_aud (
+			rev bigint NOT NULL,
+			revend bigint,
+			parent_dataset_id uuid NOT NULL,
+			id uuid NOT NULL,
+			parent_display_order integer NOT NULL,
+			revtype smallint
+			);
+
+
+			ALTER TABLE audit.datasetimpl_datasetimpl_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.datasetimpl_datasetimpl_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.datasetimpl_datasetimpl_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.datasetimpl_datasetimpl_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.datasetimpl_datasetversionimpl_aud (
+			rev bigint NOT NULL,
+			revend bigint,
+			dataset_id uuid NOT NULL,
+			id uuid NOT NULL,
+			index integer NOT NULL,
+			revtype smallint
+			);
+
+
+			ALTER TABLE audit.datasetimpl_datasetversionimpl_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.datasetimpl_datasetversionimpl_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.datasetimpl_datasetversionimpl_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.datasetimpl_datasetversionimpl_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.descriptive_metadata_aud (
+			id uuid NOT NULL,
+			rev bigint NOT NULL,
+			revend bigint,
+			revtype smallint,
+			language text,
+			language_mod boolean,
+			credit text,
+			credit_mod boolean,
+			distribution_uri text,
+			distributionuri_mod boolean,
+			distribution_uri_text text,
+			distributionuritext_mod boolean,
+			resolution_type_id integer,
+			resolutiontype_mod boolean,
+			dataset_progress_id integer,
+			datasetprogress_mod boolean,
+			model_name text,
+			modelname_mod boolean,
+			geographicboundingbox_mod boolean,
+			timeperiod_mod boolean,
+			responsibleparties_mod boolean,
+			relatedlinksreference_mod boolean,
+			platformtypesreference_mod boolean,
+			instrumentkeywordsreference_mod boolean,
+			locationsreference_mod boolean,
+			timefrequenciesreference_mod boolean,
+			data_product_type_id uuid,
+			dataproducttype_mod boolean,
+			datatypesreference_mod boolean,
+			physical_domain_id uuid,
+			physicaldomain_mod boolean,
+			sciencekeywordsreference_mod boolean,
+			resolutiontypesreference_mod boolean
+			);
+
+
+			ALTER TABLE audit.descriptive_metadata_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.descriptive_metadata_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.descriptive_metadata_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.descriptive_metadata_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.descriptive_metadata_data_type_xref_aud (
+			rev bigint NOT NULL,
+			revend bigint,
+			descriptive_metadata_id uuid NOT NULL,
+			data_type_id integer NOT NULL,
+			revtype smallint
+			);
+
+
+			ALTER TABLE audit.descriptive_metadata_data_type_xref_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.descriptive_metadata_data_type_xref_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.descriptive_metadata_data_type_xref_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.descriptive_metadata_data_type_xref_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.descriptive_metadata_instrument_keyword_xref_aud (
+			rev bigint NOT NULL,
+			revend bigint,
+			descriptive_metadata_id uuid NOT NULL,
+			instrument_keyword_id uuid NOT NULL,
+			revtype smallint
+			);
+
+
+			ALTER TABLE audit.descriptive_metadata_instrument_keyword_xref_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.descriptive_metadata_instrument_keyword_xref_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.descriptive_metadata_instrument_keyword_xref_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.descriptive_metadata_instrument_keyword_xref_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.descriptive_metadata_link_aud (
+			id uuid NOT NULL,
+			rev bigint NOT NULL,
+			revend bigint,
+			revtype smallint,
+			text text,
+			text_mod boolean,
+			uri text,
+			uri_mod boolean
+			);
+
+
+			ALTER TABLE audit.descriptive_metadata_link_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.descriptive_metadata_link_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.descriptive_metadata_link_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.descriptive_metadata_link_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.descriptive_metadata_location_xref_aud (
+			rev bigint NOT NULL,
+			revend bigint,
+			descriptive_metadata_id uuid NOT NULL,
+			location_id uuid NOT NULL,
+			revtype smallint
+			);
+
+
+			ALTER TABLE audit.descriptive_metadata_location_xref_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.descriptive_metadata_location_xref_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.descriptive_metadata_location_xref_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.descriptive_metadata_location_xref_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.descriptive_metadata_platform_type_xref_aud (
+			rev bigint NOT NULL,
+			revend bigint,
+			descriptive_metadata_id uuid NOT NULL,
+			platform_type_id uuid NOT NULL,
+			revtype smallint
+			);
+
+
+			ALTER TABLE audit.descriptive_metadata_platform_type_xref_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.descriptive_metadata_platform_type_xref_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.descriptive_metadata_platform_type_xref_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.descriptive_metadata_platform_type_xref_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.descriptive_metadata_resolution_type_xref_aud (
+			rev bigint NOT NULL,
+			revend bigint,
+			descriptive_metadata_id uuid NOT NULL,
+			resolution_type_id integer NOT NULL,
+			idx_order integer NOT NULL,
+			revtype smallint
+			);
+
+
+			ALTER TABLE audit.descriptive_metadata_resolution_type_xref_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.descriptive_metadata_resolution_type_xref_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.descriptive_metadata_resolution_type_xref_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.descriptive_metadata_resolution_type_xref_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.descriptive_metadata_science_keyword_xref_aud (
+			rev bigint NOT NULL,
+			revend bigint,
+			descriptive_metadata_id uuid NOT NULL,
+			science_keyword_id uuid NOT NULL,
+			revtype smallint
+			);
+
+
+			ALTER TABLE audit.descriptive_metadata_science_keyword_xref_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.descriptive_metadata_science_keyword_xref_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.descriptive_metadata_science_keyword_xref_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.descriptive_metadata_science_keyword_xref_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.descriptive_metadata_time_frequency_xref_aud (
+			rev bigint NOT NULL,
+			revend bigint,
+			descriptive_metadata_id uuid NOT NULL,
+			time_frequency_id uuid NOT NULL,
+			revtype smallint
+			);
+
+
+			ALTER TABLE audit.descriptive_metadata_time_frequency_xref_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.descriptive_metadata_time_frequency_xref_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.descriptive_metadata_time_frequency_xref_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.descriptive_metadata_time_frequency_xref_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.descriptivemetadataimpl_relatedlinkimpl_aud (
+			rev bigint NOT NULL,
+			revend bigint,
+			descriptive_metadata_id uuid NOT NULL,
+			id uuid NOT NULL,
+			idx_order integer NOT NULL,
+			revtype smallint
+			);
+
+
+			ALTER TABLE audit.descriptivemetadataimpl_relatedlinkimpl_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.descriptivemetadataimpl_relatedlinkimpl_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.descriptivemetadataimpl_relatedlinkimpl_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.descriptivemetadataimpl_relatedlinkimpl_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.descriptivemetadataimpl_responsiblepartyimpl_aud (
+			rev bigint NOT NULL,
+			revend bigint,
+			descriptive_metadata_id uuid NOT NULL,
+			id uuid NOT NULL,
+			idx_order integer NOT NULL,
+			revtype smallint
+			);
+
+
+			ALTER TABLE audit.descriptivemetadataimpl_responsiblepartyimpl_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.descriptivemetadataimpl_responsiblepartyimpl_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.descriptivemetadataimpl_responsiblepartyimpl_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.descriptivemetadataimpl_responsiblepartyimpl_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.file_access_point_aud (
+			id uuid NOT NULL,
+			rev bigint NOT NULL,
+			revend bigint,
+			revtype smallint,
+			endpoint text,
+			endpoint_mod boolean,
+			logical_file_id uuid,
+			logicalfile_mod boolean
+			);
+
+
+			ALTER TABLE audit.file_access_point_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.file_access_point_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.file_access_point_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.file_access_point_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.institution_aud (
+			id uuid NOT NULL,
+			rev bigint NOT NULL,
+			revend bigint,
+			revtype smallint,
+			name text,
+			name_mod boolean
+			);
+
+
+			ALTER TABLE audit.institution_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.institution_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.institution_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.institution_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.logical_file_aud (
+			id uuid NOT NULL,
+			rev bigint NOT NULL,
+			revend bigint,
+			revtype smallint,
+			name text,
+			name_mod boolean,
+			description text,
+			description_mod boolean,
+			lineage_id text,
+			lineageidentifier_mod boolean,
+			version_id text,
+			versionidentifier_mod boolean,
+			cmor_tracking_id text,
+			cmortrackingidentifier_mod boolean,
+			label text,
+			label_mod boolean,
+			disk_location text,
+			disklocation_mod boolean,
+			size bigint,
+			size_mod boolean,
+			data_format_id uuid,
+			dataformat_mod boolean,
+			checksums_mod boolean,
+			fileaccesspoints_mod boolean,
+			variablesreference_mod boolean
+			);
+
+
+			ALTER TABLE audit.logical_file_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.logical_file_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.logical_file_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.logical_file_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.logical_file_variable_xref_aud (
+			rev bigint NOT NULL,
+			revend bigint,
+			logical_file_id uuid NOT NULL,
+			variable_id uuid NOT NULL,
+			revtype smallint
+			);
+
+
+			ALTER TABLE audit.logical_file_variable_xref_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.logical_file_variable_xref_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.logical_file_variable_xref_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.logical_file_variable_xref_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.responsible_party_aud (
+			id uuid NOT NULL,
+			rev bigint NOT NULL,
+			revend bigint,
+			revtype smallint,
+			individual_name text,
+			individualname_mod boolean,
+			organization_name text,
+			organizationname_mod boolean,
+			position_name text,
+			positionname_mod boolean,
+			email text,
+			email_mod boolean,
+			role text,
+			role_mod boolean
+			);
+
+
+			ALTER TABLE audit.responsible_party_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.responsible_party_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.responsible_party_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.responsible_party_aud TO "${database.role.read_only}";
+
+			CREATE TABLE audit.revision (
+			id bigint NOT NULL,
+			revision_date timestamp without time zone,
+			user_id uuid,
+			username text,
+			openid text
+			);
+
+
+			ALTER TABLE audit.revision OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.revision FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.revision TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.revision TO "${database.role.read_only}";
+
+			CREATE TABLE audit.software_properties_aud (
+			id uuid NOT NULL,
+			rev bigint NOT NULL,
+			revend bigint,
+			revtype smallint,
+			software_version text,
+			softwareversion_mod boolean
+			);
+
+
+			ALTER TABLE audit.software_properties_aud OWNER TO "${database.role.admin}";
+			REVOKE ALL ON TABLE audit.software_properties_aud FROM public;
+			GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE audit.software_properties_aud TO "${database.role.user}";
+			GRANT SELECT ON TABLE audit.software_properties_aud TO "${database.role.read_only}";
+
+
+			ALTER TABLE ONLY audit.award_aud
+			ADD CONSTRAINT award_aud_pkey PRIMARY KEY (rev, revtype, dataset_id, idx_order);
+
+
+			ALTER TABLE ONLY audit.checksum_aud
+			ADD CONSTRAINT checksum_aud_pkey PRIMARY KEY (rev, revtype, logical_file_id, setordinal);
+
+
+			ALTER TABLE ONLY audit.dataset_aud
+			ADD CONSTRAINT dataset_aud_pkey PRIMARY KEY (id, rev);
+
+
+			ALTER TABLE ONLY audit.dataset_data_format_xref_aud
+			ADD CONSTRAINT dataset_data_format_xref_aud_pkey PRIMARY KEY (rev, dataset_id, data_format_id);
+
+
+			ALTER TABLE ONLY audit.dataset_geographic_bounding_box_aud
+			ADD CONSTRAINT dataset_geographic_bounding_box_aud_pkey PRIMARY KEY (id, rev);
+
+
+			ALTER TABLE ONLY audit.dataset_time_period_aud
+			ADD CONSTRAINT dataset_time_period_aud_pkey PRIMARY KEY (id, rev);
+
+
+			ALTER TABLE ONLY audit.dataset_topic_xref_aud
+			ADD CONSTRAINT dataset_topic_xref_aud_pkey PRIMARY KEY (rev, dataset_id, topic_id);
+
+
+			ALTER TABLE ONLY audit.dataset_version_aud
+			ADD CONSTRAINT dataset_version_aud_pkey PRIMARY KEY (id, rev);
+
+
+			ALTER TABLE ONLY audit.dataset_version_variable_xref_aud
+			ADD CONSTRAINT dataset_version_variable_xref_aud_pkey PRIMARY KEY (rev, dataset_version_id, variable_id);
+
+
+			ALTER TABLE ONLY audit.datasetimpl_datasetimpl_aud
+			ADD CONSTRAINT datasetimpl_datasetimpl_aud_pkey PRIMARY KEY (rev, parent_dataset_id, id, parent_display_order);
+
+
+			ALTER TABLE ONLY audit.datasetimpl_datasetversionimpl_aud
+			ADD CONSTRAINT datasetimpl_datasetversionimpl_aud_pkey PRIMARY KEY (rev, dataset_id, id, index);
+
+
+			ALTER TABLE ONLY audit.descriptive_metadata_aud
+			ADD CONSTRAINT descriptive_metadata_aud_pkey PRIMARY KEY (id, rev);
+
+
+			ALTER TABLE ONLY audit.descriptive_metadata_data_type_xref_aud
+			ADD CONSTRAINT descriptive_metadata_data_type_xref_aud_pkey PRIMARY KEY (rev, descriptive_metadata_id, data_type_id);
+
+
+			ALTER TABLE ONLY audit.descriptive_metadata_instrument_keyword_xref_aud
+			ADD CONSTRAINT descriptive_metadata_instrument_keyword_xref_aud_pkey PRIMARY KEY (rev, descriptive_metadata_id, instrument_keyword_id);
+
+
+			ALTER TABLE ONLY audit.descriptive_metadata_link_aud
+			ADD CONSTRAINT descriptive_metadata_link_aud_pkey PRIMARY KEY (id, rev);
+
+
+			ALTER TABLE ONLY audit.descriptive_metadata_location_xref_aud
+			ADD CONSTRAINT descriptive_metadata_location_xref_aud_pkey PRIMARY KEY (rev, descriptive_metadata_id, location_id);
+
+
+			ALTER TABLE ONLY audit.descriptive_metadata_platform_type_xref_aud
+			ADD CONSTRAINT descriptive_metadata_platform_type_xref_aud_pkey PRIMARY KEY (rev, descriptive_metadata_id, platform_type_id);
+
+
+			ALTER TABLE ONLY audit.descriptive_metadata_resolution_type_xref_aud
+			ADD CONSTRAINT descriptive_metadata_resolution_type_xref_aud_pkey PRIMARY KEY (rev, descriptive_metadata_id, resolution_type_id, idx_order);
+
+
+			ALTER TABLE ONLY audit.descriptive_metadata_science_keyword_xref_aud
+			ADD CONSTRAINT descriptive_metadata_science_keyword_xref_aud_pkey PRIMARY KEY (rev, descriptive_metadata_id, science_keyword_id);
+
+
+			ALTER TABLE ONLY audit.descriptive_metadata_time_frequency_xref_aud
+			ADD CONSTRAINT descriptive_metadata_time_frequency_xref_aud_pkey PRIMARY KEY (rev, descriptive_metadata_id, time_frequency_id);
+
+
+			ALTER TABLE ONLY audit.descriptivemetadataimpl_relatedlinkimpl_aud
+			ADD CONSTRAINT descriptivemetadataimpl_relatedlinkimpl_aud_pkey PRIMARY KEY (rev, descriptive_metadata_id, id, idx_order);
+
+
+			ALTER TABLE ONLY audit.descriptivemetadataimpl_responsiblepartyimpl_aud
+			ADD CONSTRAINT descriptivemetadataimpl_responsiblepartyimpl_aud_pkey PRIMARY KEY (rev, descriptive_metadata_id, id, idx_order);
+
+
+			ALTER TABLE ONLY audit.file_access_point_aud
+			ADD CONSTRAINT file_access_point_aud_pkey PRIMARY KEY (id, rev);
+
+
+			ALTER TABLE ONLY audit.institution_aud
+			ADD CONSTRAINT institution_aud_pkey PRIMARY KEY (id, rev);
+
+
+			ALTER TABLE ONLY audit.logical_file_aud
+			ADD CONSTRAINT logical_file_aud_pkey PRIMARY KEY (id, rev);
+
+
+			ALTER TABLE ONLY audit.logical_file_variable_xref_aud
+			ADD CONSTRAINT logical_file_variable_xref_aud_pkey PRIMARY KEY (rev, logical_file_id, variable_id);
+
+
+			ALTER TABLE ONLY audit.responsible_party_aud
+			ADD CONSTRAINT responsible_party_aud_pkey PRIMARY KEY (id, rev);
+
+
+			ALTER TABLE ONLY audit.revision
+			ADD CONSTRAINT revision_pkey PRIMARY KEY (id);
+
+
+			ALTER TABLE ONLY audit.software_properties_aud
+			ADD CONSTRAINT software_properties_aud_pkey PRIMARY KEY (id, rev);
+
+
+			ALTER TABLE ONLY audit.award_aud
+			ADD CONSTRAINT fk_1i2ndn6ynunjbh1x5u57e4s4w FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.descriptive_metadata_resolution_type_xref_aud
+			ADD CONSTRAINT fk_2crddnamabhj0hj5cwtak7pop FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.descriptive_metadata_time_frequency_xref_aud
+			ADD CONSTRAINT fk_3vmu3obq5wj77t3r2anq2hlug FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.checksum_aud
+			ADD CONSTRAINT fk_4ogf3vsyjg16jlws7c2boxa1y FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.descriptivemetadataimpl_relatedlinkimpl_aud
+			ADD CONSTRAINT fk_5u5dp7y1h35k6rc0wddr5umxn FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.descriptive_metadata_science_keyword_xref_aud
+			ADD CONSTRAINT fk_5wghqyh2nu7pymlm5avcwi8fj FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.descriptive_metadata_instrument_keyword_xref_aud
+			ADD CONSTRAINT fk_7j1850707i2okk1br37u0tld8 FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.responsible_party_aud
+			ADD CONSTRAINT fk_9bvxnqw73sce90vx6lumpojen FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.logical_file_aud
+			ADD CONSTRAINT fk_dwwf108bn7809fkuhcp9f6bs1 FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.file_access_point_aud
+			ADD CONSTRAINT fk_f2btgt0i7ntfqru0m8we2l7ae FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.dataset_aud
+			ADD CONSTRAINT fk_faoo0v920bcwv1afnm7k4xk4e FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.datasetimpl_datasetimpl_aud
+			ADD CONSTRAINT fk_fowxydqbxnlsmowsfft2iprft FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.datasetimpl_datasetversionimpl_aud
+			ADD CONSTRAINT fk_g0xcepocltogucfqdpvcvuncu FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.dataset_data_format_xref_aud
+			ADD CONSTRAINT fk_h1erkju9m1iddbdf12knb76kh FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.descriptive_metadata_data_type_xref_aud
+			ADD CONSTRAINT fk_jgkjxrlfe17q5sl13kp4g82m8 FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.descriptive_metadata_platform_type_xref_aud
+			ADD CONSTRAINT fk_k5d8xd9voubka39qu8rabeap6 FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.software_properties_aud
+			ADD CONSTRAINT fk_lovcotj0rgdgtb6hoptodt7v7 FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.dataset_time_period_aud
+			ADD CONSTRAINT fk_lw1b8sfpkihec52aqf873a8rh FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.dataset_version_variable_xref_aud
+			ADD CONSTRAINT fk_mbsqs32vy45poxrqrmifbclm1 FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.descriptive_metadata_aud
+			ADD CONSTRAINT fk_mhessefhi8b795mx8k8c0ec9l FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.institution_aud
+			ADD CONSTRAINT fk_oiu7ax1lmsyfvgxta56hhnmd9 FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.dataset_topic_xref_aud
+			ADD CONSTRAINT fk_ojj8wxqvwkkhh54nbu94bhnkt FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.descriptive_metadata_location_xref_aud
+			ADD CONSTRAINT fk_pk8gnu5y0o5xh0gsc79cvvfag FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.descriptivemetadataimpl_responsiblepartyimpl_aud
+			ADD CONSTRAINT fk_q5kue0l5i7ppp33e0dfed58nw FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.dataset_geographic_bounding_box_aud
+			ADD CONSTRAINT fk_qe6hmrge21udx76nosl8sm1im FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.logical_file_variable_xref_aud
+			ADD CONSTRAINT fk_sshjfn0m5kkoc1p0m957pjd85 FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.dataset_version_aud
+			ADD CONSTRAINT fk_thadn49v3cfekdsrocbreggep FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+
+			ALTER TABLE ONLY audit.descriptive_metadata_link_aud
+			ADD CONSTRAINT fk_tlsq9y3bdo5bf708s6tcqavft FOREIGN KEY (rev) REFERENCES audit.revision(id);
+
+		</sql>
+	</changeSet>
+
+
+</databaseChangeLog>

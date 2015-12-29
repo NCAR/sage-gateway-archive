@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <!--  Domain model instance factories -->
+
+    <bean id="datasetVersionFactory" class="sgf.gateway.model.metadata.factory.impl.DatasetVersionFactoryImpl">
+        <constructor-arg index="0" ref="nullVersionIdentifierStrategy"/>
+    </bean>
+
+    <bean id="standardNameFactory" class="sgf.gateway.model.metadata.inventory.factory.impl.StandardNameFactoryImpl">
+        <constructor-arg index="0" ref="nullVersionIdentifierStrategy"/>
+    </bean>
+
+    <bean id="unitFactory" class="sgf.gateway.model.metadata.inventory.factory.impl.UnitFactoryImpl">
+        <constructor-arg index="0" ref="nullVersionIdentifierStrategy"/>
+    </bean>
+
+    <bean id="variableFactory" class="sgf.gateway.model.metadata.inventory.factory.impl.VariableFactoryImpl">
+        <constructor-arg index="0" ref="MACBasedUUIDGenerator"/>
+    </bean>
+
+    <bean id="metadataProfileContext" class="sgf.gateway.model.metadata.MetadataProfileContext">
+        <constructor-arg index="0" ref="defaultDescriptiveMetadataFactory"/>
+    </bean>
+
+    <bean id="defaultDescriptiveMetadataFactory"
+          class="sgf.gateway.model.metadata.descriptive.factory.impl.DescriptiveMetadataFactoryImpl">
+    </bean>
+
+    <alias name="defaultDescriptiveMetadataFactory" alias="CCSMDescriptiveMetadataFactory"/>
+    <!--  testing alias, remove once we have formal CCSM DMDF -->
+
+    <bean id="softwarePropertiesFactory" class="sgf.gateway.model.metadata.factory.impl.SoftwarePropertiesFactoryImpl"/>
+
+    <bean id="datasetFactory" class="sgf.gateway.model.metadata.factory.impl.DatasetFactoryImpl">
+        <constructor-arg index="0" ref="nullVersionIdentifierStrategy"/>
+        <constructor-arg index="1" ref="defaultDescriptiveMetadataFactory"/>
+        <constructor-arg index="2" ref="datasetVersionFactory"/>
+        <constructor-arg index="3" ref="${eske.service.metadata.profile.strategy}"/>
+        <constructor-arg index="4" ref="dataCenterRepository"/>
+    </bean>
+
+    <bean id="logicalFileFactory" class="sgf.gateway.model.metadata.inventory.factory.impl.LogicalFileFactoryImpl">
+        <constructor-arg index="0" ref="nullVersionIdentifierStrategy"/>
+    </bean>
+
+    <bean id="fileAccessPointFactory"
+          class="sgf.gateway.model.metadata.dataaccess.factory.impl.FileAccessPointFactoryImpl"/>
+
+    <bean id="platformTypeFactory"
+          class="sgf.gateway.model.metadata.activities.observing.factory.impl.PlatformTypeFactoryImpl">
+        <constructor-arg index="0" ref="nullVersionIdentifierStrategy"/>
+    </bean>
+
+    <bean id="linkFactory" class="sgf.gateway.model.metadata.factory.impl.LinkFactoryImpl">
+        <constructor-arg name="identifierStrategy" ref="nullVersionIdentifierStrategy"/>
+    </bean>
+
+    <bean id="dataFormatFactory" class="sgf.gateway.model.metadata.factory.impl.DataFormatFactoryImpl">
+        <constructor-arg index="0" ref="nullVersionIdentifierStrategy"/>
+    </bean>
+
+    <bean id="locationFactory" class="sgf.gateway.model.metadata.factory.impl.LocationFactoryImpl">
+        <constructor-arg index="0" ref="nullVersionIdentifierStrategy"/>
+    </bean>
+
+    <bean id="projectFactory" class="sgf.gateway.model.metadata.activities.project.factory.impl.ProjectFactoryImpl">
+        <constructor-arg index="0" ref="nullVersionIdentifierStrategy"/>
+        <constructor-arg index="1" ref="fileNameAndURIRenameStrategy"/>
+    </bean>
+
+    <bean id="experimentFactory"
+          class="sgf.gateway.model.metadata.activities.modeling.factory.impl.ExperimentFactoryImpl">
+        <constructor-arg index="0" ref="nullVersionIdentifierStrategy"/>
+    </bean>
+
+    <bean id="ensembleFactory" class="sgf.gateway.model.metadata.activities.modeling.factory.impl.EnsembleFactoryImpl">
+        <constructor-arg index="0" ref="nullVersionIdentifierStrategy"/>
+    </bean>
+
+    <bean id="timeFrequencyFactory" class="sgf.gateway.model.metadata.factory.impl.TimeFrequencyFactoryImpl">
+        <constructor-arg index="0" ref="nullVersionIdentifierStrategy"/>
+    </bean>
+
+    <bean id="physicalDomainFactory" class="sgf.gateway.model.metadata.factory.impl.PhysicalDomainFactoryImpl">
+        <constructor-arg index="0" ref="nullVersionIdentifierStrategy"/>
+    </bean>
+
+    <bean id="institutionFactory" class="sgf.gateway.model.metadata.descriptive.factory.impl.InstitutionFactoryImpl">
+        <constructor-arg index="0" ref="nullVersionIdentifierStrategy"/>
+    </bean>
+
+    <bean id="topicFactory" class="sgf.gateway.model.metadata.factory.impl.TopicFactoryImpl">
+        <constructor-arg index="0" ref="nullVersionIdentifierStrategy"/>
+    </bean>
+
+    <bean id="dataProductTypeFactory" class="sgf.gateway.model.metadata.factory.impl.DataProductTypeFactoryImpl">
+        <constructor-arg index="0" ref="nullVersionIdentifierStrategy"/>
+    </bean>
+
+    <bean id="userFactory" class="sgf.gateway.model.security.factory.impl.UserFactoryImpl">
+        <constructor-arg index="0" ref="nullVersionIdentifierStrategy"/>
+        <constructor-arg index="1" ref="remoteYadisProxy"/>
+        <constructor-arg index="2" ref="remoteAttributesServiceProxySamlSoapImpl"/>
+    </bean>
+
+    <bean id="userAgentFactory" class="sgf.gateway.model.metrics.factory.impl.UserAgentFactoryImpl">
+        <constructor-arg index="0" ref="nullVersionIdentifierStrategy"/>
+    </bean>
+
+    <bean id="fileDownloadFactory" class="sgf.gateway.model.metrics.factory.impl.FileDownloadFactoryImpl">
+        <constructor-arg index="0" ref="nullVersionIdentifierStrategy"/>
+        <constructor-arg index="1">
+            <list>
+                <bean class="sgf.gateway.model.metrics.factory.impl.AddUserTransformStep">
+                    <constructor-arg index="0" ref="userRepository"/>
+                </bean>
+                <bean class="sgf.gateway.model.metrics.factory.impl.AddUserAgentTransformStep">
+                    <constructor-arg index="0" ref="userAgentService"/>
+                </bean>
+                <bean class="sgf.gateway.model.metrics.factory.impl.AddFileTransformStep">
+                    <constructor-arg index="0" ref="logicalFileRepository"/>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="responsiblePartyFactory"
+          class="sgf.gateway.model.metadata.citation.factory.impl.ResponsiblePartyFactoryImpl">
+        <constructor-arg index="0" ref="nullVersionIdentifierStrategy"/>
+    </bean>
+
+    <!-- Domain model validators -->
+
+    <bean id="logicalFileValidator" class="sgf.gateway.model.metadata.inventory.validation.LogicalFileValidator"/>
+
+    <!-- MetadataProfile Strategies -->
+    <bean id="defaultMetadataProfileStrategy"
+          class="sgf.gateway.service.metadata.impl.spring.DefaultMetadataProfileStrategy">
+        <constructor-arg index="0" ref="metadataRepository"/>
+    </bean>
+
+    <bean id="cadisMetadataProfileStrategy"
+          class="sgf.gateway.service.metadata.impl.spring.CADISMetadataProfileStrategy">
+        <constructor-arg index="0" ref="metadataRepository"/>
+    </bean>
+
+    <!-- Time Strategies -->
+    <bean id="calendarStrategy" class="sgf.gateway.utils.time.impl.NewGregorianCalendarStrategy"/>
+    <bean id="dateStrategy" class="sgf.gateway.utils.time.impl.NewDateStrategy"/>
+
+    <!-- File Endpoint Strategies -->
+    <bean id="httpEndpointStrategy" class="sgf.gateway.model.file.endpoint.HttpEndpointStrategy">
+        <constructor-arg name="gateway" ref="gateway"/>
+    </bean>
+
+    <bean id="gridftpEndpointStrategy" class="sgf.gateway.model.file.endpoint.GridftpEndpointStrategy"/>
+
+    <bean id="srmEndpointStrategy" class="sgf.gateway.model.file.endpoint.SrmEndpointStrategy"/>
+
+</beans>

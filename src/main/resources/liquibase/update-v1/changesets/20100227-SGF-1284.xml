@@ -1,0 +1,20 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100227-SGF-1284.xml">
+
+    <!-- Include the changes sets for this particular release -->
+    <changeSet author="ncw" id="20100227-SGF-1284">
+
+        <sql>
+            ALTER TABLE metadata.dataset_version_variable_xref DROP CONSTRAINT fkey_dataset_version_id;
+
+            ALTER TABLE metadata.dataset_version_variable_xref ADD CONSTRAINT fkey_dataset_version_id FOREIGN KEY (dataset_version_id)
+            REFERENCES metadata.dataset_version (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE;
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>
+

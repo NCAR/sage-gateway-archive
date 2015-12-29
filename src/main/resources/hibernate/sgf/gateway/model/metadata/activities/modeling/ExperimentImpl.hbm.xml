@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <joined-subclass name="sgf.gateway.model.metadata.activities.modeling.ExperimentImpl"
+                     extends="sgf.gateway.model.metadata.activities.ActivityImpl" table="experiment" schema="metadata">
+        <key column="id"/>
+        <property name="shortName" column="short_name" type="string" length="64" access="field"/>
+        <property name="experimentNumber" column="experiment_number" type="string" length="16" access="field"/>
+    </joined-subclass>
+
+    <query name="findExperimentByName" cacheable="false">
+        <![CDATA[
+            from ExperimentImpl experiment where lower(experiment.name) = lower(:name)
+        ]]>
+    </query>
+
+    <query name="findExperimentByShortName" cacheable="false">
+        <![CDATA[
+            from ExperimentImpl experiment where lower(experiment.shortName) = lower(:shortName)
+        ]]>
+    </query>
+
+    <query name="findExperimentsWithAssociations" cacheable="false">
+        <![CDATA[
+            from ExperimentImpl experiment where experiment.associatedDatasetsReference.size > 0 order by experiment.name asc
+        ]]>
+    </query>
+
+</hibernate-mapping>

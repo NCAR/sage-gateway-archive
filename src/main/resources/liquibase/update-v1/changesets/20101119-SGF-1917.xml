@@ -1,0 +1,20 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20101119-SGF-1917.xml">
+
+    <changeSet id="20101119-SGF-1917" author="ncw" context="core">
+        <comment>Updated ORNL Gateway endpoint</comment>
+        <sql>
+            update metadata.gateway set base_url='http://esg2-gw.ccs.ornl.gov/esgcet/',
+            base_secure_url='https://esg2-gw.ccs.ornl.gov/esgcet/',
+            attributes_service_url='https://esg2-gw.ccs.ornl.gov/esgcet/remote/secure/hessian/attributesService',
+            idp_endpoint='https://esg2-gw.ccs.ornl.gov/esgcet/openid/provider.htm',
+            oai_repository_url='http://esg2-gw.ccs.ornl.gov/esgcet/oai/repository.htm'
+            where id='c78cfd74-ab35-4665-a04b-05b2584bcf90';
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
+

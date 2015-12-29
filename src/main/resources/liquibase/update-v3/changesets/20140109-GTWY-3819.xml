@@ -1,0 +1,45 @@
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20140109-GTWY-3819.xml">
+
+	<changeSet id="20140109-GTWY-3819.0" author="sgf">
+
+		<addColumn schemaName="metadata" tableName="descriptive_metadata_link">
+			<column name="id" type="uuid"/>
+		</addColumn>
+
+		<sql>
+			UPDATE metadata.descriptive_metadata_link AS target SET id = generate.id
+			FROM
+			(SELECT uuid_generate_v1() AS id, descriptive_metadata_id, text, uri FROM metadata.descriptive_metadata_link) AS generate
+			WHERE target.descriptive_metadata_id = generate.descriptive_metadata_id
+			AND target.text = generate.text
+			AND target.uri = generate.uri
+		</sql>
+
+		<addNotNullConstraint schemaName="metadata" tableName="descriptive_metadata_link" columnName="id"/>
+
+		<dropPrimaryKey schemaName="metadata" tableName="descriptive_metadata_link"
+			constraintName="pkey_descriptive_metadata_link"/>
+
+		<addPrimaryKey schemaName="metadata" tableName="descriptive_metadata_link"
+			constraintName="pkey_descriptive_metadata_link" columnNames="id"/>
+
+		<addUniqueConstraint schemaName="metadata" tableName="descriptive_metadata_link"
+			columnNames="descriptive_metadata_id, text, uri" constraintName="unq_metadata_link"/>
+
+	</changeSet>
+
+	<changeSet id="20140109-GTWY-3819.1" author="sgf">
+
+		<dropTable schemaName="metadata" tableName="activity_link"/>
+
+		<dropColumn schemaName="metadata" tableName="descriptive_metadata_link" columnName="link_type_id"/>
+
+		<dropTable schemaName="metadata" tableName="link_type"/>
+
+	</changeSet>
+
+</databaseChangeLog>

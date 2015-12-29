@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.metadata.BroadcastMessageImpl" table="broadcast_message" schema="metadata">
+
+        <id name="identifier" column="id" access="field" type="java.lang.Long">
+            <generator class="sequence">
+                <param name="sequence">metadata.broadcast_message_sequence</param>
+            </generator>
+        </id>
+
+        <property name="messageText" column="message_text" type="string"/>
+        <property name="bannerColor" column="banner_color" type="string"/>
+
+    </class>
+
+</hibernate-mapping>

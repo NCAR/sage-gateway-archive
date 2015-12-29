@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <!-- Spring Security infrastructure -->
+    <import resource="classpath:sgf/gateway/service/security/impl/security-context.xml"/>
+
+    <bean id="cryptoService" class="sgf.gateway.service.security.impl.spring.MD5CryptCryptoServiceImpl"/>
+
+    <bean id="authenticationService" class="sgf.gateway.service.security.impl.spring.AuthenticationServiceImpl">
+        <constructor-arg index="0" ref="userRepository"/>
+        <constructor-arg index="1" ref="cryptoService"/>
+    </bean>
+
+    <!-- Publisher and Lister of group membership events -->
+    <bean id="groupMembershipEventPublisher"
+          class="sgf.gateway.service.security.impl.spring.GroupMembershipEventPublisherImpl"/>
+
+    <bean id="authorizationTokenService" class="sgf.gateway.service.security.impl.spring.AuthorizationTokenServiceImpl">
+        <constructor-arg index="0" ref="authorizationTokenRepository"/>
+        <constructor-arg index="1" value="${ac.authorization_token.lifetime}"/>
+    </bean>
+
+    <bean id="runtimeUserService" class="sgf.gateway.service.security.impl.acegi.AcegiRuntimeUserServiceImpl">
+    </bean>
+
+    <bean id="userDetailsService" class="sgf.gateway.service.security.impl.acegi.AcegiUserDetailsService">
+        <constructor-arg index="0" ref="userRepository"/>
+    </bean>
+
+    <bean id="accountService" class="sgf.gateway.service.security.impl.spring.AccountServiceImpl">
+        <constructor-arg name="userFactory" ref="userFactory"/>
+        <constructor-arg name="openIdConfiguration" ref="openIdConfiguration"/>
+        <constructor-arg name="gateway" ref="gateway"/>
+
+        <property name="userDao" ref="userRepository"/>
+        <property name="groupDao" ref="groupRepository"/>
+        <property name="cryptoService" ref="cryptoService"/>
+        <property name="mailService" ref="mailService"/>
+        <property name="groupMembershipEventPublisher" ref="groupMembershipEventPublisher"/>
+    </bean>
+
+    <bean id="authorizationService" class="sgf.gateway.service.security.impl.spring.AuthorizationServiceImpl"/>
+
+    <bean id="remoteAuthorizationService"
+          class="sgf.gateway.service.security.impl.spring.RemoteAuthorizationServiceImpl">
+        <constructor-arg index="0" ref="authorizationService"/>
+        <constructor-arg index="1" ref="accountService"/>
+        <constructor-arg index="2" ref="userRepository"/>
+        <constructor-arg index="3" ref="logicalFileRepository"/>
+    </bean>
+
+    <!-- Plugins -->
+    <import resource="classpath:sgf/gateway/saml/esg-saml-services.xml"/>
+
+</beans>

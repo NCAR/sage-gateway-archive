@@ -1,0 +1,17 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="/Liquibase/update-v2/changesets/20110606-GTWY-2417.xml">
+
+    <changeSet id="20110606-GTWY-2417" author="sgf">
+
+        <!-- Add fields to dataset to designate local/remote and visible/invisible -->
+        <sql>
+            ALTER TABLE metadata.dataset ADD COLUMN is_remote BOOLEAN NOT NULL DEFAULT FALSE;
+            ALTER TABLE metadata.dataset ADD COLUMN is_visible BOOLEAN NOT NULL DEFAULT TRUE;
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

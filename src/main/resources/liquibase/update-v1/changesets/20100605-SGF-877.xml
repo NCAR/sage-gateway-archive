@@ -1,0 +1,24 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100605-SGF-877.xml">
+
+    <changeSet id="20100605-PART1-SGF-877" author="hannah">
+        <comment>Adding period of performance field.</comment>
+
+        <addColumn tableName="cadis_project" schemaName="metadata">
+            <column name="period_of_performance_start" type="timestamp" />
+            <column name="period_of_performance_end" type="timestamp" />
+        </addColumn>
+
+    </changeSet>
+
+    <changeSet id="20100605-PART2-SGF-877" author="hannah" context="cadis">
+        <comment>Copying period of performance field from existing projects.</comment>
+
+        <customChange class="eske.liquibase.periodofperformance.CopyPeriodOfPerformances" />
+
+    </changeSet>
+
+</databaseChangeLog>

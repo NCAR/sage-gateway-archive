@@ -1,0 +1,15 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100303-SGF-1294.xml">
+
+    <changeSet id="20100303-SGF-1294" author="luca" context="core">
+        <comment>Inserting CEDA-BADC Gateway</comment>
+        <sql>
+            INSERT INTO metadata.gateway (id, name, description, base_url, base_secure_url, attributes_service_url, identity, administrator_personal, administrator_email, idp_endpoint) VALUES ('2bb19abb-2e17-4652-84c4-4892c8d23cda', 'CEDA', 'Center for Enviromental Data Archival', 'http://ceda.ac.uk/', 'https://ceda.ac.uk/', 'http://badc.nerc.ac.uk/', 'CEDA DN', 'CEDA Administrator', 'administrator@ceda.ac.uk','https://ceda.ac.uk/OpenID/Provider/server');
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
+

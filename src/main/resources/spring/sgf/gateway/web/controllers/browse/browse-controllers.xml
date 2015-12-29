@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <!-- URL-controller mappings -->
+    <bean id="browseUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="order" value="1"/>
+        <property name="mappings">
+            <props>
+                <prop key="/browse/viewActivity.htm">viewActivityController</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="downloadLogicalFilesController" class="sgf.gateway.web.controllers.browse.DownloadDatasetFilesController">
+        <constructor-arg index="0" ref="metadataService"/>
+        <constructor-arg index="1" ref="authorizationUtils"/>
+        <constructor-arg index="2" value="/browse/download-logical-file"/>
+        <constructor-arg index="3" ref="httpEndpointStrategy"/>
+        <constructor-arg index="4" ref="gridftpEndpointStrategy"/>
+        <constructor-arg index="5" ref="srmEndpointStrategy"/>
+    </bean>
+
+    <bean id="viewDatasetFilesController" class="sgf.gateway.web.controllers.browse.ViewDatasetFilesController">
+        <constructor-arg index="0" ref="datasetRepository"/>
+        <constructor-arg index="1" ref="authorizationUtils"/>
+        <constructor-arg index="2" value="/browse/view-dataset-files"/>
+    </bean>
+
+    <bean id="viewDatasetFilesFilterController"
+          class="sgf.gateway.web.controllers.browse.ViewDatasetFilesFilterController">
+        <constructor-arg index="0" ref="datasetRepository"/>
+        <constructor-arg index="1" ref="authorizationUtils"/>
+        <constructor-arg index="2" value="/browse/view-dataset-files"/>
+    </bean>
+
+    <!-- There are no references to this controller anymore. -->
+    <bean id="viewActivityController" class="sgf.gateway.web.controllers.browse.ViewActivityController">
+        <constructor-arg index="0" ref="activityRepository"/>
+    </bean>
+
+</beans>

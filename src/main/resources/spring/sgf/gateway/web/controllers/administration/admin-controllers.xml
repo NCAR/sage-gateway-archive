@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="reindexSearchController" class="sgf.gateway.web.controllers.administration.ReindexSearchController">
+        <constructor-arg name="searchReindexer" ref="searchReindexer"/>
+        <constructor-arg name="adminUri" value="redirect:${messages.gateway.administration.link}"/>
+    </bean>
+
+    <bean id="scheduledTaskSummaryController"
+          class="sgf.gateway.web.controllers.administration.ScheduledTaskSummaryController">
+        <constructor-arg index="0" ref="schedulerFactory"/>
+    </bean>
+
+    <bean id="fireJobTriggerController" class="sgf.gateway.web.controllers.administration.FireJobTriggerController">
+        <constructor-arg index="0" ref="schedulerFactory"/>
+    </bean>
+
+    <bean id="deleteDatasetController"
+          class="sgf.gateway.web.controllers.administration.dataset.DeleteDatasetController">
+        <constructor-arg name="metadataService" ref="metadataService"/>
+        <constructor-arg name="authorizationUtils" ref="authorizationUtils"/>
+        <constructor-arg name="redirectView" value="${views.dataset.delete.redirect}"/>
+    </bean>
+
+    <bean id="deleteProjectController" class="sgf.gateway.web.controllers.cadis.administration.DeleteProjectController">
+        <constructor-arg name="metadataService" ref="metadataService"/>
+        <constructor-arg name="authorizationUtils" ref="authorizationUtils"/>
+    </bean>
+
+    <bean id="dashboardController" class="sgf.gateway.web.controllers.administration.DashboardController">
+    </bean>
+
+    <bean id="platformTypeController" class="sgf.gateway.web.controllers.observing.PlatformTypeController">
+        <constructor-arg index="0" ref="platformTypeService"/>
+        <constructor-arg index="1" ref="platformTypeRepository"/>
+    </bean>
+
+    <!-- Validation -->
+    <bean id="platformTypeValidator" class="sgf.gateway.validation.spring.DefaultValidator">
+        <constructor-arg index="0">
+            <value>sgf.gateway.web.controllers.observing.PlatformTypeCommand</value>
+        </constructor-arg>
+        <property name="requiredValidators">
+            <list>
+                <bean class="sgf.gateway.validation.spring.required.RequiredFieldValidator">
+                    <constructor-arg index="0" value="shortName"/>
+                    <constructor-arg index="1" value="platform.shortName"/>
+                    <constructor-arg index="2" value="Short Name is required"/>
+                </bean>
+            </list>
+        </property>
+        <property name="dataValidators">
+            <list>
+                <bean class="sgf.gateway.validation.spring.data.SafeInputValidator">
+                    <constructor-arg index="0" value="shortName"/>
+                    <constructor-arg index="1" value=""/>
+                    <constructor-arg index="2" value="Platform type name contains invalid characters"/>
+                </bean>
+            </list>
+        </property>
+        <property name="persistentDataValidators">
+            <list>
+                <bean class="sgf.gateway.validation.spring.persistence.PlatformTypeUniqueValidator">
+                    <constructor-arg index="0" value="shortName"/>
+                    <constructor-arg index="1" value=""/>
+                    <constructor-arg index="2" value="Platform type name is already taken"/>
+                    <constructor-arg index="3" ref="platformTypeRepository"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="eolCatalogJobController" class="sgf.gateway.web.controllers.administration.EOLCatalogJobController"/>
+
+    <bean id="harvestADEController"
+          class="sgf.gateway.web.controllers.administration.harvest.ade.HarvestADEController"/>
+
+    <bean id="deleteADEController" class="sgf.gateway.web.controllers.administration.harvest.ade.DeleteADEController">
+        <constructor-arg index="0" ref="searchDeletionService"/>
+        <constructor-arg index="1" value="${ade.datacenter.name}"/>
+    </bean>
+
+</beans>

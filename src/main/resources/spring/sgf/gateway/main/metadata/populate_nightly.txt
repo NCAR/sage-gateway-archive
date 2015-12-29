@@ -1,0 +1,10 @@
+# Example real-world CCSM catalog
+http://datagrid.ucar.edu/metadata/cgd/ccsm/thredds/ucar.cgd.ccsm.b30.004/ucar.cgd.ccsm.b30.004.thredds
+# Example real-world PCM catalog
+http://datagrid.ucar.edu/metadata/cgd/pcm/thredds/ucar.cgd.pcm.B06.57/ucar.cgd.pcm.B06.57.thredds
+# Example real-world CADIS catalog
+http://dataportal.ucar.edu/metadata/cadis-working/cadis.thredds.xml
+# Example real-world NARCCAP catalog
+http://datagrid.ucar.edu/metadata/narccap/thredds/narccap.thredds
+# Example real-world NCL catalog
+http://datagrid.ucar.edu/metadata/scd/ncl/thredds/ncl.5.0.0/ncl.5.0.0.thredds

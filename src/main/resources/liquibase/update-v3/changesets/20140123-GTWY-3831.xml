@@ -1,0 +1,19 @@
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20140123-GTWY-3831.xml">
+
+	<changeSet id="20140123-GTWY-3831" author="sgf">
+
+		<sql>
+			alter table metadata.descriptive_metadata_link add column version integer DEFAULT 1;
+		</sql>
+
+		<sql>
+			alter table metadata.descriptive_metadata_link DROP CONSTRAINT unq_metadata_link ;
+		</sql>
+
+	</changeSet>
+
+</databaseChangeLog>

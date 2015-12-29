@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="doiService" class="sgf.gateway.service.doi.impl.DoiServiceImpl">
+        <constructor-arg name="remoteDoiFacade" ref="remoteDoiFacade"/>
+        <constructor-arg name="datasetRepository" ref="datasetRepository"/>
+    </bean>
+
+    <bean id="remoteDoiFacade" class="sgf.gateway.service.doi.impl.RemoteDoiFacadeImpl">
+        <constructor-arg name="restTemplate" ref="remoteDoiFacadeRestTemplate"/>
+        <constructor-arg name="gateway" ref="gateway"/>
+        <constructor-arg name="ezidShoulderUrl" value="${ezid.shoulder.url}"/>
+        <constructor-arg name="publisher" value="${ezid.publisher}"/>
+    </bean>
+
+    <bean id="remoteDoiFacadeRestTemplate" class="org.springframework.web.client.RestTemplate">
+        <constructor-arg index="0" ref="ezidHttpComponentsClientHttpRequestFactory"/>
+    </bean>
+
+    <bean id="ezidHttpComponentsClientHttpRequestFactory"
+          class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
+        <constructor-arg index="0" ref="ezidHttpClient4"/>
+    </bean>
+
+    <bean id="ezidHttpClient4" factory-method="create" factory-bean="ezidHttpClient4Factory"/>
+
+    <bean id="ezidHttpClient4Factory"
+          class="sgf.gateway.utils.httpclient.impl.BasicAuthenticationHttpClient4FactoryImpl">
+        <constructor-arg name="connectTimeout" value="60000"/>
+        <constructor-arg name="readTimeout" value="60000"/>
+        <constructor-arg name="username" value="${ezid.username}"/>
+        <constructor-arg name="password" value="${ezid.password}"/>
+    </bean>
+
+</beans>

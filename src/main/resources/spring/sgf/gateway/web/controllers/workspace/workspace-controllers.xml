@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans default-lazy-init="true"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+
+    <bean id="broadcastMessageController" class="sgf.gateway.web.controllers.BroadcastMessageController">
+        <constructor-arg index="0" ref="broadcastMessageRepository"/>
+        <constructor-arg index="1" ref="broadcastMessageService"/>
+    </bean>
+
+    <bean id="dataTransferController" class="sgf.gateway.web.controllers.workspace.DataTransferController">
+        <constructor-arg index="0" ref="dataTransferService"/>
+        <constructor-arg index="1" ref="runtimeUserService"/>
+        <constructor-arg index="2" ref="datasetRepository"/>
+        <constructor-arg index="3" ref="logicalFileRepository"/>
+        <constructor-arg index="4" ref="srmEndpointStrategy"/>
+        <property name="view" value="redirect:/workspace/user/summaryRequest.html"/>
+    </bean>
+
+    <bean id="summaryRequestController" class="sgf.gateway.web.controllers.workspace.SummaryRequestController">
+        <constructor-arg index="0" ref="dataTransferService"/>
+        <constructor-arg index="1" ref="runtimeUserService"/>
+        <property name="view" value="workspace/summaryRequest"/>
+    </bean>
+
+    <bean id="detailRequestController" class="sgf.gateway.web.controllers.workspace.DetailRequestController">
+        <constructor-arg index="0" ref="dataTransferService"/>
+        <constructor-arg index="1" ref="runtimeUserService"/>
+        <property name="view" value="workspace/transferRequestDetail"/>
+    </bean>
+
+</beans>

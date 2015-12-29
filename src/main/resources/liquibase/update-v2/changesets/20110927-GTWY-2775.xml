@@ -1,0 +1,27 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="/Liquibase/update-v2/changesets/20110927-GTWY-2775.xml">
+
+    <changeSet id="20110927-GTWY-2775.0" author="sgf">
+        <sql>
+            UPDATE metadata.dataset_version SET version_id = to_char(date_created, 'YYYYMMDD') WHERE version_id IS NULL OR
+            char_length(regexp_replace(version_id, E'\\s+', '', 'g')) = 0;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20110927-GTWY-2775.1" author="sgf">
+        <sql>
+            ALTER TABLE metadata.dataset_version ALTER COLUMN version_id SET NOT NULL;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20110927-GTWY-2775.2" author="sgf">
+        <sql>
+            ALTER TABLE metadata.dataset_version
+            ADD CONSTRAINT unq_dataset_version_datasetid_versionid UNIQUE (dataset_id, version_id);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

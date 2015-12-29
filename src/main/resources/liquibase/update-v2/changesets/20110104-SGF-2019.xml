@@ -1,0 +1,26 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet id="20110104-SGF-2019.0" author="sgf" >
+
+        <sql>
+            update metadata.dataset set metadata_profile_id =
+            (select metadata_profile_id from metadata.gateway where id =
+            (select parent_gateway_id from metadata.dataset where parent_gateway_id is not null limit 1))
+
+            where dataset.parent_dataset_id is null;
+        </sql>
+
+    </changeSet>
+
+    <changeSet id="20110104-SGF-2019.1" author="sgf" >
+
+        <dropForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="dataset" constraintName="fkey_dataset_gateway_id"/>
+
+        <dropColumn schemaName="metadata" tableName="dataset" columnName="parent_gateway_id"/>
+    </changeSet>
+
+</databaseChangeLog>
+

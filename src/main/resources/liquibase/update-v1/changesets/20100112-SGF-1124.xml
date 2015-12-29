@@ -1,0 +1,243 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100112-SGF-1124.xml">
+
+    <!-- Include the changes sets for this particular release -->
+    <changeSet author="ncw" id="20100112-SGF-1124">
+
+        <!-- Create user to associate the new versions to -->
+        <insert schemaName="security" tableName="principal" >
+            <column name="id" value="65e4d7f9-ecad-4d16-a4bb-e668abeeb5fe"/>
+            <column name="gateway_id" value="a59d9144-2ec5-468e-9b0e-3f53c804ed22"/>
+        </insert>
+        <insert schemaName="security" tableName="user" >
+            <column name="id" value="65e4d7f9-ecad-4d16-a4bb-e668abeeb5fe"/>
+            <column name="firstname" value="Data Migration User"/>
+            <column name="middlename" value=""/>
+            <column name="lastname" value=""/>
+            <column name="email" value=""/>
+            <column name="username" value="data-migration-user"/>
+            <column name="password" value=""/>
+            <column name="logintype" value="DEFAULT"/>
+            <column name="organization" value=""/>
+            <column name="organization_type" value=""/>
+            <column name="country" value=""/>
+            <column name="openid" value=""/>
+        </insert>
+
+        <sql>
+            CREATE TABLE metadata.dataset_version
+            (
+            id uuid NOT NULL,
+            version bigint NOT NULL,
+            version_id text,
+            dataset_id uuid NOT NULL,
+            date_created timestamp with time zone NOT NULL DEFAULT default_timestamp(),
+            publisher uuid,
+            "comment" text,
+            label text,
+            index int,
+
+            CONSTRAINT pkey_dataset_version PRIMARY KEY (id),
+            CONSTRAINT fkey_dataset_version_dataset_id FOREIGN KEY (dataset_id)
+            REFERENCES metadata.dataset (id) MATCH SIMPLE
+            ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
+            CONSTRAINT fkey_dataset_version_user_id FOREIGN KEY (publisher)
+            REFERENCES security.user (id) MATCH SIMPLE
+            ON UPDATE RESTRICT ON DELETE NO ACTION DEFERRABLE INITIALLY DEFERRED
+            )
+            WITH (OIDS = FALSE);
+        </sql>
+
+        <sql>
+            ALTER TABLE metadata.dataset_version OWNER TO postgres;
+            GRANT ALL ON TABLE metadata.logical_file TO postgres;
+            GRANT ALL ON TABLE metadata.dataset_version TO public;
+        </sql>
+
+        <sql>
+            CREATE INDEX idx_dataset_version_ids
+            ON metadata.dataset_version
+            USING btree
+            (id, dataset_id);
+        </sql>
+
+        <customChange class="eske.liquibase.versioning.GenerateDatasetVersionRows" />
+
+        <!-- **** LogicalFile Changes ****  -->
+
+
+
+
+
+        <!-- Drop old indexes -->
+        <!-- 		<dropIndex schemaName="metadata" tableName="" indexName="fki_logical_file_dataset_id" /> -->
+        <sql>
+            DROP INDEX metadata.fki_logical_file_dataset_id;
+        </sql>
+
+        <!-- Drop the existing foreign keys -->
+        <dropForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="logical_file" constraintName="fkey_logical_file_data_format_id"/>
+        <dropForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="logical_file" constraintName="fkey_logical_file_resource_id"/>
+        <dropForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="logical_file" constraintName="fkey_logical_file_dataset_id"/>
+
+        <!-- Add the dataset version id references -->
+        <addColumn schemaName="metadata" tableName="logical_file">
+            <column name="dataset_version_id" type="uuid" />
+        </addColumn>
+
+        <sql>
+            UPDATE metadata.logical_file SET dataset_version_id = (SELECT id FROM metadata.dataset_version where dataset_version.dataset_id = logical_file.dataset_id);
+        </sql>
+
+        <sql>
+            SELECT logical_file.id as logical_file_id, logical_file.dataset_version_id INTO metadata.logical_file_dataset_version_xref FROM metadata.logical_file;
+        </sql>
+
+        <sql>
+            GRANT ALL ON TABLE metadata.logical_file_dataset_version_xref TO public;
+        </sql>
+
+        <addForeignKeyConstraint constraintName="fkey_logical_file_dataset_xref_dataset_version_id"
+                                 baseTableSchemaName="metadata" baseTableName="logical_file_dataset_version_xref"  baseColumnNames="dataset_version_id"
+                                 referencedTableSchemaName="metadata" referencedTableName="dataset_version" referencedColumnNames="id"
+                                 onDelete="CASCADE" onUpdate="CASCADE" deferrable="true" initiallyDeferred="true" />
+
+        <addForeignKeyConstraint constraintName="fkey_logical_file_dataset_xref_logical_file_id"
+                                 baseTableSchemaName="metadata" baseTableName="logical_file_dataset_version_xref"  baseColumnNames="logical_file_id"
+                                 referencedTableSchemaName="metadata" referencedTableName="logical_file" referencedColumnNames="id"
+                                 onDelete="CASCADE" onUpdate="CASCADE" deferrable="true" initiallyDeferred="true" />
+
+        <sql>
+            CREATE INDEX logical_file_dataset_version_xref_full
+            ON metadata.logical_file_dataset_version_xref
+            USING btree
+            (logical_file_id, dataset_version_id);
+        </sql>
+
+        <sql>
+            CREATE INDEX logical_file_dataset_version_xref_dataset_version_id
+            ON metadata.logical_file_dataset_version_xref
+            USING btree
+            (dataset_version_id);
+        </sql>
+
+        <dropColumn schemaName="metadata" tableName="logical_file" columnName="dataset_version_id"/>
+
+        <addColumn schemaName="metadata" tableName="logical_file">
+            <column name="lineage_id" type="text" />
+        </addColumn>
+
+        <addColumn schemaName="metadata" tableName="logical_file">
+            <column name="version_id" type="text" />
+        </addColumn>
+
+        <addColumn schemaName="metadata" tableName="logical_file">
+            <column name="cmor_tracking_id" type="text" />
+        </addColumn>
+
+        <addColumn schemaName="metadata" tableName="logical_file">
+            <column name="label" type="text" />
+        </addColumn>
+
+        <sql>
+            UPDATE metadata.logical_file sourcefile SET lineage_id =
+            (SELECT identifier FROM metadata.persistent_identifier ident where ident.resource_id = sourcefile.id and ident.type_id=0);
+        </sql>
+
+        <addNotNullConstraint schemaName="metadata" tableName="logical_file" columnName="lineage_id" />
+
+        <addForeignKeyConstraint constraintName="fkey_logical_file_data_format_id"
+                                 baseTableSchemaName="metadata" baseTableName="logical_file"  baseColumnNames="data_format_id"
+                                 referencedTableSchemaName="metadata" referencedTableName="data_format" referencedColumnNames="id"
+                                 onDelete="RESTRICT" onUpdate="CASCADE" />
+
+        <addForeignKeyConstraint constraintName="fkey_logical_file_resource_id"
+                                 baseTableSchemaName="metadata" baseTableName="logical_file"  baseColumnNames="id"
+                                 referencedTableSchemaName="metadata" referencedTableName="resource" referencedColumnNames="id"
+                                 onDelete="CASCADE" onUpdate="CASCADE" />
+
+
+        <dropColumn schemaName="metadata" tableName="logical_file" columnName="dataset_id"/>
+        <!-- Stuff TODO
+        CREATE INDEX fki_logical_file_dataset_id
+          ON metadata.logical_file
+          USING btree
+          (dataset_id);
+
+         -->
+
+        <!-- Changes required to shift variables to dataset versions -->
+        <dropForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="variable"
+                                  constraintName="fkey_variable_geophysical_properties_id"/>
+
+        <dropForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="variable"
+                                  constraintName="fkey_variable_units_id"/>
+
+        <addColumn schemaName="metadata" tableName="variable" >
+            <column name="dataset_version_id" type="uuid" />
+        </addColumn>
+
+        <!-- Change the direct association to dataset_version -->
+        <sql>
+            UPDATE metadata.variable SET dataset_version_id = (
+            SELECT dataset_version.id from metadata.dataset_version
+            WHERE dataset_version.dataset_id = variable.geophysical_properties_id
+            ORDER BY dataset_version.date_created DESC LIMIT 1);
+        </sql>
+
+
+
+        <dropColumn schemaName="metadata" tableName="variable" columnName="geophysical_properties_id" />
+
+        <addForeignKeyConstraint constraintName="fkey_variable_units_id"
+                                 baseTableSchemaName="metadata" baseTableName="variable"  baseColumnNames="units_id"
+                                 referencedTableSchemaName="metadata" referencedTableName="unit" referencedColumnNames="id"
+                                 onDelete="SET NULL" onUpdate="CASCADE" />
+
+        <addForeignKeyConstraint constraintName="fkey_variable_dataset_version_id"
+                                 baseTableSchemaName="metadata" baseTableName="variable"  baseColumnNames="dataset_version_id"
+                                 referencedTableSchemaName="metadata" referencedTableName="dataset_version" referencedColumnNames="id"
+                                 onDelete="CASCADE" onUpdate="CASCADE" />
+
+        <!-- Change the xref association to dataset_version -->
+
+        <dropForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="geophysical_properties_variable_xref"
+                                  constraintName="fkey_geophysical_properties_id"/>
+
+        <dropForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="geophysical_properties_variable_xref"
+                                  constraintName="fkey_geophysical_properties_variable_id"/>
+
+        <sql>
+            UPDATE metadata.geophysical_properties_variable_xref SET geophysical_properties_id = (
+            SELECT dataset_version.id from metadata.dataset_version
+            WHERE dataset_version.dataset_id = geophysical_properties_variable_xref.geophysical_properties_id
+            ORDER BY dataset_version.date_created DESC LIMIT 1);
+        </sql>
+
+        <renameColumn schemaName="metadata" tableName="geophysical_properties_variable_xref"
+                      oldColumnName="geophysical_properties_id" newColumnName="dataset_version_id"/>
+
+        <dropPrimaryKey schemaName="metadata" tableName="geophysical_properties_variable_xref" constraintName="pkey_geophysical_properties_variable_xref"/>
+
+        <addPrimaryKey schemaName="metadata" tableName="geophysical_properties_variable_xref"
+                       constraintName="pkey_dataset_version_variable_xref" columnNames="dataset_version_id, variable_id"/>
+
+        <addForeignKeyConstraint constraintName="fkey_dataset_version_id"
+                                 baseTableSchemaName="metadata" baseTableName="geophysical_properties_variable_xref"  baseColumnNames="dataset_version_id"
+                                 referencedTableSchemaName="metadata" referencedTableName="dataset_version" referencedColumnNames="id"
+                                 onDelete="SET NULL" onUpdate="CASCADE" />
+
+        <addForeignKeyConstraint constraintName="fkey_variable_dataset_version_id"
+                                 baseTableSchemaName="metadata" baseTableName="geophysical_properties_variable_xref"  baseColumnNames="variable_id"
+                                 referencedTableSchemaName="metadata" referencedTableName="variable" referencedColumnNames="id"
+                                 onDelete="CASCADE" onUpdate="CASCADE" />
+
+        <renameTable schemaName="metadata" oldTableName="geophysical_properties_variable_xref" newTableName="dataset_version_variable_xref" />
+
+    </changeSet>
+
+</databaseChangeLog>
+

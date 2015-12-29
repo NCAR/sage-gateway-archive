@@ -1,0 +1,73 @@
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20130426-GTWY-3641.xml">
+
+	<changeSet id="20130501-GTWY-3346" author="sgf">
+	
+		<renameColumn schemaName="metadata" tableName="data_center" oldColumnName="name" newColumnName="short_name"/>
+		
+		<addColumn schemaName="metadata" tableName="data_center">
+			<column name="long_name" type="text" value="temporary long name" />
+		</addColumn>
+		
+		<addNotNullConstraint schemaName="metadata" tableName="data_center" columnName="long_name"/>
+		
+		<addColumn schemaName="metadata" tableName="data_center">
+			<column name="url" type="text" value="temporary url" />
+		</addColumn>
+		
+		<addNotNullConstraint schemaName="metadata" tableName="data_center" columnName="url"/>
+		
+		<addColumn schemaName="metadata" tableName="data_center">
+			<column name="first_name" type="text" />
+		</addColumn>
+		
+		<addColumn schemaName="metadata" tableName="data_center">
+			<column name="last_name" type="text" value="temporary last name" />
+		</addColumn>
+		
+		<addNotNullConstraint schemaName="metadata" tableName="data_center" columnName="last_name"/>
+		
+		<addColumn schemaName="metadata" tableName="data_center">
+			<column name="address1" type="text" value="temporary address1" />
+		</addColumn>
+		
+		<addNotNullConstraint schemaName="metadata" tableName="data_center" columnName="address1"/>
+		
+		<addColumn schemaName="metadata" tableName="data_center">
+			<column name="address2" type="text" />
+		</addColumn>
+		
+		<addColumn schemaName="metadata" tableName="data_center">
+			<column name="address3" type="text" />
+		</addColumn>
+		
+		<addColumn schemaName="metadata" tableName="data_center">
+			<column name="city" type="text" value="Boulder" />
+		</addColumn>
+		
+		<addNotNullConstraint schemaName="metadata" tableName="data_center" columnName="city"/>
+		
+		<addColumn schemaName="metadata" tableName="data_center">
+			<column name="state" type="text" value="CO" />
+		</addColumn>
+		
+		<addNotNullConstraint schemaName="metadata" tableName="data_center" columnName="state"/>
+		
+		<addColumn schemaName="metadata" tableName="data_center">
+			<column name="postal_code" type="text" value="temporary postal code" />
+		</addColumn>
+		
+		<addNotNullConstraint schemaName="metadata" tableName="data_center" columnName="postal_code"/>
+		
+		<addColumn schemaName="metadata" tableName="data_center">
+			<column name="country" type="text" value="USA" />
+		</addColumn>
+		
+		<addNotNullConstraint schemaName="metadata" tableName="data_center" columnName="country"/>
+		
+	</changeSet>
+	
+</databaseChangeLog>

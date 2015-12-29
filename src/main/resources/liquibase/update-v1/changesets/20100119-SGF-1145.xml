@@ -1,0 +1,19 @@
+<!--
+THIS CHANGESET HAS BEEN DEPRECATED AND SHOULD NOT BE RUN.  THE SQL FROM THE static-test-data-cmip5.sql
+SHOULD HAVE BEEN RUN BY HAND ON THE SERVER INSTEAD OF BY A CHANGESET.
+PLEASE SEE SGF-1508 FOR MORE INFORMATION
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="Liquibase/update/changesets/20100119-SGF-1145.xml">
+           
+    <changeSet id="20100119-SGF-1145" author="luca" context="esg_ncar">
+        <comment>Inserting CMIP5 data</comment>
+        <sqlFile  path="Liquibase/update/staticdata/static-test-data-cmip5.sql" endDelimiter=";" splitStatements="false" />
+    </changeSet>
+        
+</databaseChangeLog>
+
+-->

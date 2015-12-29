@@ -1,0 +1,55 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   logicalFilePath="/Liquibase/update-v3/changesets/20140725-GTWY-3994.xml">
+
+	<changeSet id="20140725-GTWY-3994.0" author="sgf">
+
+		<addColumn schemaName="metadata" tableName="dataset">
+			<column name="predecessor_dataset_id" type="uuid"/>
+		</addColumn>
+
+		<addColumn schemaName="metadata" tableName="dataset">
+			<column name="successor_dataset_id" type="uuid"/>
+		</addColumn>
+
+		<addUniqueConstraint schemaName="metadata" tableName="dataset"
+			columnNames="predecessor_dataset_id" constraintName="unq_dataset_predecessor"/>
+
+		<addUniqueConstraint schemaName="metadata" tableName="dataset"
+			columnNames="successor_dataset_id" constraintName="unq_dataset_successor"/>
+
+		<addForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="dataset" baseColumnNames="predecessor_dataset_id"
+								 referencedTableSchemaName="metadata" referencedTableName="dataset" referencedColumnNames="id"
+								 constraintName="fkey_dataset_predecessor" deferrable="true" initiallyDeferred="true"
+								 onDelete="CASCADE" onUpdate="CASCADE"/>
+
+		<addForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="dataset" baseColumnNames="successor_dataset_id"
+								 referencedTableSchemaName="metadata" referencedTableName="dataset" referencedColumnNames="id"
+								 constraintName="fkey_dataset_successor" deferrable="true" initiallyDeferred="true"
+								 onDelete="CASCADE" onUpdate="CASCADE"/>
+	
+	</changeSet>
+
+	<changeSet id="20140725-GTWY-3994.1" author="sgf">
+
+		<sql>
+			UPDATE metadata.dataset AS d
+			SET predecessor_dataset_id = pred.dataset_id,
+			    successor_dataset_id = succ.dataset_id
+			FROM metadata.project AS p
+			LEFT JOIN metadata.project AS pred on p.continuation_of_project_id = pred.id
+			LEFT JOIN metadata.project AS succ on p.continuing_project_id = succ.id
+			WHERE p.dataset_id = d.id
+		</sql>
+
+	</changeSet>
+
+	<changeSet id="20140725-GTWY-3994.2" author="sgf">
+
+		<dropColumn schemaName="metadata" tableName="project" columnName="continuing_project_id"/>
+		<dropColumn schemaName="metadata" tableName="project" columnName="continuation_of_project_id"/>
+            
+	</changeSet>
+
+</databaseChangeLog>

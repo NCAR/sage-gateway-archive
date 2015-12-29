@@ -1,0 +1,65 @@
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20131220-GTWY-3815.xml">
+
+	<changeSet id="20131220-GTWY-3815.0" author="sgf">
+
+		<addForeignKeyConstraint constraintName="fkey_descriptive_metadata_resolution_type_xref" referencedTableSchemaName="metadata" referencedTableName="descriptive_metadata" referencedColumnNames="id" baseTableSchemaName="metadata" baseTableName="cadis_descriptive_metadata_cadis_resolution_type_xref" baseColumnNames="cadis_descriptive_metadata_id" deferrable="true" initiallyDeferred="true"/>
+
+	</changeSet>
+	
+	<changeSet id="20131220-GTWY-3815.1" author="sgf">
+
+		<dropForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="cadis_descriptive_metadata_cadis_resolution_type_xref" constraintName="fkey_cadis_descriptive_metadata_cadis_resolution_type_xref_cadi"/>
+
+	</changeSet>
+
+	<changeSet id="20131220-GTWY-3815.2" author="sgf">
+
+		<renameTable schemaName="metadata" oldTableName="cadis_descriptive_metadata_cadis_resolution_type_xref" newTableName="descriptive_metadata_resolution_type_xref"/>
+
+	</changeSet>
+
+	<changeSet id="20131220-GTWY-3815.3" author="sgf">
+
+		<renameColumn schemaName="metadata" tableName="descriptive_metadata_resolution_type_xref" oldColumnName="cadis_descriptive_metadata_id" newColumnName="descriptive_metadata_id"/>
+
+	</changeSet>
+
+	<changeSet id="20131220-GTWY-3815.4" author="sgf">
+
+		<renameColumn schemaName="metadata" tableName="descriptive_metadata_resolution_type_xref" oldColumnName="cadis_resolution_type_id" newColumnName="resolution_type_id"/>
+
+	</changeSet>
+
+	<changeSet id="20131220-GTWY-3815.5" author="sgf">
+
+		<renameTable schemaName="metadata" oldTableName="dataset_restriction" newTableName="descriptive_metadata_restriction"/>
+		<dropForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="descriptive_metadata_restriction" constraintName="fkey_dataset_restriction_id"/>
+		<renameColumn schemaName="metadata" tableName="descriptive_metadata_restriction" oldColumnName="id" newColumnName="descriptive_metadata_id"/>
+		<addForeignKeyConstraint referencedTableSchemaName="metadata" referencedTableName="descriptive_metadata" referencedColumnNames="id" baseTableSchemaName="metadata" baseTableName="descriptive_metadata_restriction" baseColumnNames="descriptive_metadata_id" constraintName="fkey_descriptive_metadata_restriction_id" deferrable="true" initiallyDeferred="true"/>
+
+	</changeSet>
+	
+	<changeSet id="20131220-GTWY-3815.6" author="sgf">
+	
+		<dropTable schemaName="metadata" tableName="cadis_descriptive_metadata"/>
+	
+	</changeSet>
+	
+	<changeSet id="20131220-GTWY-3815.7" author="sgf">
+	
+		<dropTable schemaName="metadata" tableName="cadis_project"/>
+	
+	</changeSet>
+	
+	<changeSet id="20131220-GTWY-3815.8" author="sgf">
+	
+		<dropTable schemaName="metadata" tableName="collection_note"/>
+	
+	</changeSet>
+
+</databaseChangeLog>
+

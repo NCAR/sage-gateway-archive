@@ -1,0 +1,20 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   logicalFilePath="/Liquibase/update-v2/changesets/20120117-GTWY-3055.xml">
+
+    <changeSet id="20120117-GTWY-3055" author="sgf">
+
+        <sql>
+            ALTER TABLE metadata.file_access_point ADD COLUMN replica_id uuid;
+        </sql>
+
+        <sql>
+            ALTER TABLE metadata.file_access_point ADD CONSTRAINT fkey_file_access_point_replica FOREIGN KEY (replica_id)
+            REFERENCES metadata.replica (id) MATCH SIMPLE
+            ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

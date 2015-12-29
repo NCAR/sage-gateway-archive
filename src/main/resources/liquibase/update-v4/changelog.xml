@@ -1,0 +1,17 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" >
+
+    <!-- These changes should only be run against a schema with major version 2 -->
+    <preConditions onFailMessage="Major Version Precondition Not Met">
+        <sqlCheck expectedResult="4">
+            SELECT COALESCE(MAX(int4(id)),0)
+            FROM public.databasechangelog
+            WHERE author='MajorVersion'
+        </sqlCheck>
+    </preConditions>
+
+
+</databaseChangeLog>
+

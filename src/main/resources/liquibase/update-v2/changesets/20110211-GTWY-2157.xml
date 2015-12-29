@@ -1,0 +1,23 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet id="20110211-GTWY-2157" author="sgf" >
+
+        <sql>
+            CREATE OR REPLACE VIEW "security".user_attribute AS
+            SELECT DISTINCT "user".username, "user".dn, "user".openid, (('group_'::text || "group".name::text) || '_role_'::text) || role.name::text AS attribute, 'sgf'::text AS gateway
+            FROM security."user" "user", security.principal principal, security.membership membership, security."group" "group", security.role role, security.status status
+            WHERE "user".id = membership.user_id AND "group".id = membership.group_id AND role.id = membership.role_id AND membership.status_id = status.id AND "user".id = principal.id AND status.id = 3
+            ORDER BY "user".username, "user".dn, (('group_'::text || "group".name::text) || '_role_'::text) || role.name::text, "user".openid;
+
+            ALTER TABLE "security".user_attribute OWNER TO ${database.role.admin};
+            GRANT ALL ON TABLE "security".user_attribute TO ${database.role.admin};
+            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE "security".user_attribute TO ${database.role.user};
+            GRANT SELECT ON TABLE "security".user_attribute TO ${database.role.read_only};
+
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

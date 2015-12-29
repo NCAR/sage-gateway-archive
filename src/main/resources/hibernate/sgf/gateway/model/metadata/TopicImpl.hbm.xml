@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <typedef name="Taxonomy" class="sgf.gateway.utils.hibernate.EnumUserType">
+        <param name="enumClassName">sgf.gateway.model.metadata.Taxonomy</param>
+        <param name="columnType">INTEGER</param>
+    </typedef>
+
+    <class name="sgf.gateway.model.metadata.TopicImpl" table="topic" schema="metadata" lazy="false">
+
+        <id name="identifier" column="id" access="field" type="sgf.gateway.utils.hibernate.UUIDUserType"/>
+
+        <version name="version" column="version" unsaved-value="null" access="field"/>
+
+        <property name="name" column="name" type="string" access="field"/>
+        <property name="type" column="taxonomy_id" type="Taxonomy" access="field"/>
+
+        <set name="datasetsReference" table="dataset_topic_xref" schema="metadata" inverse="true"
+             cascade="persist,merge,save-update" lazy="extra" access="field">
+            <key column="topic_id"/>
+            <many-to-many class="sgf.gateway.model.metadata.DatasetImpl" column="dataset_id"/>
+        </set>
+
+    </class>
+
+    <query name="findTopicByNameAndTaxonomy" cacheable="false">
+        <![CDATA[
+            from TopicImpl topic where topic.name = :name and topic.type = :taxonomy
+        ]]>
+    </query>
+
+    <query name="findTopicsByTaxonomy" cacheable="false">
+        <![CDATA[
+            from TopicImpl topic where topic.type = :type and size(topic.datasetsReference) >= 1 order by topic.name asc
+        ]]>
+    </query>
+
+    <query name="findTopicsByType" cacheable="false">
+        <![CDATA[
+            from TopicImpl topic where topic.type = :type
+        ]]>
+    </query>
+
+    <query name="findTopics" cacheable="true">
+        <![CDATA[
+            from TopicImpl topic
+        ]]>
+    </query>
+
+</hibernate-mapping>

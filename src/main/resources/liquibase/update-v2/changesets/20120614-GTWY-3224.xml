@@ -1,0 +1,50 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   logicalFilePath="/Liquibase/update-v2/changesets/20120614-GTWY-3224.xml">
+
+    <changeSet id="20120614-GTWY-3224.0" author="sgf">
+
+        <sql>
+
+            ALTER TABLE metadata.project ADD COLUMN persistent_identifier varchar(512);
+
+        </sql>
+
+    </changeSet>
+
+    <changeSet id="20120614-GTWY-3224.1" author="sgf">
+
+        <sql>
+            /* replace all spaces with underbars and lowercase it (step 1) */
+            UPDATE metadata.project c
+            set persistent_identifier = (
+            select regexp_replace( lower(name), ' ', '_', 'g')
+            from metadata.activity a
+            where c.id = a.id )
+            ;
+
+            /* If first char is a . then remove it (step 2) */
+            UPDATE metadata.project c
+            set persistent_identifier = regexp_replace( persistent_identifier, '\.', '') ;
+
+            /* Remove everything NOT alph-num, underbar, dot, or dash (step 3) */
+            UPDATE metadata.project c
+            set persistent_identifier = regexp_replace( persistent_identifier, '[^a-z0-9_.-]', '', 'g') ;
+
+        </sql>
+
+    </changeSet>
+
+    <changeSet id="20120614-GTWY-3224.2" author="sgf">
+
+        <sql>
+
+            ALTER TABLE metadata.project ALTER COLUMN persistent_identifier SET NOT NULL;
+            ALTER TABLE metadata.project ADD CONSTRAINT persistent_identifier_unique UNIQUE(persistent_identifier);
+
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

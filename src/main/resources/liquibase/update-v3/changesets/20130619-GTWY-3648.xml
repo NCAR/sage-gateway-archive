@@ -1,0 +1,14 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20130619-GTWY-3648.xml">
+
+	<changeSet id="20130619-GTWY-3648" author="sgf">
+	
+		<addColumn schemaName="metadata" tableName="dataset">
+			<column name="doi" type="text"/>
+		</addColumn>
+		
+	</changeSet>
+	
+</databaseChangeLog>

@@ -1,0 +1,16 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v2/changesets/20111116-GTWY-3509.xml">
+
+	<changeSet id="20111116-GTWY-3509" author="sgf">
+
+		<dropColumn schemaName="metadata" tableName="descriptive_metadata_instrument_type_xref" columnName="idx_order"/>
+		<dropColumn schemaName="metadata" tableName="descriptive_metadata_platform_type_xref" columnName="idx_order"/>
+		<dropColumn schemaName="metadata" tableName="descriptive_metadata_location_xref" columnName="idx_order"/>
+		<dropColumn schemaName="metadata" tableName="descriptive_metadata_time_frequency_xref" columnName="idx_order"/>
+		<dropColumn schemaName="metadata" tableName="descriptive_metadata_data_type_xref" columnName="idx_order"/>
+
+	</changeSet>
+
+</databaseChangeLog>

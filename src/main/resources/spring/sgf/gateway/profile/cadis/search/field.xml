@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="idField" class="java.lang.String">
+        <constructor-arg value="id"/>
+    </bean>
+    <bean id="typeField" class="java.lang.String">
+        <constructor-arg value="type"/>
+    </bean>
+    <bean id="nameField" class="java.lang.String">
+        <constructor-arg value="name"/>
+    </bean>
+    <bean id="descriptionField" class="java.lang.String">
+        <constructor-arg value="description"/>
+    </bean>
+    <bean id="shortNameField" class="java.lang.String">
+        <constructor-arg value="short_name"/>
+    </bean>
+    <bean id="authoritativeSourceURIField" class="java.lang.String">
+        <constructor-arg value="authoritativeSourceURI"/>
+    </bean>
+    <bean id="detailsURIField" class="java.lang.String">
+        <constructor-arg value="detailsURI"/>
+    </bean>
+    <bean id="authorField" class="java.lang.String">
+        <constructor-arg value="author"/>
+    </bean>
+    <bean id="responsiblePartyField" class="java.lang.String">
+        <constructor-arg value="responsible_party"/>
+    </bean>
+    <bean id="projectField" class="java.lang.String">
+        <constructor-arg value="project"/>
+    </bean>
+    <bean id="instrumentField" class="java.lang.String">
+        <constructor-arg value="instrument"/>
+    </bean>
+    <bean id="scienceKeywordField" class="java.lang.String">
+        <constructor-arg value="scienceKeyword"/>
+    </bean>
+    <bean id="disciplineField" class="java.lang.String">
+        <constructor-arg value="discipline"/>
+    </bean>
+    <bean id="locationField" class="java.lang.String">
+        <constructor-arg value="location"/>
+    </bean>
+    <bean id="platformField" class="java.lang.String">
+        <constructor-arg value="platform"/>
+    </bean>
+    <bean id="awardNumberField" class="java.lang.String">
+        <constructor-arg value="award_num"/>
+    </bean>
+    <bean id="westernLongitudeField" class="java.lang.String">
+        <constructor-arg value="westernlon"/>
+    </bean>
+    <bean id="easternLongitudeField" class="java.lang.String">
+        <constructor-arg value="easternlon"/>
+    </bean>
+    <bean id="northernLatitudeField" class="java.lang.String">
+        <constructor-arg value="northernlat"/>
+    </bean>
+    <bean id="southernLatitudeField" class="java.lang.String">
+        <constructor-arg value="southernlat"/>
+    </bean>
+    <bean id="startDateField" class="java.lang.String">
+        <constructor-arg value="startdate"/>
+    </bean>
+    <bean id="endDateField" class="java.lang.String">
+        <constructor-arg value="enddate"/>
+    </bean>
+    <bean id="dataCenterField" class="java.lang.String">
+        <constructor-arg value="datacenter"/>
+    </bean>
+    <bean id="doiField" class="java.lang.String">
+        <constructor-arg value="doi"/>
+    </bean>
+    <bean id="bucketField" class="java.lang.String">
+        <constructor-arg value="bucket"/>
+    </bean>
+
+</beans>

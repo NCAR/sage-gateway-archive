@@ -1,0 +1,66 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   logicalFilePath="/Liquibase/update-v2/changesets/20120919-GTWY-3469.xml">
+
+    <changeSet id="20120919-GTWY-3469.0" author="sgf">
+        <sql>
+            ALTER TABLE curator.cim_document_harvest_log SET SCHEMA public;
+            ALTER TABLE curator.institution SET SCHEMA metadata;
+            ALTER TABLE curator.model SET SCHEMA metadata;
+            ALTER TABLE curator.model_component SET SCHEMA metadata;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20120919-GTWY-3469.1" author="sgf">
+        <sql>
+            DROP SCHEMA curator CASCADE;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20120919-GTWY-3469.2" author="sgf">
+        <sql>
+            ALTER TABLE metadata.model_component ADD COLUMN name character varying(512);
+            ALTER TABLE metadata.model_component ADD COLUMN description text;
+            ALTER TABLE metadata.model_component ADD COLUMN date_created timestamp with time zone DEFAULT default_timestamp();
+            ALTER TABLE metadata.model_component ADD COLUMN date_updated timestamp with time zone DEFAULT default_timestamp();
+            ALTER TABLE metadata.model_component ADD COLUMN version integer DEFAULT 1;
+
+        </sql>
+    </changeSet>
+
+    <changeSet id="20120919-GTWY-3469.3" author="sgf">
+        <sql>
+            UPDATE metadata.model_component
+            SET
+            name = resource.name,
+            description = resource.description,
+            date_created = resource.date_created,
+            date_updated = resource.date_updated
+            FROM
+            metadata.resource resource
+            WHERE
+            resource.id = metadata.model_component.id ;
+
+        </sql>
+
+    </changeSet>
+
+    <changeSet id="20120919-GTWY-3469.4" author="sgf">
+
+        <sql>
+            ALTER TABLE metadata.model_component ALTER COLUMN name SET NOT NULL;
+            ALTER TABLE metadata.model_component DROP CONSTRAINT fkey_model_component_resource;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20120919-GTWY-3469.5" author="sgf">
+        <sql>
+            DELETE FROM metadata.resource
+            WHERE id IN (
+            SELECT id FROM metadata.model_component) ;
+
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

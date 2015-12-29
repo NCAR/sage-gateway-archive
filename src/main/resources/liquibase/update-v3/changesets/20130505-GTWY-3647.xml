@@ -1,0 +1,58 @@
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20130505-GTWY-3647.xml">
+
+	<changeSet id="20130505-GTWY-3647" author="sgf">
+		
+		<dropForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="time_coordinate_axis" constraintName="fkey_time_coordinate_axis_id" />
+		
+		<sql>
+			
+			UPDATE metadata.time_coordinate_axis
+			SET
+			  id = subquery.parent_id
+			FROM 
+			(
+			  SELECT 
+				  coordinate_axis.geophysical_properties_id as parent_id, 
+				  time_coordinate_axis.id
+				FROM 
+				  metadata.coordinate_axis, 
+				  metadata.time_coordinate_axis
+				WHERE 
+				  time_coordinate_axis.id = coordinate_axis.id
+			) as subquery 
+			WHERE time_coordinate_axis.id = subquery.id;
+			
+		</sql>
+		
+		<renameTable schemaName="metadata" oldTableName="time_coordinate_axis" newTableName="dataset_time_period" />
+		
+		<renameColumn schemaName="metadata" tableName="dataset_time_period" oldColumnName="start_range" newColumnName="begin_date"/>
+		
+		<renameColumn schemaName="metadata" tableName="dataset_time_period" oldColumnName="end_range" newColumnName="end_date"/>
+		
+		<addForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="dataset_time_period"
+			referencedTableSchemaName="metadata" referencedTableName="descriptive_metadata"
+			baseColumnNames="id" referencedColumnNames="id"
+			constraintName="fkey_dataset_time_period_dataset" deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE"/>
+			
+		<dropTable cascadeConstraints="true" schemaName="metadata" tableName="coordinate_axis"/>
+		<dropTable cascadeConstraints="true" schemaName="metadata" tableName="geospatial_coordinate_axis"/>
+		<dropTable cascadeConstraints="true" schemaName="metadata" tableName="z_coordinate_axis"/>
+		<dropTable cascadeConstraints="true" schemaName="metadata" tableName="z_positive_type"/>
+		<dropTable cascadeConstraints="true" schemaName="metadata" tableName="coordinate_type"/>
+		
+		<!-- Correcting a related foreign key constraint from preview Axis work, foreign key should point to descriptive metadata -->
+		<dropForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="dataset_geographic_bounding_box" constraintName="fkey_geographic_bounding_box_dataset" />
+		
+		<addForeignKeyConstraint baseTableSchemaName="metadata" baseTableName="dataset_geographic_bounding_box"
+			referencedTableSchemaName="metadata" referencedTableName="descriptive_metadata"
+			baseColumnNames="id" referencedColumnNames="id"
+			constraintName="fkey_geographic_bounding_box_dataset" deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE"/>
+		
+	</changeSet>
+	
+</databaseChangeLog>

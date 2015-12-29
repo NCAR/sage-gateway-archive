@@ -1,0 +1,24 @@
+<!--
+THIS CHANGESET HAS BEEN DEPRECATED AND SHOULD NOT BE RUN.  THE SQL FROM THE static-test-data-esg-ncar-temporary.sql
+AND static-test-data-esg-pcmdi-temporary.sql SHOULD HAVE BEEN RUN BY HAND ON THE SERVER INSTEAD OF BY A CHANGESET.
+PLEASE SEE SGF-1508 FOR MORE INFORMATION
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="Liquibase/update/changesets/20100226-SGF-1282.xml">
+           
+    <changeSet id="20100226-SGF-1182a" author="luca" context="esg_ncar">
+        <comment>Inserting GriFTP test data for NCAR</comment>
+        <sqlFile  path="Liquibase/update/staticdata/static-test-data-esg-ncar-temporary.sql" endDelimiter=";" splitStatements="false" />
+    </changeSet>
+    
+    <changeSet id="20100226-SGF-1182b" author="luca" context="esg_pcmdi">
+        <comment>Inserting GriFTP test data for PCMDI</comment>
+        <sqlFile  path="Liquibase/update/staticdata/static-test-data-esg-pcmdi-temporary.sql" endDelimiter=";" splitStatements="false" />
+    </changeSet>
+            
+</databaseChangeLog>
+
+-->

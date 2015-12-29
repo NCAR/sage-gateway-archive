@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+
+    <bean id="topicController" class="sgf.gateway.web.controllers.topic.TopicController">
+        <constructor-arg index="0" value="${views.topic}"/>
+        <constructor-arg index="1" ref="${topic.list.strategy}"/>
+    </bean>
+
+    <bean id="allTopicStrategy" class="sgf.gateway.web.controllers.topic.AllTopicsTopicListStrategy">
+        <constructor-arg index="0" ref="topicRepository"/>
+    </bean>
+
+    <bean id="cadisTopicStrategy" class="sgf.gateway.web.controllers.topic.CadisTaxonomyTopicListStrategy">
+        <constructor-arg index="0" ref="topicRepository"/>
+    </bean>
+
+    <bean id="scienceKeywordTopicController" class="sgf.gateway.web.controllers.topic.ScienceKeywordTopicController">
+        <constructor-arg index="0" ref="metadataRepository"/>
+        <constructor-arg index="1" ref="datasetRepository"/>
+    </bean>
+
+</beans>

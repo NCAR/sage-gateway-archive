@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="geoCodeQuartzJob" class="sgf.gateway.service.geocode.GeoCodeQuartzJob">
+        <constructor-arg name="enabled" value="${filedownload.geocode.service.enabled}"/>
+        <constructor-arg name="service" ref="geoCodeService"/>
+        <constructor-arg name="exceptionHandlingService" ref="exceptionHandlingService"/>
+    </bean>
+
+    <bean id="geoCodeService" class="sgf.gateway.service.geocode.impl.ExceptionHandlingGeoCodeService">
+        <constructor-arg name="dao" ref="metricsDownloadDao"/>
+        <constructor-arg name="facade" ref="ipinfodbRemoteGeoCodeFacade"/>
+        <constructor-arg name="exceptionService" ref="exceptionHandlingService"/>
+    </bean>
+
+    <bean id="remoteGeoCodeFacadeRestTemplate" class="org.springframework.web.client.RestTemplate">
+        <constructor-arg index="0" ref="geoCodeHttpComponentsClientHttpRequestFactory"/>
+        <property name="messageConverters">
+            <list>
+                <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="ipinfodbRemoteGeoCodeFacade" class="sgf.gateway.service.geocode.ipinfodb.IpinfodbRemoteGeoCodeFacade">
+        <constructor-arg name="restTemplate" ref="remoteGeoCodeFacadeRestTemplate"/>
+        <constructor-arg name="uriTemplate"
+                         value="http://api.ipinfodb.com/v3/ip-city/?key=${filedownload.geocode.service.ipinfodb.key}&amp;ip={0}&amp;format=json"/>
+    </bean>
+
+    <bean id="geobytesRemoteGeoCodeFacade" class="sgf.gateway.service.geocode.geobytes.GeobytesRemoteGeoCodeFacade">
+        <constructor-arg name="restTemplate" ref="remoteGeoCodeFacadeRestTemplate"/>
+        <constructor-arg name="uriTemplate"
+                         value="http://www.geobytes.com/IpLocator.htm?GetLocation&amp;template=json.txt&amp;ipaddress={0}"/>
+    </bean>
+
+    <bean id="geoCodeHttpComponentsClientHttpRequestFactory"
+          class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
+        <constructor-arg index="0" ref="geoCodeHttpClient4"/>
+    </bean>
+
+    <bean id="geoCodeHttpClient4" factory-method="create" factory-bean="geoCodeHttpClient4Factory"/>
+
+    <bean id="geoCodeHttpClient4Factory" class="sgf.gateway.utils.httpclient.impl.HttpClient4FactoryImpl">
+        <constructor-arg name="connectTimeout" value="60000"/>
+        <constructor-arg name="readTimeout" value="60000"/>
+    </bean>
+
+</beans>

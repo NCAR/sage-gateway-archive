@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <typedef name="Taxonomy" class="sgf.gateway.utils.hibernate.EnumUserType">
+        <param name="enumClassName">sgf.gateway.model.metadata.Taxonomy</param>
+        <param name="columnType">INTEGER</param>
+    </typedef>
+
+    <class name="sgf.gateway.model.metadata.LocationImpl" table="location" schema="metadata">
+
+        <id name="identifier" column="id" type="sgf.gateway.utils.hibernate.UUIDUserType" access="field"/>
+
+        <version name="version" column="version" unsaved-value="null" access="field"/>
+
+        <property name="name" column="name" type="string" access="field"/>
+        <property name="description" column="description" type="string" access="field"/>
+        <property name="type" column="taxonomy_id" type="Taxonomy" access="field"/>
+
+    </class>
+
+    <query name="findLocationByNameAndTaxonomy" cacheable="false">
+        <![CDATA[
+            from LocationImpl location where location.name = :name and location.type = :taxonomy
+        ]]>
+    </query>
+
+    <query name="findLocations" cacheable="true">
+        <![CDATA[
+            from LocationImpl location
+        ]]>
+    </query>
+
+</hibernate-mapping>

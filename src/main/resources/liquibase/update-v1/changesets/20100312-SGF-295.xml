@@ -1,0 +1,26 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" logicalFilePath="/Liquibase/update/changesets/20100312-SGF-295.xml">
+
+    <!-- Include the changes sets for this particular release -->
+    <changeSet author="nch" id="20100312-SGF-295">
+
+        <dropForeignKeyConstraint constraintName="fkey_file_download_1" baseTableSchemaName="metrics" baseTableName="file_download" />
+
+        <dropForeignKeyConstraint constraintName="fkey_file_download_3" baseTableSchemaName="metrics" baseTableName="file_download" />
+
+        <sql>
+            ALTER TABLE ONLY metrics.file_download ADD CONSTRAINT fkey_file_download_1 FOREIGN KEY (users_id) REFERENCES "security"."user" (id) MATCH FULL ON UPDATE CASCADE ON DELETE NO ACTION DEFERRABLE INITIALLY DEFERRED
+        </sql>
+
+        <sql>
+            ALTER TABLE ONLY metrics.file_download ADD CONSTRAINT fkey_file_download_3 FOREIGN KEY (user_agent_id) REFERENCES metrics.user_agent (id) MATCH FULL ON UPDATE CASCADE ON DELETE SET NULL DEFERRABLE INITIALLY DEFERRED
+        </sql>
+
+        <addForeignKeyConstraint constraintName="fkey_file_download_2" baseTableSchemaName="metrics" baseTableName="file_download" baseColumnNames="file_access_point_id" referencedTableSchemaName="metadata" referencedTableName="file_access_point" referencedColumnNames="id" deleteCascade="true" initiallyDeferred="true" />
+
+    </changeSet>
+
+</databaseChangeLog>

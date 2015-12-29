@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="downloadDatasetsController" class="sgf.gateway.web.controllers.download.DownloadDatasetsController">
+        <constructor-arg index="0" ref="runtimeUserService"/>
+        <constructor-arg index="1" ref="datasetRepository"/>
+        <constructor-arg index="2" ref="logicalFileRepository"/>
+        <constructor-arg index="3" ref="authorizationService"/>
+        <constructor-arg index="4" ref="httpEndpointStrategy"/>
+        <constructor-arg index="5" ref="gridftpEndpointStrategy"/>
+        <constructor-arg index="6" ref="srmEndpointStrategy"/>
+    </bean>
+
+    <bean id="downloadDatasetsScriptController"
+          class="sgf.gateway.web.controllers.download.DownloadDatasetsScriptController">
+        <constructor-arg index="0" ref="runtimeUserService"/>
+        <constructor-arg index="1" ref="gateway"/>
+        <constructor-arg index="2" ref="datasetRepository"/>
+        <constructor-arg index="3" ref="logicalFileRepository"/>
+        <constructor-arg index="4" ref="authorizationService"/>
+        <constructor-arg index="5" ref="httpEndpointStrategy"/>
+        <constructor-arg index="6" ref="gridftpEndpointStrategy"/>
+        <constructor-arg index="7" ref="wgetScriptViewSelector"/>
+    </bean>
+
+    <bean id="generateWGetScriptController"
+          class="sgf.gateway.web.controllers.download.GetWgetDownloadScriptController">
+        <constructor-arg index="0" ref="gateway"/>
+        <constructor-arg index="1" ref="metadataService"/>
+        <constructor-arg index="2" ref="httpEndpointStrategy"/>
+        <constructor-arg index="3" ref="runtimeUserService"/>
+        <constructor-arg index="4" ref="wgetScriptViewSelector"/>
+    </bean>
+
+    <bean id="generateDMLScriptController" class="sgf.gateway.web.controllers.download.GetDMLDownloadScriptController">
+        <constructor-arg index="0" ref="gateway"/>
+        <constructor-arg index="1" ref="metadataService"/>
+        <constructor-arg index="2" ref="gridftpEndpointStrategy"/>
+        <constructor-arg index="3" ref="runtimeUserService"/>
+    </bean>
+
+    <bean id="fileDownloadHandler" class="sgf.gateway.web.controllers.download.FileDownloadHandler">
+    </bean>
+
+    <bean id="downloadEventPublisher"
+          class="sgf.gateway.event.publisher.impl.SpringApplicationContextDownloadEventPublisherImpl"/>
+
+    <bean id="downloadMetricsMediator" class="sgf.gateway.event.mediator.DownloadMetricsMediator">
+        <constructor-arg index="0" ref="metricsDownloadService"/>
+        <constructor-arg index="1" ref="userAgentService"/>
+        <constructor-arg index="2" ref="fileDownloadFactory"/>
+    </bean>
+
+    <bean id="fileDownloadController" class="sgf.gateway.web.controllers.download.FileDownloadController">
+        <constructor-arg index="0" ref="runtimeUserService"/>
+        <constructor-arg index="1" ref="authorizationService"/>
+        <constructor-arg index="2" ref="logicalFileRepository"/>
+        <constructor-arg index="3" ref="fileDownloadHandler"/>
+        <constructor-arg index="4" ref="downloadEventPublisher"/>
+        <constructor-arg index="5" ref="dateStrategy"/>
+        <constructor-arg index="6" ref="exceptionHandlingService"/>
+        <constructor-arg index="7" ref="httpEndpointStrategy"/>
+    </bean>
+
+    <bean id="downloadHelpController" class="sgf.gateway.web.controllers.download.DownloadHelpController">
+        <constructor-arg index="0" ref="runtimeUserService"/>
+        <constructor-arg index="1" ref="gateway"/>
+    </bean>
+
+</beans>

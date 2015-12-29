@@ -1,0 +1,47 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="/Liquibase/update-v2/changesets/20120314-SGF-3150.xml">
+
+    <changeSet id="20120314-SGF-3150" author="sgf">
+
+        <sql>
+            CREATE TABLE metadata.award
+            (
+            project_id uuid NOT NULL,
+            award_number text NOT NULL,
+            idx_order integer NOT NULL,
+            CONSTRAINT pkey_award PRIMARY KEY (project_id, award_number)
+            )
+            WITH (
+            OIDS=FALSE
+            );
+        </sql>
+
+        <!--
+                <sql>
+                   ALTER TABLE metadata.award
+                  ADD CONSTRAINT award_unique UNIQUE (
+                    project_id,
+                    award_number
+                  );
+                 </sql>
+                  -->
+
+        <sql>
+            ALTER TABLE metadata.award OWNER TO "${database.role.admin}";
+            REVOKE ALL ON TABLE metadata.award FROM public;
+            GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE metadata.award TO "${database.role.user}";
+            GRANT SELECT ON TABLE metadata.award TO "${database.role.read_only}";
+        </sql>
+
+        <addForeignKeyConstraint constraintName="fkey_project_award_id"
+                                 baseTableSchemaName="metadata" baseTableName="award" baseColumnNames="project_id"
+                                 referencedTableSchemaName="metadata" referencedTableName="project" referencedColumnNames="id"
+                                 onUpdate="CASCADE" onDelete="CASCADE" />
+
+    </changeSet>
+
+</databaseChangeLog>
+

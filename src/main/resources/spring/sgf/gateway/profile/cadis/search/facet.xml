@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="typeFacet" class="java.lang.String">
+        <constructor-arg value="Type"/>
+    </bean>
+    <bean id="projectFacet" class="java.lang.String">
+        <constructor-arg value="Project"/>
+    </bean>
+    <bean id="instrumentFacet" class="java.lang.String">
+        <constructor-arg value="Instrument"/>
+    </bean>
+    <bean id="disciplineFacet" class="java.lang.String">
+        <constructor-arg value="Science Keyword Topic"/>
+    </bean>
+    <bean id="locationFacet" class="java.lang.String">
+        <constructor-arg value="Location"/>
+    </bean>
+    <bean id="platformFacet" class="java.lang.String">
+        <constructor-arg value="Platform Type"/>
+    </bean>
+    <bean id="dataCenterFacet" class="java.lang.String">
+        <constructor-arg value="Data Center"/>
+    </bean>
+
+    <bean id="facetNames" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <ref bean="typeFacet"/>
+                <ref bean="dataCenterFacet"/>
+                <ref bean="instrumentFacet"/>
+                <ref bean="disciplineFacet"/>
+                <ref bean="locationFacet"/>
+                <ref bean="platformFacet"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="facetFields" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <ref bean="typeField"/>
+                <ref bean="dataCenterField"/>
+                <ref bean="instrumentField"/>
+                <ref bean="disciplineField"/>
+                <ref bean="locationField"/>
+                <ref bean="platformField"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="facetFieldMap" class="java.util.HashMap">
+        <constructor-arg>
+            <map>
+                <entry key-ref="typeFacet" value-ref="typeField"/>
+                <entry key-ref="dataCenterFacet" value-ref="dataCenterField"/>
+                <entry key-ref="instrumentFacet" value-ref="instrumentField"/>
+                <entry key-ref="disciplineFacet" value-ref="disciplineField"/>
+                <entry key-ref="locationFacet" value-ref="locationField"/>
+                <entry key-ref="platformFacet" value-ref="platformField"/>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="fieldFacetMap" class="java.util.HashMap">
+        <constructor-arg>
+            <map>
+                <entry key-ref="typeField" value-ref="typeFacet"/>
+                <entry key-ref="dataCenterField" value-ref="dataCenterFacet"/>
+                <entry key-ref="instrumentField" value-ref="instrumentFacet"/>
+                <entry key-ref="disciplineField" value-ref="disciplineFacet"/>
+                <entry key-ref="locationField" value-ref="locationFacet"/>
+                <entry key-ref="platformField" value-ref="platformFacet"/>
+            </map>
+        </constructor-arg>
+    </bean>
+
+</beans>

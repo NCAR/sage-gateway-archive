@@ -1,0 +1,60 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   logicalFilePath="/Liquibase/update-v2/changesets/20120824-GTWY-3435.xml">
+
+    <changeSet id="20120824-GTWY-3435" author="sgf">
+
+
+        <sql>
+            ALTER TABLE metadata.project ADD COLUMN continuing_project_id uuid;
+            ALTER TABLE metadata.project ADD COLUMN continuation_of_project_id uuid;
+            ALTER TABLE metadata.project ADD COLUMN period_of_performance_start timestamp with time zone;
+            ALTER TABLE metadata.project ADD COLUMN period_of_performance_end timestamp with time zone;
+        </sql>
+
+        <sql>
+
+            UPDATE metadata.project
+            SET
+            continuing_project_id = cadis_project.continuing_project_id,
+            continuation_of_project_id = cadis_project.continuation_of_project_id,
+            period_of_performance_start = cadis_project.period_of_performance_start,
+            period_of_performance_end = cadis_project.period_of_performance_end
+            FROM
+            metadata.cadis_project cadis_project
+            WHERE
+            cadis_project.id = metadata.project.id
+            ;
+
+            commit;
+
+        </sql>
+
+
+        <sql>
+
+            ALTER TABLE metadata.project ADD CONSTRAINT fkey_continuation_of_project_id FOREIGN KEY (continuation_of_project_id)
+            REFERENCES metadata.project (id) MATCH SIMPLE
+            ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
+
+            ALTER TABLE metadata.project ADD CONSTRAINT fkey_continuing_project_id FOREIGN KEY (continuing_project_id)
+            REFERENCES metadata.project (id) MATCH SIMPLE
+            ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
+
+        </sql>
+
+        <sql>
+
+            ALTER TABLE  metadata.cadis_project_typed_contact DROP constraint fkey_cadis_project_typed_contact_cadis_project_id;
+
+            ALTER TABLE metadata.cadis_project_typed_contact ADD CONSTRAINT fkey_cadis_project_typed_contact_cadis_project_id FOREIGN KEY (cadis_project_id)
+            REFERENCES metadata.project (id) MATCH SIMPLE
+            ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
+
+        </sql>
+
+
+    </changeSet>
+
+</databaseChangeLog>

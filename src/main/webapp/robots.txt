@@ -1,0 +1,5 @@
+#
+# basic do not allow
+#
+User-agent: *
+Disallow: /

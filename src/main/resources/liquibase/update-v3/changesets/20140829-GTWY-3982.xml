@@ -1,0 +1,22 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   logicalFilePath="/Liquibase/update-v3/changesets/20140829-GTWY-3982.xml">
+
+<changeSet id="20140829-GTWY-3982.0" author="sgf">
+
+    <sql>
+    
+    DROP TABLE metadata.dataset_contact_xref;
+    DROP TABLE metadata.dataset_typed_contact;
+    DROP TABLE metadata.cadis_project_typed_contact;
+    DROP TABLE metadata.contact_type;
+    DROP TABLE metadata.dataset_citation;
+    DROP TABLE metadata.contact;
+		
+    </sql>
+
+</changeSet>
+
+
+</databaseChangeLog>

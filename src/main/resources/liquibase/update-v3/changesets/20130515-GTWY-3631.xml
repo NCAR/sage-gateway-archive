@@ -1,0 +1,18 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20130515-GTWY-3631.xml">
+
+	<changeSet id="20130515-GTWY-3631" author="sgf">
+
+	<sql>
+		ALTER TABLE metadata.dataset  DROP CONSTRAINT IF EXISTS dataset_short_name_key;
+	</sql>
+
+	<sql>
+		ALTER TABLE metadata.dataset ADD CONSTRAINT dataset_short_name_key UNIQUE (short_name); 
+	</sql>
+
+	</changeSet>
+
+</databaseChangeLog>

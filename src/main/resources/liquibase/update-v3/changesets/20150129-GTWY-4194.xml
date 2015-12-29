@@ -1,0 +1,14 @@
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+				   logicalFilePath="/Liquibase/update-v3/changesets/20150129-GTWY-4194">
+
+	<changeSet id="20150129-GTWY-4194" author="sgf">
+
+	<sql>
+		ALTER TABLE metadata.broadcast_message ALTER COLUMN message_text DROP NOT NULL;
+	</sql>
+	</changeSet>
+
+</databaseChangeLog>

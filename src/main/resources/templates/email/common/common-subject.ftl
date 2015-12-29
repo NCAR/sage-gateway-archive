@@ -1,0 +1,1 @@
+[${gateway.baseURL.host}] ${commonSubject}

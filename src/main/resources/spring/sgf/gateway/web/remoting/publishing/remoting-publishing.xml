@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <!-- Spring configuration for remoting ESG Publishing Services -->
+
+    <bean id="remotingPublishingUrlMappingsESG"
+          class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="mappings">
+            <props>
+                <prop key="/remote/secure/client-cert/hessian/publishingService">esgPublishingServiceHessian</prop>
+                <prop key="/remote/hessian/guest/remoteMetadataService">remoteMetadataServiceHessian</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- Remote Publishing Service (Hessian) -->
+    <bean name="esgPublishingServiceHessian" class="org.springframework.remoting.caucho.HessianServiceExporter">
+        <property name="service">
+            <ref bean="esgRemotePublishingService"/>
+        </property>
+        <property name="serviceInterface">
+            <value>sgf.gateway.service.publishing.api.RemotePublishingService</value>
+        </property>
+    </bean>
+
+    <!-- Remote Metadata Service (Hessian) -->
+    <bean name="remoteMetadataServiceHessian" class="org.springframework.remoting.caucho.HessianServiceExporter">
+        <property name="service">
+            <ref bean="remoteMetadataService"/>
+        </property>
+        <property name="serviceInterface">
+            <value>sgf.gateway.service.xml.api.RemoteMetadataService</value>
+        </property>
+    </bean>
+
+</beans>

@@ -1,0 +1,21 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   logicalFilePath="/Liquibase/update-v2/changesets/20121205-GTWY-3510.xml">
+
+    <changeSet id="20121205-GTWY-3510.0" author="sgf">
+        <sql>
+            ALTER TABLE metrics.file_download ADD COLUMN bytes_sent bigint NOT NULL DEFAULT 0;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20121205-GTWY-3510.1" author="sgf">
+        <sql>
+            UPDATE metrics.file_download
+            SET bytes_sent = CASE WHEN success = true THEN logical_file_size END
+            WHERE success = true;
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

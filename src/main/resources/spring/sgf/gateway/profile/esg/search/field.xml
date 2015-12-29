@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="idField" class="java.lang.String">
+        <constructor-arg value="id"/>
+    </bean>
+    <bean id="typeField" class="java.lang.String">
+        <constructor-arg value="type"/>
+    </bean>
+    <bean id="nameField" class="java.lang.String">
+        <constructor-arg value="name"/>
+    </bean>
+    <bean id="descriptionField" class="java.lang.String">
+        <constructor-arg value="description"/>
+    </bean>
+    <bean id="shortNameField" class="java.lang.String">
+        <constructor-arg value="short_name"/>
+    </bean>
+    <bean id="authoritativeSourceURIField" class="java.lang.String">
+        <constructor-arg value="authoritativeSourceURI"/>
+    </bean>
+    <bean id="detailsURIField" class="java.lang.String">
+        <constructor-arg value="detailsURI"/>
+    </bean>
+    <bean id="textIdField" class="java.lang.String">
+        <constructor-arg value="text_id"/>
+    </bean>
+    <bean id="experimentField" class="java.lang.String">
+        <constructor-arg value="experiment"/>
+    </bean>
+    <bean id="realmField" class="java.lang.String">
+        <constructor-arg value="realm"/>
+    </bean>
+    <bean id="projectField" class="java.lang.String">
+        <constructor-arg value="project"/>
+    </bean>
+    <bean id="instituteField" class="java.lang.String">
+        <constructor-arg value="institute"/>
+    </bean>
+    <bean id="modelField" class="java.lang.String">
+        <constructor-arg value="model"/>
+    </bean>
+    <bean id="frequencyField" class="java.lang.String">
+        <constructor-arg value="frequency"/>
+    </bean>
+    <bean id="productTypeField" class="java.lang.String">
+        <constructor-arg value="product_type"/>
+    </bean>
+    <bean id="variableField" class="java.lang.String">
+        <constructor-arg value="variable"/>
+    </bean>
+    <bean id="variableShortNameField" class="java.lang.String">
+        <constructor-arg value="variable_short_name"/>
+    </bean>
+    <bean id="authorizationField" class="java.lang.String">
+        <constructor-arg value="authorization"/>
+    </bean>
+    <bean id="filenameField" class="java.lang.String">
+        <constructor-arg value="filename"/>
+    </bean>
+    <bean id="physicalDomainField" class="java.lang.String">
+        <constructor-arg value="physical_domain"/>
+    </bean>
+    <bean id="ensembleField" class="java.lang.String">
+        <constructor-arg value="ensemble"/>
+    </bean>
+    <bean id="doiField" class="java.lang.String">
+        <constructor-arg value="doi"/>
+    </bean>
+    <bean id="bucketField" class="java.lang.String">
+        <constructor-arg value="bucket"/>
+    </bean>
+
+</beans>

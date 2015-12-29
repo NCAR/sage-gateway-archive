@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="typeFacet" class="java.lang.String">
+        <constructor-arg value="Type"/>
+    </bean>
+    <bean id="projectFacet" class="java.lang.String">
+        <constructor-arg value="Project"/>
+    </bean>
+    <bean id="instituteFacet" class="java.lang.String">
+        <constructor-arg value="Institute"/>
+    </bean>
+    <bean id="modelFacet" class="java.lang.String">
+        <constructor-arg value="Model"/>
+    </bean>
+    <bean id="experimentFacet" class="java.lang.String">
+        <constructor-arg value="Experiment"/>
+    </bean>
+    <bean id="frequencyFacet" class="java.lang.String">
+        <constructor-arg value="Frequency"/>
+    </bean>
+    <bean id="productTypeFacet" class="java.lang.String">
+        <constructor-arg value="Product"/>
+    </bean>
+    <bean id="realmFacet" class="java.lang.String">
+        <constructor-arg value="Realm"/>
+    </bean>
+    <bean id="variableFacet" class="java.lang.String">
+        <constructor-arg value="CF Variable"/>
+    </bean>
+    <bean id="variableShortNameFacet" class="java.lang.String">
+        <constructor-arg value="Variable Name"/>
+    </bean>
+    <bean id="ensembleFacet" class="java.lang.String">
+        <constructor-arg value="Ensemble"/>
+    </bean>
+    <bean id="physicalDomainFacet" class="java.lang.String">
+        <constructor-arg value="Physical Domain"/>
+    </bean>
+
+    <bean id="facetNames" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <ref bean="typeFacet"/>
+                <ref bean="projectFacet"/>
+                <ref bean="instituteFacet"/>
+                <ref bean="modelFacet"/>
+                <ref bean="experimentFacet"/>
+                <ref bean="frequencyFacet"/>
+                <ref bean="productTypeFacet"/>
+                <ref bean="realmFacet"/>
+                <ref bean="variableFacet"/>
+                <ref bean="variableShortNameFacet"/>
+                <ref bean="ensembleFacet"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="facetFields" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <ref bean="typeField"/>
+                <ref bean="projectField"/>
+                <ref bean="instituteField"/>
+                <ref bean="modelField"/>
+                <ref bean="experimentField"/>
+                <ref bean="frequencyField"/>
+                <ref bean="productTypeField"/>
+                <ref bean="realmField"/>
+                <ref bean="variableField"/>
+                <ref bean="variableShortNameField"/>
+                <ref bean="ensembleField"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="facetFieldMap" class="java.util.HashMap">
+        <constructor-arg>
+            <map>
+                <entry key-ref="typeFacet" value-ref="typeField"/>
+                <entry key-ref="projectFacet" value-ref="projectField"/>
+                <entry key-ref="instituteFacet" value-ref="instituteField"/>
+                <entry key-ref="modelFacet" value-ref="modelField"/>
+                <entry key-ref="experimentFacet" value-ref="experimentField"/>
+                <entry key-ref="frequencyFacet" value-ref="frequencyField"/>
+                <entry key-ref="productTypeFacet" value-ref="productTypeField"/>
+                <entry key-ref="realmFacet" value-ref="realmField"/>
+                <entry key-ref="variableFacet" value-ref="variableField"/>
+                <entry key-ref="variableShortNameFacet" value-ref="variableShortNameField"/>
+                <entry key-ref="ensembleFacet" value-ref="ensembleField"/>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="fieldFacetMap" class="java.util.HashMap">
+        <constructor-arg>
+            <map>
+                <entry key-ref="typeField" value-ref="typeFacet"/>
+                <entry key-ref="projectField" value-ref="projectFacet"/>
+                <entry key-ref="instituteField" value-ref="instituteFacet"/>
+                <entry key-ref="modelField" value-ref="modelFacet"/>
+                <entry key-ref="experimentField" value-ref="experimentFacet"/>
+                <entry key-ref="frequencyField" value-ref="frequencyFacet"/>
+                <entry key-ref="productTypeField" value-ref="productTypeFacet"/>
+                <entry key-ref="realmField" value-ref="realmFacet"/>
+                <entry key-ref="variableField" value-ref="variableFacet"/>
+                <entry key-ref="variableShortNameField" value-ref="variableShortNameFacet"/>
+                <entry key-ref="ensembleField" value-ref="ensembleFacet"/>
+            </map>
+        </constructor-arg>
+    </bean>
+
+</beans>

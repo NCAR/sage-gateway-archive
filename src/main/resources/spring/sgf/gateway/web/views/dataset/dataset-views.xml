@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean name="browse/view-dataset-feed" class="sgf.gateway.web.views.dataset.AtomDatasetView">
+        <constructor-arg index="0" ref="gateway"/>
+    </bean>
+
+    <bean name="browse/view-dataset-version-feed" class="sgf.gateway.web.views.dataset.AtomDatasetVersionView">
+        <constructor-arg index="0" ref="gateway"/>
+    </bean>
+
+    <bean id="zipFilesView" class="sgf.gateway.web.views.dataset.file.ZipArchiveView">
+        <constructor-arg index="0" ref="runtimeUserService"/>
+        <constructor-arg index="1" ref="downloadEventPublisher"/>
+        <constructor-arg index="2" ref="dateStrategy"/>
+        <constructor-arg index="3" ref="exceptionHandlingService"/>
+        <constructor-arg index="4" ref="gateway"/>
+
+        <property name="contentType" value="application/zip"/>
+    </bean>
+</beans>

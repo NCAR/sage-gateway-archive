@@ -1,0 +1,13 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   logicalFilePath="/Liquibase/update-v2/changesets/20120115-GTWY-3563.xml">
+
+    <changeSet id="20120115-GTWY-3563" author="sgf">
+        <sql>
+            ALTER TABLE metadata.project ADD COLUMN project_group character varying(100);
+        </sql>
+    </changeSet>
+
+
+</databaseChangeLog>

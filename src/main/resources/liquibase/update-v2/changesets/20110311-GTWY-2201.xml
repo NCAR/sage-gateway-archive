@@ -1,0 +1,17 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet id="20110311-GTWY-2201" author="sgf" >
+
+        <dropNotNullConstraint tableName="user" schemaName="security" columnName="username"/>
+
+        <sql>
+            UPDATE security.user SET username = null WHERE password is null and upper(firstname) != 'GUEST';
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>
+

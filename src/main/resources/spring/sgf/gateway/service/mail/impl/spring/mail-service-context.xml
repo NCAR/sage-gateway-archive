@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="mailService" class="sgf.gateway.service.mail.impl.spring.MailServiceImpl">
+        <constructor-arg index="0" ref="${gateway.email.server}"/>
+        <constructor-arg index="1" ref="mailMessageFactory"/>
+        <constructor-arg index="2" ref="gateway"/>
+        <constructor-arg index="3" value="${gateway.administrator.email.bcc.list}"/>
+    </bean>
+
+</beans>

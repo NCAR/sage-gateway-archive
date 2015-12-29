@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.metadata.inventory.UnitImpl" table="unit" schema="metadata" lazy="false">
+        <cache usage="read-write"/>
+
+        <id name="identifier" column="id" type="sgf.gateway.utils.hibernate.UUIDUserType" access="field"/>
+
+        <version name="version" column="version" unsaved-value="null" access="field"/>
+
+        <property name="symbol" column="symbol" type="string" access="field"/>
+        <property name="name" column="name" type="string" access="field"/>
+        <property name="quantity" column="quantity" type="string" access="field"/>
+
+    </class>
+
+    <query name="findUnitBySymbol" cacheable="true">
+        <![CDATA[
+            from UnitImpl unit where lower(unit.symbol) = lower(:symbol)
+        ]]>
+    </query>
+
+</hibernate-mapping>

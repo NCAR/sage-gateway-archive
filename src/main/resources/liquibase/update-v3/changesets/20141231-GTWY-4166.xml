@@ -1,0 +1,23 @@
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20141231-GTWY-4166.xml">
+
+	<changeSet id="20141231-GTWY-4166" author="sgf">
+	
+		<sql>
+			alter table metrics.file_download add column geocode_latitude double precision;
+			alter table metrics.file_download add column geocode_longitude double precision;
+			alter table metrics.file_download add column geocode_country text;
+			alter table metrics.file_download add column geocode_country_code text;
+			alter table metrics.file_download add column geocode_date_updated timestamp with time zone;
+			alter table metrics.file_download add column geocode_city text;
+			alter table metrics.file_download add column geocode_state text;
+			alter table metrics.file_download add column whois_organization text;
+			alter table metrics.file_download add column whois_date_updated timestamp with time zone;
+		</sql>
+
+	</changeSet>
+
+</databaseChangeLog>

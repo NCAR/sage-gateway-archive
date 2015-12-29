@@ -1,0 +1,99 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                   logicalFilePath="/Liquibase/update-v3/changesets/20140702-GTWY-3966.xml">
+
+    <changeSet id="20140702-GTWY-3966.0" author="sgf">
+    
+    <sql>
+		-- insert bb rows from project values for missing bbs
+		INSERT into metadata.dataset_geographic_bounding_box (id, west_bound_longitude, east_bound_longitude, south_bound_latitude, north_bound_latitude) 
+			(SELECT p.dataset_id, p.northern_latitude, p.southern_latitude, p.western_longitude, p.eastern_longitude 
+			FROM metadata.project p
+			JOIN metadata.dataset d on p.dataset_id = d.id
+			LEFT JOIN metadata.dataset_geographic_bounding_box bb on d.id = bb.id
+			WHERE bb.id is null);
+    
+    </sql>
+    
+    </changeSet>
+    
+	<changeSet id="20140630-GTWY-3966.1" author="sgf">
+	
+	<sql>
+		ALTER TABLE metadata.dataset_time_period ALTER end_date DROP NOT NULL;
+	</sql>
+
+    </changeSet>
+    
+    <changeSet id="20140630-GTWY-3966.2" author="sgf">
+    <sql>
+		-- insert date rows missing in dataset from project values.  MUST allow nulls in end date first.
+		INSERT into metadata.dataset_time_period (id, begin_date, end_date) 
+			(SELECT p.dataset_id, period_of_performance_start, period_of_performance_end 
+			FROM metadata.project p 
+			JOIN metadata.dataset d on p.dataset_id = d.id
+			LEFT JOIN metadata.dataset_time_period t on d.id = t.id
+			WHERE t.id is null);
+	</sql>
+	
+	</changeSet>
+    
+    <changeSet id="20140630-GTWY-3966.3" author="sgf">
+
+	<sql>
+		-- match up bb values in dataset to project	values that differ (omit null project lat/longs)
+		UPDATE metadata.dataset_geographic_bounding_box bb
+		set north_bound_latitude = p.northern_latitude, south_bound_latitude = p.southern_latitude, east_bound_longitude = p.eastern_longitude, west_bound_longitude = p.western_longitude
+		from metadata.project p
+		where bb.id = p.dataset_id
+		and bb.id in (  --23
+			select  bb.id
+			from metadata.project p2
+			join metadata.dataset d on p2.dataset_id = d.id
+			join metadata.descriptive_metadata md on md.id = d.id
+			join metadata.dataset_geographic_bounding_box bb on bb.id = md.id
+			where northern_latitude != north_bound_latitude OR southern_latitude != south_bound_latitude OR eastern_longitude != east_bound_longitude OR western_longitude != west_bound_longitude
+		);
+	</sql>
+	
+	</changeSet>
+	
+	<changeSet id="20140630-GTWY-3966.3.1" author="sgf">
+
+	<sql>
+		-- match up start/end values in dataset to projectvalues that differ
+		UPDATE metadata.dataset_time_period t
+		set begin_date = p.period_of_performance_start, end_date = p.period_of_performance_end
+		from metadata.project p
+		where t.id = p.dataset_id
+		and t.id in (  
+ 			select  t2.id
+ 			from metadata.project p2
+ 			join metadata.dataset d on p2.dataset_id = d.id
+ 			join metadata.descriptive_metadata md on md.id = d.id
+ 			join metadata.dataset_time_period t2 on t2.id = md.id
+ 			where begin_date != period_of_performance_start OR end_date != period_of_performance_end 
+		);
+	</sql>
+	
+	</changeSet>
+	
+	<changeSet id="20140630-GTWY-3966.4" author="sgf">
+	
+	<sql>
+		ALTER TABLE metadata.project DROP COLUMN northern_latitude;
+		ALTER TABLE metadata.project DROP COLUMN southern_latitude;
+		ALTER TABLE metadata.project DROP COLUMN western_longitude;
+		ALTER TABLE metadata.project DROP COLUMN eastern_longitude;
+	</sql>
+	
+	<sql>
+		ALTER TABLE metadata.project DROP COLUMN period_of_performance_start;
+		ALTER TABLE metadata.project DROP COLUMN period_of_performance_end;
+	
+	</sql>
+
+	</changeSet>
+
+</databaseChangeLog>

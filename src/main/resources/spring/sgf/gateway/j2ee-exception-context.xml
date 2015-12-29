@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver">
+        <property name="order" value="1"/>
+    </bean>
+
+    <bean id="simpleExceptionMapping" class="sgf.gateway.web.exception.resolvers.LoggingExceptionResolver">
+        <constructor-arg index="0" ref="exceptionHandlingService"/>
+        <property name="order" value="10"/>
+        <property name="exceptionMappings">
+            <props>
+                <prop key="sgf.gateway.saml.SAMLException">common/error/remote-attribute-query-error</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="accessDeniedExceptionResolver" class="sgf.gateway.web.exception.resolvers.AccessDeniedExceptionResolver">
+        <property name="order" value="20"/>
+        <property name="runtimeUserService" ref="runtimeUserService"/>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="order" value="20"/>
+        <property name="exceptionMappings">
+            <map>
+                <entry key="sgf.gateway.service.metadata.ProjectNotFoundException" value="common/error/project-not-found"/>
+                <entry key="sgf.gateway.service.metadata.DatasetNotFoundException" value="common/error/dataset-not-found"/>
+                <entry key="sgf.gateway.service.metadata.SimulationNotFoundException" value="common/error/simulation-not-found"/>
+                <entry key="sgf.gateway.service.metadata.TopicNotFoundException" value="common/error/topic-not-found"/>
+                <entry key="sgf.gateway.service.metadata.FileNotFoundException" value="common/error/file-not-found"/>
+                <entry key="sgf.gateway.service.metadata.ObjectNotFoundException" value="common/error/object-not-found"/>
+                <entry key="sgf.gateway.service.metadata.ResponsiblePartyNotFoundException" value="common/error/responsibleparty-not-found"/>
+            </map>
+        </property>
+        <property name="statusCodes">
+            <map>
+                <entry key="common/error/project-not-found" value="404"/>
+                <entry key="common/error/dataset-not-found" value="404"/>
+                <entry key="common/error/simulation-not-found" value="404"/>
+                <entry key="common/error/topic-not-found" value="404"/>
+                <entry key="common/error/file-not-found" value="404"/>
+                <entry key="common/error/files-not-found" value="404"/>
+                <entry key="common/error/object-not-found" value="404"/>
+                <entry key="common/error/responsibleparty-not-found" value="404"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="defaultHandlerExceptionResolver"
+          class="org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver">
+        <property name="order" value="1000"/>
+    </bean>
+
+    <!-- Uncomment to test the exception resolvers -->
+
+    <!--<bean id="throwAcegiException" class="sgf.gateway.web.controllers.exception.stub.ThrowAcegiException" />-->
+    <!--<bean id="throwArgumentException" class="sgf.gateway.web.controllers.exception.stub.ThrowArgumentException" />-->
+    <!--<bean id="throwSocketException" class="sgf.gateway.web.controllers.exception.stub.ThrowSocketException" />-->
+    <!--<bean id="throwRuntimeException" class="sgf.gateway.web.controllers.exception.stub.ThrowRuntimeException" />-->
+
+</beans>

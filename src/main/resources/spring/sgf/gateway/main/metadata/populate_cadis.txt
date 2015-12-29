@@ -1,0 +1,44 @@
+# Atmospheric discipline projects
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Atmosphere/Cloud_Properties/Cloud_Properties.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Atmosphere/O-Buoy_project/O-Buoy_project.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Atmosphere/Atmospheric_Measurements/Atmospheric_Measurements.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Atmosphere/UWISC_Lidar_Data_Products/UWISC_Lidar_Data_Products.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Atmosphere/OASIS/OASIS.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Atmosphere/IASOA-Eureka/IASOA-Eureka.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Atmosphere/Pan-Arctic_Circulation/Pan-Arctic_Circulation.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Atmosphere/UV_Monitoring_Project/UV_Monitoring_Project.thredds.xml
+# Data Management and Coordination
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Data_Management_and_Coordination/CADIS/CADIS.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Data_Management_and_Coordination/ELOKA/ELOKA.thredds.xml
+# Human Dimension discipline projects
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Human_Dimensions/Arctic_Human_Environment/Arctic_Human_Environment.thredds.xml
+# Hydrology and Terrestrial Cryosphere discipline projects
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Hydrology_and_Terrestrial_Cryosphere/Arctic-GRO/Arctic-GRO.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Hydrology_and_Terrestrial_Cryosphere/Columbia_Glacier/Columbia_Glacier.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Hydrology_and_Terrestrial_Cryosphere/Permafrost_Observatories/Permafrost_Observatories.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Hydrology_and_Terrestrial_Cryosphere/Kuparuk_River_Basin/Kuparuk_River_Basin.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Hydrology_and_Terrestrial_Cryosphere/Snow-Net/Snow-Net.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Hydrology_and_Terrestrial_Cryosphere/Thermal_State_Of_Permafrost/Thermal_State_Of_Permafrost.thredds.xml
+# Ocean and Sea Ice discipline projects
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Ocean_and_Sea_Ice/Hydrographic_Surveys/Hydrographic_Surveys.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Ocean_and_Sea_Ice/Beaufort_Gyre_System/Beaufort_Gyre_System.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Ocean_and_Sea_Ice/Bering_Sea_Sub-Network/Bering_Sea_Sub-Network.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Ocean_and_Sea_Ice/Environmental_Obs/Environmental_Obs.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Ocean_and_Sea_Ice/Bering_Water_Properties/Bering_Water_Properties.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Ocean_and_Sea_Ice/IABP/IABP.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Ocean_and_Sea_Ice/Ice_Tethered_Array/Ice_Tethered_Array.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Ocean_and_Sea_Ice/Ice_Mass_Buoys/Ice_Mass_Buoys.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Ocean_and_Sea_Ice/Davis_Strait_Exchanges/Davis_Strait_Exchanges.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Ocean_and_Sea_Ice/Modular_Arctic_Observing/Modular_Arctic_Observing.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Ocean_and_Sea_Ice/Arctic_Waters_Dynamics/Arctic_Waters_Dynamics.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Ocean_and_Sea_Ice/Ocean_Ice_Interaction/Ocean_Ice_Interaction.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Ocean_and_Sea_Ice/Bering_Strait_Fluxes/Bering_Strait_Fluxes.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Ocean_and_Sea_Ice/SIZONET/SIZONET.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Ocean_and_Sea_Ice/Ocean_Heat_Salt_Fluxes/Ocean_Heat_Salt_Fluxes.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Ocean_and_Sea_Ice/Ocean_Water_Properties/Ocean_Water_Properties.thredds.xml
+# Terrestrial Ecosystem discipline projects
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Terrestrial_Ecosystems/Carbon_Water_Energy_Balance/Carbon_Water_Energy_Balance.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Terrestrial_Ecosystems/Arctic_Ecosystem_Changes/Arctic_Ecosystem_Changes.thredds.xml
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Terrestrial_Ecosystems/Terrestrial_CEON/Terrestrial_CEON.thredds.xml
+# Supporting Data Sets discipline projects
+-perm Guest READ http://dataportal.ucar.edu/metadata/cadis-working/Supporting_Data_Sets/Ancillary_Data_Sets/Ancillary_Data_Sets.thredds.xml

@@ -1,0 +1,53 @@
+#
+# As a placeholder, recall that the top-level catalog is at:
+#     http://data.eol.ucar.edu/jedi/catalog/ucar.ncar.eol.thredds.xml
+#
+
+# ARCSS: NSF Arctic System Science 
+http://data.eol.ucar.edu/jedi/catalog/ucar.ncar.eol.project.ARCSS.thredds.xml
+
+# ACADIS: Advanced - Cooperative Arctic Data and Information Service 
+http://data.eol.ucar.edu/jedi/catalog/ucar.ncar.eol.project.ACADIS.thredds.xml
+
+
+# AMTS: Arctic Mesopause Temperature Study
+http://data.eol.ucar.edu/jedi/catalog/ucar.ncar.eol.project.AMTS.thredds.xml
+
+# ARC-MIP: Arctic Regional Climate Model Intercomparison Project 
+http://data.eol.ucar.edu/jedi/catalog/ucar.ncar.eol.project.ARC_MIP.thredds.xml
+
+# ATLAS: Arctic Transitions in the Land-Atmosphere System
+http://data.eol.ucar.edu/jedi/catalog/ucar.ncar.eol.project.ATLAS.thredds.xml
+
+# BARROW: The Barrow Project
+http://data.eol.ucar.edu/jedi/catalog/ucar.ncar.eol.project.BARROW.thredds.xml
+
+# BASE: Beaufort Arctic Storms Experiment
+http://data.eol.ucar.edu/jedi/catalog/ucar.ncar.eol.project.BASE.thredds.xml
+
+# BeringSea: The Bering Sea Project: BEST/BSIERP
+http://data.eol.ucar.edu/jedi/catalog/ucar.ncar.eol.project.BEST.thredds.xml
+http://data.eol.ucar.edu/jedi/catalog/ucar.ncar.eol.project.BSIERP.thredds.xml
+
+# BOREAS: Boreal Ecosystem Atmosphere Study
+http://data.eol.ucar.edu/jedi/catalog/ucar.ncar.eol.project.BOREAS.thredds.xml
+
+# ITEX: International Tundra Experiment
+http://data.eol.ucar.edu/jedi/catalog/ucar.ncar.eol.project.ITEX.thredds.xml
+
+# PacMARS: Pacific Marine Arctic Regional Synthesis
+http://data.eol.ucar.edu/jedi/catalog/ucar.ncar.eol.project.PacMARS.thredds.xml
+
+# SBI: Western Arctic Shelf Basin Interactions Project
+http://data.eol.ucar.edu/jedi/catalog/ucar.ncar.eol.project.SBI.thredds.xml
+
+# SHEBA: Surface Heat Budget of the Arctic Ocean Project
+http://data.eol.ucar.edu/jedi/catalog/ucar.ncar.eol.project.SHEBA.thredds.xml
+
+# DBO: Distributed Biological Observatory Project
+http://data.eol.ucar.edu/jedi/catalog/ucar.ncar.eol.project.DBO.thredds.xml
+
+# Other potential project-level catalogs: 
+
+# Transitions: Spatial and Temporal Transition of Climate and Ecosystems in the Circumpolar Arctic 
+# http://data.eol.ucar.edu/jedi/catalog/ucar.ncar.eol.project.Transitions.thredds.xml

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="metricsDownloadService" class="sgf.gateway.service.metrics.impl.spring.MetricsDownloadServiceImpl">
+        <constructor-arg index="0" ref="metricsDownloadDao"/>
+        <constructor-arg index="1" ref="fileDownloadFactory"/>
+        <constructor-arg index="2" ref="exceptionStrategy"/>
+    </bean>
+
+    <bean id="exceptionStrategy" class="sgf.gateway.service.metrics.impl.spring.ErrorReportingServiceExceptionStrategy">
+        <constructor-arg index="0" ref="exceptionHandlingService"/>
+    </bean>
+
+    <bean id="userAgentService" class="sgf.gateway.service.metrics.impl.spring.UserAgentServiceImpl">
+        <constructor-arg index="0" ref="userAgentDao"/>
+        <constructor-arg index="1" ref="userAgentFactory"/>
+    </bean>
+
+    <bean id="userMetricsService" class="sgf.gateway.service.metrics.impl.spring.UserMetricsServiceImpl">
+        <constructor-arg index="0" ref="userMetricsDao"/>
+        <constructor-arg index="1" ref="exceptionStrategy"/>
+        <constructor-arg index="2" ref="typeFacet"/>
+    </bean>
+
+    <bean id="metricsApplicationListener" class="sgf.gateway.web.listeners.MetricsApplicationListener">
+        <constructor-arg index="0" ref="userMetricsService"/>
+        <constructor-arg index="1" ref="runtimeUserService"/>
+        <constructor-arg index="2" ref="exceptionHandlingService"/>
+    </bean>
+
+</beans>

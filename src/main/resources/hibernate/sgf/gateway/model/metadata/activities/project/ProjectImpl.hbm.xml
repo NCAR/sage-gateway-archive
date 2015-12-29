@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <joined-subclass name="sgf.gateway.model.metadata.activities.project.ProjectImpl"
+                     extends="sgf.gateway.model.metadata.activities.ActivityImpl" table="project" schema="metadata">
+
+        <key column="id"/>
+
+        <property name="projectURI" column="project_url" type="sgf.gateway.utils.hibernate.URIUserType" length="1024"
+                  access="field"/>
+        <property name="persistentIdentifier" column="persistent_identifier" type="string" not-null="true"
+                  access="field"/>
+
+    </joined-subclass>
+
+    <sql-query name="findProjectIdsWithDatasets" cacheable="false">
+        <return-scalar column="uuid" type="sgf.gateway.utils.hibernate.UUIDUserType"/>
+        SELECT
+        metadata.project.id as uuid
+        FROM
+        metadata.project
+        INNER JOIN metadata.activity AS activity ON project.id = activity.id
+        INNER JOIN metadata.dataset_activity_xref AS dataset_activity_xref ON activity.id =
+        dataset_activity_xref.activity_id
+        INNER JOIN metadata.dataset AS dataset on dataset.id = dataset_activity_xref.dataset_id
+        ORDER BY activity.name
+    </sql-query>
+
+    <query name="findProjectsByID" cacheable="false">
+        <![CDATA[
+            from sgf.gateway.model.metadata.activities.project.ProjectImpl where id in (:projectIds)
+        ]]>
+    </query>
+
+</hibernate-mapping>

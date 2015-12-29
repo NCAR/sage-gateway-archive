@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <bean id="dataTransferMonitorJobDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="dataTransferMonitorJob"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean id="dataTransferMonitorJobTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+        <property name="jobDetail" ref="dataTransferMonitorJobDetail"/>
+        <property name="startDelay"
+                  value="${eske.service.workspace.impl.DataTransferMonitorJob.startDelayInMilliseconds}"/>
+        <property name="repeatInterval"
+                  value="${eske.service.workspace.impl.DataTransferMonitorJob.repeatIntervalInMilliseconds}"/>
+    </bean>
+
+    <bean id="auditBrokeredDatasetsJobDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="datasetAuditService"/>
+        <property name="targetMethod" value="auditBrokeredDatasets"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean id="auditBrokeredDatasetsJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="auditBrokeredDatasetsJobDetail"/>
+        <property name="startDelay"
+                  value="${eske.service.workspace.impl.DataTransferMonitorJob.startDelayInMilliseconds}"/>
+        <!-- Hopefully will fire at 10:15 PM every Sunday. -->
+        <property name="cronExpression" value="0 15 22 ? * MON"/>
+    </bean>
+
+    <bean id="whoIsQuartzJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="whoIsQuartzJob"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean id="whoIsQuartzJobTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+        <property name="jobDetail" ref="whoIsQuartzJobDetail"/>
+        <property name="startDelay" value="${filedownload.whois.service.startdelay}"/>
+        <property name="repeatInterval" value="${filedownload.whois.service.interval}"/>
+    </bean>
+
+    <bean id="geoCodeQuartzJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="geoCodeQuartzJob"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean id="geoCodeQuartzJobTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+        <property name="jobDetail" ref="geoCodeQuartzJobDetail"/>
+        <property name="startDelay" value="${filedownload.geocode.service.startdelay}"/>
+        <property name="repeatInterval" value="${filedownload.geocode.service.interval}"/>
+    </bean>
+
+    <!-- Scheduler -->
+    <bean id="schedulerFactory" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
+          depends-on="hibernateSessionFactory">
+        <property name="schedulerName" value="Core Gateway Job Scheduler"/>
+        <property name="autoStartup" value="${quartz.autostartup:true}"/>
+        <property name="quartzProperties">
+            <props>
+                <!-- ThreadPool -->
+                <prop key="org.quartz.threadPool.threadCount">4</prop>
+            </props>
+        </property>
+        <property name="triggers">
+            <list>
+                <ref bean="dataTransferMonitorJobTrigger"/>
+                <ref bean="auditBrokeredDatasetsJobTrigger"/>
+                <ref bean="whoIsQuartzJobTrigger"/>
+                <ref bean="geoCodeQuartzJobTrigger"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>

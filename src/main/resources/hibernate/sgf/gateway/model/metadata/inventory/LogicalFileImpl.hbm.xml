@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.metadata.inventory.LogicalFileImpl" table="logical_file" schema="metadata">
+
+        <id name="identifier" column="id" type="sgf.gateway.utils.hibernate.FastUUIDUserType" access="field"/>
+
+        <version name="version" column="version" unsaved-value="null" access="field"/>
+
+        <property name="name" column="name" type="string" access="field"/>
+        <property name="description" column="description" type="string" access="field"/>
+        <property name="dateCreated" column="date_created" type="timestamp" insert="false" update="false"
+                  access="field"/>
+        <property name="dateUpdated" column="date_updated" type="timestamp" insert="false" update="false"
+                  access="field"/>
+        <property name="lineageIdentifier" column="lineage_id" access="field"/>
+        <property name="versionIdentifier" column="version_id" access="field"/>
+        <property name="cmorTrackingIdentifier" column="cmor_tracking_id" access="field"/>
+        <property name="label" column="label" type="string" access="field"/>
+        <property name="diskLocation" column="disk_location" type="string" access="field"/>
+        <property name="md5Checksum" column="md5_checksum" type="string" access="field"/>
+        <property name="md5ChecksumDateUpdated" column="md5checksum_date_updated" type="timestamp" access="field"/>
+
+
+        <set name="datasetVersionsReference" access="field" table="logical_file_dataset_version_xref" schema="metadata"
+             inverse="false" cascade="persist,merge,save-update">
+            <cache usage="read-write"/>
+            <key column="logical_file_id"/>
+            <many-to-many class="sgf.gateway.model.metadata.DatasetVersionImpl" column="dataset_version_id"/>
+        </set>
+
+        <property name="size" column="size" type="long" access="field"/>
+
+        <many-to-one name="dataFormat" column="data_format_id" class="sgf.gateway.model.metadata.DataFormatImpl"
+                     cascade="persist,merge,save-update" access="field" outer-join="true"/>
+
+        <set name="fileAccessPoints" table="file_access_point" schema="metadata" inverse="true"
+             cascade="all,delete-orphan" access="field" fetch="subselect" lazy="false">
+            <key column="logical_file_id"/>
+            <one-to-many class="sgf.gateway.model.metadata.dataaccess.FileAccessPointImpl"/>
+        </set>
+
+        <set name="variablesReference" table="logical_file_variable_xref" schema="metadata" inverse="false"
+             cascade="persist,merge,save-update" access="field">
+            <key column="logical_file_id"/>
+            <many-to-many class="sgf.gateway.model.metadata.inventory.VariableImpl" column="variable_id"/>
+        </set>
+
+    </class>
+
+    <query name="findLogicalFileByFileAccessPointURL">
+        select logicalFile from LogicalFileImpl logicalFile inner join logicalFile.fileAccessPoints fileAccessPoints
+        where fileAccessPoints.endpoint = :accessURI
+    </query>
+
+    <query name="findLogicalFileByLineageId" cacheable="false">
+        <![CDATA[
+            from LogicalFileImpl logicalFile
+            where logicalFile.lineageIdentifier = :lineageIdentifier
+        ]]>
+    </query>
+
+    <query name="findLogicalFilesById" cacheable="false">
+        <![CDATA[
+            from LogicalFileImpl logicalFile where logicalFile.id in (:idList)
+        ]]>
+    </query>
+
+    <query name="findLogicalFilesForDatasetVersion" cacheable="true">
+        <![CDATA[
+            SELECT logicalFile from sgf.gateway.model.metadata.inventory.LogicalFileImpl logicalFile inner join logicalFile.datasetVersionsReference datasetVersion where datasetVersion.identifier = :datasetVersionId
+        ]]>
+    </query>
+
+    <query name="findLogicalFilesForDatasetVersionWithFilteredNames" cacheable="true">
+        <![CDATA[
+            SELECT logicalFile from sgf.gateway.model.metadata.inventory.LogicalFileImpl logicalFile inner join logicalFile.datasetVersionsReference datasetVersion where datasetVersion.identifier = :datasetVersionId and logicalFile.name like :logicalFileNamePattern
+        ]]>
+    </query>
+
+    <query name="findLogicalFilesForDatasetVersionWithFilteredVaraibles" cacheable="true">
+        <![CDATA[
+            SELECT logicalFile from sgf.gateway.model.metadata.inventory.LogicalFileImpl logicalFile inner join logicalFile.datasetVersionsReference datasetVersion inner join logicalFile.variablesReference variable where datasetVersion.identifier = :datasetVersionId and variable.id in (:variableIdentities)
+        ]]>
+    </query>
+
+    <query name="findLogicalFilesForDatasetVersionWithFilteredNamesAndVariables" cacheable="true">
+        <![CDATA[
+            SELECT logicalFile from sgf.gateway.model.metadata.inventory.LogicalFileImpl logicalFile inner join logicalFile.datasetVersionsReference datasetVersion inner join logicalFile.variablesReference variable where datasetVersion.identifier = :datasetVersionId and logicalFile.name like :logicalFileNamePattern and variable.id in (:variableIdentities)
+        ]]>
+    </query>
+
+    <sql-query name="findLogicalFilesByDatasetShortName">
+        <return alias="logicalFileImpl" class="sgf.gateway.model.metadata.inventory.LogicalFileImpl"/>
+        <![CDATA[
+            SELECT *
+            FROM metadata.logical_file AS logicfile
+            JOIN metadata.logical_file_dataset_version_xref AS fdxref ON  fdxref.logical_file_id = logicfile.id
+            JOIN metadata.dataset_version AS version ON version.id = fdxref.dataset_version_id
+            JOIN metadata.dataset AS dataset on dataset.id = version.dataset_id
+            WHERE dataset.short_name = :dataset_short_name
+        ]]>
+    </sql-query>
+
+    <sql-query name="logicalFilesByDatasetShortNameAndFileNameIgnoreCase">
+        <return alias="logicalFileImpl" class="sgf.gateway.model.metadata.inventory.LogicalFileImpl"/>
+        <![CDATA[
+            SELECT *
+            FROM metadata.logical_file AS logicfile
+            JOIN metadata.logical_file_dataset_version_xref AS fdxref ON  fdxref.logical_file_id = logicfile.id
+            JOIN metadata.dataset_version AS version ON version.id = fdxref.dataset_version_id
+            JOIN metadata.dataset AS dataset on dataset.id = version.dataset_id
+            WHERE dataset.short_name = :dataset_short_name
+            AND lower(logicfile.name) = lower(:logical_file_name)
+        ]]>
+    </sql-query>
+
+    <sql-query name="logicalFilesByDatasetShortNameAndFileNameExact">
+        <return alias="logicalFileImpl" class="sgf.gateway.model.metadata.inventory.LogicalFileImpl"/>
+        <![CDATA[
+            SELECT *
+            FROM metadata.logical_file AS logicfile
+            JOIN metadata.logical_file_dataset_version_xref AS fdxref ON  fdxref.logical_file_id = logicfile.id
+            JOIN metadata.dataset_version AS version ON version.id = fdxref.dataset_version_id
+            JOIN metadata.dataset AS dataset on dataset.id = version.dataset_id
+            WHERE dataset.short_name = :dataset_short_name
+            AND logicfile.name = :logical_file_name
+        ]]>
+    </sql-query>
+
+</hibernate-mapping>

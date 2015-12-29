@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+    <!-- Spring configuration for SAML-based ESG services -->
+
+    <!--ESG SAML-based Attribute Service stack -->
+    <bean name="samlAttributeService" class="esg.saml.attr.service.impl.SAMLAttributeServiceSoapImpl">
+        <constructor-arg index="0" ref="samlAttributeFactory"/>
+    </bean>
+
+    <bean id="samlAttributeFactory" class="sgf.gateway.saml.attr.service.impl.esg.SAMLAttributeFactoryImpl">
+        <constructor-arg index="0" ref="userRepository"/>
+        <constructor-arg index="1" ref="gateway"/>
+    </bean>
+
+    <bean id="gatewayIssuer" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetObject" ref="gateway"/>
+        <property name="targetMethod" value="getIdentity"/>
+    </bean>
+
+    <bean name="samlAttributeServiceClient" class="esg.saml.attr.service.impl.SAMLAttributeServiceClientSoapImpl">
+        <constructor-arg index="0" ref="gatewayIssuer"/>
+    </bean>
+
+    <bean name="samlAuthorizationQueryResponseBuilder"
+          class="esg.saml.authz.service.impl.SAMLAuthorizationQueryResponseBuilderImpl">
+        <constructor-arg index="0" ref="samlAuthorizationFactory"/>
+    </bean>
+
+    <!-- ESG SAML-based Authorization Service stack -->
+    <bean name="samlAuthorizationService" class="esg.saml.authz.service.impl.SAMLAuthorizationServiceSoapImpl">
+        <constructor-arg index="0" ref="samlAuthorizationFactory"/>
+    </bean>
+
+    <bean id="samlAuthorizationFactory" class="sgf.gateway.saml.authz.service.impl.esg.SAMLAuthorizationFactoryImpl">
+        <constructor-arg index="0" ref="remoteAuthorizationService"/>
+        <constructor-arg index="1" ref="gateway"/>
+    </bean>
+
+    <!-- Additional proxy used for remote authorization -->
+    <bean id="remoteAttributesServiceProxySamlSoapImpl"
+          class="sgf.gateway.saml.attr.service.impl.esg.RemoteAttributesServiceProxySamlSoapImpl">
+        <constructor-arg index="0" ref="samlAttributeServiceClient"/>
+        <constructor-arg index="1" ref="samlHttpClient3"/>
+    </bean>
+
+</beans>
+	

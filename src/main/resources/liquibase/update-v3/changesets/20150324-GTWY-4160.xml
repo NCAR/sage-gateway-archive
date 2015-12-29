@@ -1,0 +1,602 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+				   logicalFilePath="/Liquibase/update-v3/changesets/20150324-GTWY-4160">
+
+	<changeSet id="20150324-GTWY-4160" author="sgf">
+
+		<sql>
+
+			INSERT INTO audit.revision (id, revision_date, user_id, username, openid) VALUES (0, now(), 'd65d5517-205f-4d2f-974e-404e9ed9d5ca', 'rootAdmin', null);
+
+			INSERT INTO audit.award_aud (rev, revtype, dataset_id, idx_order, award_number)
+			SELECT 0, 0, dataset_id, idx_order, award_number FROM metadata.award;
+
+			INSERT INTO audit.checksum_aud (rev, revtype, logical_file_id, setordinal, value, algorithm)
+			SELECT 0, 0, logical_file_id, 0, value, algorithm FROM metadata.checksum;
+
+			INSERT INTO audit.dataset_aud
+			(
+			id,
+			rev,
+			revtype,
+			short_name,
+			shortname_mod,
+			brokered,
+			brokered_mod,
+			is_visible,
+			isvisible_mod,
+			author,
+			author_mod,
+			title,
+			title_mod,
+			description,
+			description_mod,
+			authoritative_id,
+			authoritativeidentifier_mod,
+			doi,
+			doi_mod,
+			container_type,
+			containertype_mod,
+			project_group,
+			projectgroup_mod,
+			predecessor_dataset_id,
+			predecessorproject_mod,
+			successor_dataset_id,
+			successorproject_mod,
+			institution_id,
+			institution_mod,
+			nesteddatasetsreference_mod,
+			datasetversionsreference_mod,
+			topicsreference_mod,
+			dataformatsreference_mod,
+			descriptivemetadata_mod,
+			softwareproperties_mod,
+			data_center_id,
+			datacenter_mod,
+			awards_mod)
+			SELECT id,
+			0,
+			0,
+			short_name,
+			TRUE,
+			brokered,
+			TRUE,
+			is_visible,
+			TRUE,
+			author,
+			TRUE,
+			title,
+			TRUE,
+			description,
+			TRUE,
+			authoritative_id,
+			TRUE,
+			doi,
+			TRUE,
+			container_type,
+			TRUE,
+			project_group,
+			TRUE,
+			predecessor_dataset_id,
+			TRUE,
+			successor_dataset_id,
+			TRUE,
+			institution_id,
+			TRUE,
+			TRUE,
+			TRUE,
+			TRUE,
+			TRUE,
+			TRUE,
+			TRUE,
+			data_center_id,
+			TRUE,
+			TRUE
+			FROM metadata.dataset;
+
+			INSERT INTO audit.dataset_data_format_xref_aud (rev, dataset_id, data_format_id, revtype)
+			SELECT 0, dataset_id, data_format_id, 0 FROM metadata.dataset_data_format_xref;
+
+			INSERT INTO audit.dataset_geographic_bounding_box_aud
+			(
+			id,
+			rev,
+			revtype,
+			west_bound_longitude,
+			westboundlongitude_mod,
+			east_bound_longitude,
+			eastboundlongitude_mod,
+			south_bound_latitude,
+			southboundlatitude_mod,
+			north_bound_latitude,
+			northboundlatitude_mod)
+			SELECT id,
+			0,
+			0,
+			west_bound_longitude,
+			TRUE,
+			east_bound_longitude,
+			TRUE,
+			south_bound_latitude,
+			TRUE,
+			north_bound_latitude,
+			TRUE
+			FROM metadata.dataset_geographic_bounding_box;
+
+			INSERT INTO audit.dataset_time_period_aud
+			(
+			id,
+			rev,
+			revtype,
+			begin_date,
+			begin_mod,
+			end_date,
+			end_mod)
+			SELECT id, 0, 0,
+			begin_date,
+			TRUE,
+			end_date,
+			TRUE
+			FROM metadata.dataset_time_period;
+
+			INSERT INTO audit.dataset_topic_xref_aud
+			(
+			rev,
+			dataset_id,
+			topic_id,
+			revtype)
+			SELECT 0,
+			dataset_id,
+			topic_id,
+			0
+			FROM metadata.dataset_topic_xref;
+
+			INSERT INTO audit.dataset_version_aud
+			(
+			id,
+			rev,
+			revtype,
+			version_id,
+			versionidentifier_mod,
+			comment,
+			comment_mod,
+			label,
+			label_mod,
+			published_state_id,
+			publishedstate_mod,
+			authoritative_source_uri,
+			authoritativesourceuri_mod,
+			authoritative_source_date_created,
+			authoritativesourcedatecreated_mod,
+			authoritative_source_date_modified,
+			authoritativesourcedatemodified_mod,
+			publisher,
+			publisher_mod,
+			logicalfilesreference_mod,
+			variablesreference_mod)
+			SELECT id,
+			0,
+			0,
+			version_id,
+			TRUE,
+			comment,
+			TRUE,
+			label,
+			TRUE,
+			published_state_id,
+			TRUE,
+			authoritative_source_uri,
+			TRUE,
+			authoritative_source_date_created,
+			TRUE,
+			authoritative_source_date_modified,
+			TRUE,
+			publisher,
+			TRUE,
+			TRUE,
+			TRUE
+			FROM metadata.dataset_version;
+
+			INSERT INTO audit.dataset_version_variable_xref_aud
+			(
+			rev,
+			dataset_version_id,
+			variable_id,
+			revtype)
+			SELECT 0,
+			dataset_version_id,
+			variable_id,
+			0
+			FROM metadata.dataset_version_variable_xref;
+
+			INSERT INTO audit.datasetimpl_datasetimpl_aud
+			(
+			rev,
+			parent_dataset_id,
+			id,
+			parent_display_order,
+			revtype)
+			SELECT 0,
+			parent_dataset_id,
+			id uuid,
+			parent_display_order,
+			0
+			FROM
+			metadata.dataset
+			WHERE
+			parent_dataset_id IS NOT NULL;
+
+			INSERT INTO audit.datasetimpl_datasetversionimpl_aud
+			(
+			rev,
+			dataset_id,
+			id,
+			index,
+			revtype)
+			SELECT 0,
+			dataset_id,
+			id uuid,
+			index,
+			0
+			FROM metadata.dataset_version;
+
+			INSERT INTO audit.descriptive_metadata_aud
+			(
+			id,
+			rev,
+			revtype,
+			language,
+			language_mod,
+			credit,
+			credit_mod,
+			distribution_uri,
+			distributionuri_mod,
+			distribution_uri_text,
+			distributionuritext_mod,
+			resolution_type_id,
+			resolutiontype_mod,
+			dataset_progress_id,
+			datasetprogress_mod,
+			model_name,
+			modelname_mod,
+			geographicboundingbox_mod,
+			timeperiod_mod,
+			responsibleparties_mod,
+			relatedlinksreference_mod,
+			platformtypesreference_mod,
+			instrumentkeywordsreference_mod,
+			locationsreference_mod,
+			timefrequenciesreference_mod,
+			data_product_type_id,
+			dataproducttype_mod,
+			datatypesreference_mod,
+			physical_domain_id,
+			physicaldomain_mod,
+			sciencekeywordsreference_mod,
+			resolutiontypesreference_mod)
+			SELECT id,
+			0,
+			0,
+			language,
+			TRUE,
+			credit,
+			TRUE,
+			distribution_uri,
+			TRUE,
+			distribution_uri_text,
+			TRUE,
+			resolution_type_id,
+			TRUE,
+			dataset_progress_id,
+			TRUE,
+			model_name,
+			TRUE,
+			TRUE,
+			TRUE,
+			TRUE,
+			TRUE,
+			TRUE,
+			TRUE,
+			TRUE,
+			TRUE,
+			data_product_type_id,
+			TRUE,
+			TRUE,
+			physical_domain_id,
+			TRUE,
+			TRUE,
+			TRUE
+			FROM metadata.descriptive_metadata;
+
+			INSERT INTO audit.descriptive_metadata_data_type_xref_aud
+			(
+			rev,
+			descriptive_metadata_id,
+			data_type_id,
+			revtype)
+			SELECT 0,
+			descriptive_metadata_id,
+			data_type_id,
+			0
+			FROM metadata.descriptive_metadata_data_type_xref;
+
+			INSERT INTO audit.descriptive_metadata_instrument_keyword_xref_aud
+			(
+			rev,
+			descriptive_metadata_id,
+			instrument_keyword_id,
+			revtype)
+			SELECT 0,
+			descriptive_metadata_id,
+			instrument_keyword_id,
+			0
+			FROM metadata.descriptive_metadata_instrument_keyword_xref;
+
+			INSERT INTO audit.descriptive_metadata_link_aud
+			(
+			id,
+			rev,
+			revtype,
+			text,
+			text_mod,
+			uri,
+			uri_mod)
+			SELECT id,
+			0,
+			0,
+			text,
+			TRUE,
+			uri,
+			TRUE
+			FROM metadata.descriptive_metadata_link;
+
+			INSERT INTO audit.descriptive_metadata_location_xref_aud
+			(
+			rev,
+			descriptive_metadata_id,
+			location_id,
+			revtype)
+			SELECT 0,
+			descriptive_metadata_id,
+			location_id,
+			0
+			FROM metadata.descriptive_metadata_location_xref;
+
+			INSERT INTO audit.descriptive_metadata_platform_type_xref_aud
+			(
+			rev,
+			descriptive_metadata_id,
+			platform_type_id,
+			revtype)
+			SELECT 0,
+			descriptive_metadata_id,
+			platform_type_id,
+			0
+			FROM metadata.descriptive_metadata_platform_type_xref;
+
+			INSERT INTO audit.descriptive_metadata_resolution_type_xref_aud
+			(
+			rev,
+			descriptive_metadata_id,
+			resolution_type_id,
+			idx_order,
+			revtype)
+			SELECT 0,
+			descriptive_metadata_id,
+			resolution_type_id,
+			idx_order,
+			0
+			FROM metadata.descriptive_metadata_resolution_type_xref;
+
+			INSERT INTO audit.descriptive_metadata_science_keyword_xref_aud
+			(
+			rev,
+			descriptive_metadata_id,
+			science_keyword_id,
+			revtype)
+			SELECT 0,
+			descriptive_metadata_id,
+			science_keyword_id,
+			0
+			FROM metadata.descriptive_metadata_science_keyword_xref;
+
+			INSERT INTO audit.descriptive_metadata_time_frequency_xref_aud
+			(
+			rev,
+			descriptive_metadata_id,
+			time_frequency_id,
+			revtype)
+			SELECT 0,
+			descriptive_metadata_id,
+			time_frequency_id,
+			0
+			FROM metadata.descriptive_metadata_time_frequency_xref;
+
+			INSERT INTO audit.descriptivemetadataimpl_relatedlinkimpl_aud
+			(
+			rev,
+			descriptive_metadata_id,
+			id,
+			idx_order,
+			revtype)
+			SELECT 0,
+			descriptive_metadata_id,
+			id uuid,
+			idx_order,
+			0
+			FROM metadata.descriptive_metadata_link;
+
+			INSERT INTO audit.descriptivemetadataimpl_responsiblepartyimpl_aud
+			(
+			rev,
+			descriptive_metadata_id,
+			id,
+			idx_order,
+			revtype)
+			SELECT 0,
+			descriptive_metadata_id,
+			id,
+			idx_order,
+			0
+			FROM metadata.responsible_party;
+
+			INSERT INTO audit.file_access_point_aud
+			(
+			id,
+			rev,
+			revtype,
+			endpoint,
+			endpoint_mod,
+			logical_file_id,
+			logicalfile_mod)
+			SELECT
+			id,
+			0,
+			0,
+			endpoint,
+			TRUE,
+			logical_file_id,
+			TRUE
+			FROM metadata.file_access_point;
+
+			INSERT INTO audit.institution_aud
+			(
+			id,
+			rev,
+			revtype,
+			name,
+			name_mod)
+			SELECT
+			id,
+			0,
+			0,
+			name,
+			TRUE
+			FROM metadata.institution;
+
+			INSERT INTO audit.logical_file_aud
+			(
+			id,
+			rev,
+			revtype,
+			name,
+			name_mod,
+			description,
+			description_mod,
+			lineage_id,
+			lineageidentifier_mod,
+			version_id,
+			versionidentifier_mod,
+			cmor_tracking_id,
+			cmortrackingidentifier_mod,
+			label,
+			label_mod,
+			disk_location,
+			disklocation_mod,
+			size,
+			size_mod,
+			data_format_id,
+			dataformat_mod,
+			checksums_mod,
+			fileaccesspoints_mod,
+			variablesreference_mod)
+			SELECT
+			id,
+			0,
+			0,
+			name,
+			TRUE,
+			description,
+			TRUE,
+			lineage_id,
+			TRUE,
+			version_id,
+			TRUE,
+			cmor_tracking_id,
+			TRUE,
+			label,
+			TRUE,
+			disk_location,
+			TRUE,
+			size,
+			TRUE,
+			data_format_id,
+			TRUE,
+			TRUE,
+			TRUE,
+			TRUE
+			FROM metadata.logical_file;
+
+			INSERT INTO audit.logical_file_variable_xref_aud
+			(
+			rev,
+			logical_file_id,
+			variable_id,
+			revtype)
+			SELECT
+			0,
+			logical_file_id,
+			variable_id,
+			0
+			FROM metadata.logical_file_variable_xref;
+
+			INSERT INTO audit.responsible_party_aud
+			(
+			id,
+			rev,
+			revtype,
+			individual_name,
+			individualname_mod,
+			organization_name,
+			organizationname_mod,
+			position_name,
+			positionname_mod,
+			email,
+			email_mod,
+			role,
+			role_mod)
+			SELECT
+			id,
+			0,
+			0,
+			individual_name,
+			TRUE,
+			organization_name,
+			TRUE,
+			position_name,
+			TRUE,
+			email,
+			TRUE,
+			role,
+			TRUE
+			FROM metadata.responsible_party;
+
+			INSERT INTO audit.software_properties_aud
+			(
+			id,
+			rev,
+			revtype,
+			software_version,
+			softwareversion_mod)
+			SELECT
+			id,
+			0,
+			0,
+			software_version,
+			TRUE
+			FROM metadata.software_properties;
+
+		</sql>
+
+	</changeSet>
+
+	<changeSet id="20150324-GTWY-4160.1" author="sgf">
+
+		<sql>
+			UPDATE metadata.dataset_time_period SET begin_date = to_timestamp(to_char(begin_date, 'YYYY-MM-DD'), 'YYYY-MM-DD'), end_date = to_timestamp(to_char(end_date, 'YYYY-MM-DD'), 'YYYY-MM-DD');
+		</sql>
+
+	</changeSet>
+
+</databaseChangeLog>

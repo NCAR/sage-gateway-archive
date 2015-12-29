@@ -1,0 +1,4 @@
+# PCM demo THREDDS catalogs
+# ucar.cgd.pcm.output http://datagrid.ucar.edu/metadata/cgd/pcm/thredds_new/pcm.demo.thredds
+# ucar.cgd.pcm.output http://datagrid.ucar.edu/metadata/cgd/pcm/thredds_new/ucar.cgd.pcm.B06.57/ucar.cgd.pcm.B06.57.thredds
+ucar.cgd.pcm.output http://datagrid.ucar.edu/metadata/cgd/pcm/thredds_new/pcm.demo.thredds

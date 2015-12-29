@@ -1,0 +1,26 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+		logicalFilePath="/Liquibase/update-v3/changesets/20130418-GTWY-3630.xml">
+
+	<changeSet id="20130418-GTWY-3630.0" author="sgf">
+
+	<sql>
+		ALTER TABLE metadata.dataset ADD COLUMN authoritative_id text;
+	
+		UPDATE metadata.dataset d SET authoritative_id = d.persistent_identifier
+		WHERE is_remote = true;
+	</sql>
+
+	</changeSet>
+	
+	<changeSet id="20130418-GTWY-3630.1" author="sgf">
+	
+	<sql>
+		ALTER TABLE metadata.dataset ADD CONSTRAINT dataset_authoritative_id_key UNIQUE (authoritative_id); 
+	</sql>
+	
+	</changeSet>
+
+
+</databaseChangeLog>

@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="sgf.gateway.model.metadata.inventory.StandardNameImpl" table="standard_name" schema="metadata"
+           lazy="false">
+        <cache usage="read-write"/>
+
+        <id name="identifier" column="id" type="sgf.gateway.utils.hibernate.UUIDUserType" access="field"/>
+
+        <version name="version" column="version" unsaved-value="null" access="field"/>
+
+        <property name="name" column="name" type="string" access="field"/>
+
+        <property name="description" column="description" type="string" access="field"/>
+
+        <many-to-one name="units" column="units_id" class="sgf.gateway.model.metadata.inventory.UnitImpl" access="field"
+                     lazy="false"/>
+
+        <property name="type" column="type_id" access="field">
+            <type name="sgf.gateway.utils.hibernate.EnumUserType">
+                <param name="enumClassName">sgf.gateway.model.metadata.inventory.StandardNameType</param>
+                <param name="columnType">INTEGER</param>
+            </type>
+        </property>
+
+    </class>
+
+    <query name="findStandardNameByNameAndType" cacheable="true">
+        <![CDATA[
+            from StandardNameImpl standardname left join fetch standardname.units
+            where lower(standardname.name) = lower(:name) and standardname.type = :type
+        ]]>
+    </query>
+
+    <query name="getStandardNamesByType" cacheable="true">
+        <![CDATA[
+            from StandardNameImpl standardname left join fetch standardname.units
+            where standardname.type = :type order by standardname.name
+        ]]>
+    </query>
+
+</hibernate-mapping>

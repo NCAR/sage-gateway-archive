@@ -1,0 +1,85 @@
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd" >
+
+    <!-- These changes should only be run against a schema with major version 1 -->
+    <preConditions onFailMessage="Major Version Precondition Not Met">
+        <sqlCheck expectedResult="1" >
+            SELECT COALESCE(MAX(int4(id)),0)
+            FROM public.databasechangelog
+            WHERE author='MajorVersion'
+        </sqlCheck>
+    </preConditions>
+
+    <include file="changesets/20100122-CADISSUPPORT-9.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20100203-CADISSUPPORT-14.xml" relativeToChangelogFile="true" />
+
+    <include file="changesets/20100301-SGF-877.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20100405-SGF-877.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20100413-SGF-877.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20100506-SGF-877.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20100602-SGF-1544.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20100603-SGF-1334.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20100605-SGF-877.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/20100716-SGF-1630.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20100720-SGF-1636.xml" relativeToChangelogFile="true" />
+
+    <include file="changesets/20100119-SGF-1143.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20100119-SGF-1144.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20100122-SGF-1185.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20100216-SGF-1251.xml" relativeToChangelogFile="true" />
+
+    <include file="changesets/20100112-SGF-1124.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20100128-SGF-1124.xml" relativeToChangelogFile="true" />
+
+    <include file="changesets/20100223-SGF-775.xml" relativeToChangelogFile="true" />
+
+    <include file="changesets/20100223-SGF-1262.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20100305-SGF-1236.xml" relativeToChangelogFile="true" />
+
+    <include file="changesets/20100227-SGF-1284.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20100303-SGF-1294.xml" relativeToChangelogFile="true" />
+
+    <include file="changesets/20100308-SGF-775.xml" relativeToChangelogFile="true" />
+
+    <include file="changesets/20100309-SGF-1309.xml" relativeToChangelogFile="true" />
+
+    <include file="changesets/20100309-SGF-1310.xml" relativeToChangelogFile="true" />
+
+    <include file="changesets/20100312-SGF-295.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20100316-SGF-91.xml" relativeToChangelogFile="true" />
+
+    <include file="changesets/20100318-SGF-1345.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20100318-SGF-1324.xml" relativeToChangelogFile="true" />
+
+    <include file="changesets/20100325-SGF-1354.xml" relativeToChangelogFile="true" />
+    <!--  These data already inserted via direct SQL script
+    <include file="changesets/20100330-SGF-1359.xml" relativeToChangelogFile="true" /> -->
+
+    <!--  To be added once liquibase 2.0 is released.
+    <include file="changesets/20100407-SGF-1093.xml" relativeToChangelogFile="true" /> -->
+
+    <include file="changesets/20100505-SGF-1479.xml" relativeToChangelogFile="true" />
+
+    <include file="changesets/20100609-SGF-1558.xml" relativeToChangelogFile="true" />
+
+    <include file="changesets/20100618-SGF-1574.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20100618-SGF-1506.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20100728-SGF-1651.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20100806-SGF-1559.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20100809-SGF-1668.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20100910-SGF-1717.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20100914-SGF-1685.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20101027-SGF-1735.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20101028-SGF-1587.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20101025-SGF-1822.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20101026-SGF-1737.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20101102-SGF-1840.xml" relativeToChangelogFile="true" />
+    <include file="changesets/20101119-SGF-1917.xml" relativeToChangelogFile="true" />
+
+    <!-- Version marker, no changes after this have been inserted.  This should be the last change in this file. -->
+    <changeSet author="MajorVersion" id="2"></changeSet>
+
+</databaseChangeLog>
